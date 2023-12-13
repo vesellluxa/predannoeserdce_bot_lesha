@@ -1,5 +1,10 @@
 from pathlib import Path
 
+FAQ_MAX_LENGTH = 256
+USERNAME_MAX_LENGTH = 32
+USERNAME_MIN_LENGHT = 5
+PHONE_NUMBER = r'^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$'
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 DEBUG = True

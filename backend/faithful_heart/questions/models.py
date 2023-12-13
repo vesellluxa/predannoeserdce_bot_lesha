@@ -11,6 +11,7 @@ class FrequentlyAskedQuestion(models.Model):
     answer = models.TextField(max_length=settings.FAQ_MAX_LENGTH,
                               verbose_name='Текст ответа')
     is_relevant = models.BooleanField()
+    is_main = models.BooleanField()
 
 
 class UniqueQuestion(FrequentlyAskedQuestion):

@@ -9,7 +9,8 @@ class FrequentlyAskedQuestion(models.Model):
     text = models.TextField(max_length=settings.FAQ_MAX_LENGTH,
                             verbose_name='Текст вопроса')
     answer = models.TextField(max_length=settings.FAQ_MAX_LENGTH,
-                              verbose_name='Текст ответа')
+                              verbose_name='Текст ответа',
+                              blank=True)
     is_relevant = models.BooleanField()
     is_main = models.BooleanField()
 
@@ -20,4 +21,7 @@ class UniqueQuestion(FrequentlyAskedQuestion):
     owner = models.ForeignKey(TelegramUser,
                               on_delete=models.CASCADE,
                               verbose_name='Автор вопроса')
-    is_answered = models.BooleanField()
+
+    @property
+    def is_answered(self):
+        self.answer != ''

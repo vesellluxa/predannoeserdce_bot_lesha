@@ -4,6 +4,11 @@ FAQ_MAX_LENGTH = 256
 USERNAME_MAX_LENGTH = 32
 USERNAME_MIN_LENGHT = 5
 PHONE_NUMBER = r'^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$'
+PHONE_LENGTH = 12
+NAME_LENGTH = 256  # уточнить
+CHAT_ID_LENGTH = 256  # уточнить
+
+AUTH_USER_MODEL = 'users.User'
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 

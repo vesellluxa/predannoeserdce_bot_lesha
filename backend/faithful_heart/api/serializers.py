@@ -6,6 +6,7 @@ from questions.models import UniqueQuestion, FrequentlyAskedQuestion
 
 
 class UserSerializer(ModelSerializer):
+    """Сериал. пользователя."""
     username = serializers.RegexField(
         regex=USERNAME_REGEX,
         min_lenght=settings.USERNAME_MIN_LENGTH,
@@ -29,7 +30,7 @@ class UserSerializer(ModelSerializer):
         fields = ('username')
 
 
-class FaqSerializer(ModelSerializer):
+class FrequentlyAskedQuestionSerializer(ModelSerializer):
     """Сериал. для получения списка вопросов."""
     class Meta:
         model = FrequentlyAskedQuestion
@@ -52,4 +53,5 @@ class UniqueQuestionSerializer(ModelSerializer):
 
 
 class TokenSerializer(Serializer):
+    """Сериалайзер токена."""
     pass

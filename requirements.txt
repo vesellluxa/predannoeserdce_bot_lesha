@@ -54,6 +54,8 @@ click==8.1.7
     #   pip-tools
 django==5.0
     # via -r requirements.in
+django-filter==23.5
+djangorestframework==3.14.0
 frozenlist==1.4.0
     # via
     #   -r requirements.in

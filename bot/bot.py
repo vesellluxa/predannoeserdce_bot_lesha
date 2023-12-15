@@ -23,11 +23,13 @@ async def command_start_handler(message: Message) -> None:
 
 @dp.message(Command("help"))
 async def command_help_handler(message: Message) -> None:
+    logging.info(message.text)
     await message.answer("Тут будет инструкция по использованию бота")
 
 
 @dp.message()
 async def echo_handler(message: types.Message) -> None:
+    logging.info(message.text)
     try:
         await message.send_copy(chat_id=message.chat.id)
     except TypeError:

@@ -8,8 +8,6 @@ class AbstractQuestion(models.Model):
 
     text = models.TextField(max_length=settings.FAQ_MAX_LENGTH,
                             verbose_name='Текст вопроса')
-    answer = models.TextField(max_length=settings.FAQ_MAX_LENGTH,
-                              verbose_name='Текст ответа')
 
     class Meta:
         """Абстрактная модель."""
@@ -20,6 +18,8 @@ class AbstractQuestion(models.Model):
 class FrequentlyAskedQuestion(AbstractQuestion):
     """Модель FAQ."""
 
+    answer = models.TextField(max_length=settings.FAQ_MAX_LENGTH,
+                              verbose_name='Текст ответа')
     is_main = models.BooleanField()
     is_relevant = models.BooleanField()
 
@@ -37,4 +37,4 @@ class UniqueQuestion(AbstractQuestion):
     @property
     def is_answered(self):
         """Функция, определяющая был ли получени ответ на вопрос."""
-        self.answer != ''
+        return self.answer != ''

@@ -25,12 +25,13 @@ class TelegramUser(models.Model):
                             validators=[
                                 MinLengthValidator(
                                     settings.NAME_MIN_LENGHT)])
-    surname = models.CharField(verbose_name='Имя',
+    surname = models.CharField(verbose_name='Фамилия',
                                max_length=settings.SURNAME_MAX_LENGTH,
                                validators=[
                                    MinLengthValidator(
                                        settings.SURNAME_MIN_LENGHT)])
-    phone = models.CharField(max_length=settings.PHONE_LENGTH,
+    phone = models.CharField(verbose_name='Номер телефона',
+                             max_length=settings.PHONE_LENGTH,
                              validators=[RegexValidator(settings.PHONE_NUMBER)]
                              )
 

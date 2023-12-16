@@ -54,7 +54,7 @@ class FrequentlyAskedQuestionView(
 
 class UniqueQuestionView(CreateAPIView):
     """Создание пользователем уникального вопроса.
-    Уведомление администратора по email и в TG."""
+    Уведомление администратора по email и в Telegram."""
     queryset = UniqueQuestion.objects.all()
     serializer_class = UniqueQuestionSerializer
 

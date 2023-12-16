@@ -7,7 +7,7 @@ from faithful_heart import constants
 
 
 class UserSerializer(ModelSerializer):
-    """Сериал. пользователя."""
+    """Сериализатор пользователя."""
     username = serializers.RegexField(
         regex=constants.USERNAME_REGEX,
         min_lenght=constants.USERNAME_MIN_LENGTH,
@@ -32,20 +32,21 @@ class UserSerializer(ModelSerializer):
 
 
 class FrequentlyAskedQuestionSerializer(ModelSerializer):
-    """Сериал. для получения списка вопросов."""
+    """Сериализатор для получения списка вопросов."""
     class Meta:
         model = FrequentlyAskedQuestion
         fields = ('text', 'id')
 
 
 class FaqAnswerSerializer(ModelSerializer):
-    """Сериал. для ответа на выбранный вопрос."""
+    """Сериализатор для ответа на выбранный вопрос."""
     class Meta:
         model = FrequentlyAskedQuestion
         fields = ('answer',)
 
 
 class UniqueQuestionSerializer(ModelSerializer):
+    """Сериализатор для уникального вопроса пользователя."""
     text = serializers.CharField(max_length=constants.FAQ_MAX_LENGTH,)
 
     class Meta:
@@ -55,5 +56,5 @@ class UniqueQuestionSerializer(ModelSerializer):
 
 
 class TokenSerializer(Serializer):
-    """Сериалайзер токена."""
+    """Сериализатор токена."""
     pass

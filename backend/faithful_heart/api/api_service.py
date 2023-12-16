@@ -33,7 +33,8 @@ def send_email_to_admin(question):
 
 
 async def send_tg_notification_to_admin(question):
-    """Уведомление админу в тг при появлении уникального вопроса."""
+    """Уведомление админу в Telegram
+    при появлении уникального вопроса."""
     bot = Bot(token=constants.TOKEN)
     await bot.send_message(chat_id=constants.ADMIN_TG_CHAT_ID,
         text=f'Поступил новый вопрос: {question}')

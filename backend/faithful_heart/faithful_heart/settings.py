@@ -15,6 +15,8 @@ AUTH_USER_MODEL = 'users.User'
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SECRET_KEY = 'django-insecure-omirpmo+g8l_l%ww@(m=!f#3zqx7c&^7556rpd@)i$m5nbu(4w'
+
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -26,9 +28,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'django_filters',
     'api.apps.ApiConfig',
     'questions.apps.QuestionsConfig',
     'users.apps.UsersConfig'
+
 ]
 
 MIDDLEWARE = [
@@ -93,3 +98,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 3,
+}

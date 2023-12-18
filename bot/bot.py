@@ -10,7 +10,7 @@ from aiogram.types import Message
 from aiogram.utils.markdown import hbold
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(dotenv_path="./bot/.env")
 
 TOKEN = os.getenv("BOT_TOKEN")
 dp = Dispatcher()

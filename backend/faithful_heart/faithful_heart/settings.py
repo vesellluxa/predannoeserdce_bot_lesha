@@ -1,5 +1,18 @@
 from pathlib import Path
 
+FAQ_MAX_LENGTH = 256
+USERNAME_MAX_LENGTH = 32
+USERNAME_MIN_LENGHT = 5
+PHONE_NUMBER = r'^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$'
+PHONE_LENGTH = 12
+CHAT_ID_LENGTH = 9
+NAME_MAX_LENGTH = 64
+SURNAME_MAX_LENGTH = 64
+NAME_MIN_LENGHT = 1
+SURNAME_MIN_LENGHT = 1
+
+AUTH_USER_MODEL = 'users.User'
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-omirpmo+g8l_l%ww@(m=!f#3zqx7c&^7556rpd@)i$m5nbu(4w'

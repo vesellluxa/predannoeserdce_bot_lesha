@@ -10,9 +10,11 @@ from aiogram.types import Message
 from aiogram.utils.markdown import hbold
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(dotenv_path="./bot/.env")
 
-TOKEN = os.getenv("BOT_TOKEN")
+DEBUG = os.getenv("DEBUG_MODE", default="ON").lower() in ("on", "yes", "true")
+
+TOKEN = os.getenv("BOT_TOKEN") + "/test" if DEBUG else ""
 dp = Dispatcher()
 
 

@@ -1,11 +1,16 @@
 import asyncio
 
 from rest_framework.response import Response
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.views import APIView
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import GenericAPIView, CreateAPIView
 from rest_framework.mixins import (CreateModelMixin, UpdateModelMixin,
                                    ListModelMixin, RetrieveModelMixin)
+from rest_framework_simplejwt.token_blacklist.models import (BlacklistedToken,
+                                                             OutstandingToken)
+from rest_framework_simplejwt.tokens import RefreshToken
+
 from .serializers import (UserSerializer, UniqueQuestionSerializer,
                           FrequentlyAskedQuestionSerializer, FaqAnswerSerializer,
                           UserUsernameSerializer)
@@ -66,6 +71,16 @@ class UniqueQuestionView(CreateAPIView):
         loop.run_until_complete(send_tg_notification_to_admin(question))
 
 
-class CreateTokenView(CreateAPIView):
-    """Создание ботом токена."""
-    pass
+class APILogoutView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        if self.request.data.get('all'):
+            token: OutstandingToken
+            for token in OutstandingToken.objects.filter(user=request.user):
+                _, _ = BlacklistedToken.objects.get_or_create(token=token)
+            return Response({"status": "Вы вышли из системы"})
+        refresh_token = self.request.data.get('refresh_token')
+        token = RefreshToken(token=refresh_token)
+        token.blacklist()
+        return Response({"status": "Вы вышли из системы"})

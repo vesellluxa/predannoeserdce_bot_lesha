@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer, Serializer
+from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 from users.models import TelegramUser
@@ -6,12 +6,12 @@ from questions.models import UniqueQuestion, FrequentlyAskedQuestion
 from faithful_heart import constants
 
 
-class UserSerializer(ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     """Сериализатор пользователя."""
     username = serializers.RegexField(
         regex=constants.USERNAME_REGEX,
-        min_lenght=constants.USERNAME_MIN_LENGTH,
-        max_length=constants.USERNAME_MAX_LENGTH,
+        # min_lenght=constants.USERNAME_MIN_LENGTH,
+        # max_length=constants.USERNAME_MAX_LENGTH,
         validators=[
             UniqueValidator(queryset=TelegramUser.objects.all())
         ]
@@ -24,28 +24,28 @@ class UserSerializer(ModelSerializer):
             UniqueValidator(queryset=TelegramUser.objects.all())
         ]
     )
-    phone = serializers.RegexField(regex=PHONE_NUMBER,)
+    phone = serializers.RegexField(regex=constants.PHONE_NUMBER,)
 
     class Meta:
         model = TelegramUser
         fields = ('username')
 
 
-class FrequentlyAskedQuestionSerializer(ModelSerializer):
+class FrequentlyAskedQuestionSerializer(serializers.ModelSerializer):
     """Сериализатор для получения списка вопросов."""
     class Meta:
         model = FrequentlyAskedQuestion
         fields = ('text', 'id')
 
 
-class FaqAnswerSerializer(ModelSerializer):
+class FaqAnswerSerializer(serializers.ModelSerializer):
     """Сериализатор для ответа на выбранный вопрос."""
     class Meta:
         model = FrequentlyAskedQuestion
         fields = ('answer',)
 
 
-class UniqueQuestionSerializer(ModelSerializer):
+class UniqueQuestionSerializer(serializers.ModelSerializer):
     """Сериализатор для уникального вопроса пользователя."""
     text = serializers.CharField(max_length=constants.FAQ_MAX_LENGTH,)
 
@@ -55,6 +55,6 @@ class UniqueQuestionSerializer(ModelSerializer):
         extra_kwargs = {'text': {'required': True}}
 
 
-class TokenSerializer(Serializer):
+class TokenSerializer(serializers.Serializer):
     """Сериализатор токена."""
     pass

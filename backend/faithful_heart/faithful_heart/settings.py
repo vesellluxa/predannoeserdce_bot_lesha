@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import os
 from pathlib import Path
 
-load_dotenv("./backend/.env")
+load_dotenv()
 
 FAQ_MAX_LENGTH = 256
 USERNAME_MAX_LENGTH = 32

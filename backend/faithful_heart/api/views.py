@@ -1,8 +1,10 @@
 import asyncio
 
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import GenericAPIView, CreateAPIView
 from rest_framework.mixins import (CreateModelMixin, UpdateModelMixin,
@@ -12,8 +14,7 @@ from rest_framework_simplejwt.token_blacklist.models import (BlacklistedToken,
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import (UserSerializer, UniqueQuestionSerializer,
-                          FrequentlyAskedQuestionSerializer, FaqAnswerSerializer,
-                          UserUsernameSerializer)
+                          FrequentlyAskedQuestionSerializer, FaqAnswerSerializer)
 from users.models import TelegramUser
 from questions.models import UniqueQuestion, FrequentlyAskedQuestion
 from .api_service import (export_users_excel, send_email_to_admin,
@@ -22,7 +23,7 @@ from .api_service import (export_users_excel, send_email_to_admin,
 
 class UsersView(CreateModelMixin,
                 UpdateModelMixin,
-                GenericAPIView):
+                GenericViewSet):
     """Регистрация и обновление пользователей."""
     queryset = TelegramUser.objects.all()
     serializer_class = UserSerializer
@@ -35,13 +36,13 @@ class UsersView(CreateModelMixin,
         users = TelegramUser.objects.all()
         export_users_excel(users)
 
-        return response
+        # return response
 
 
 class FrequentlyAskedQuestionView(
         ListModelMixin,
         RetrieveModelMixin,
-        GenericAPIView):
+        GenericViewSet):
     """Запрос на получение списка вопросов.
     Получение ответа на вопрос."""
     queryset = FrequentlyAskedQuestion.objects.all()
@@ -57,7 +58,7 @@ class FrequentlyAskedQuestionView(
         return FrequentlyAskedQuestionSerializer
 
 
-class UniqueQuestionView(CreateAPIView):
+class UniqueQuestionView(CreateAPIView, GenericViewSet):
     """Создание пользователем уникального вопроса.
     Уведомление администратора по email и в Telegram."""
     queryset = UniqueQuestion.objects.all()

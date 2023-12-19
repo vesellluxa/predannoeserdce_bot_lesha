@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from openpyxl import Workbook
 from aiogram import Bot
 
-from faithful_heart import constants
+from constants import DATETIME_FORMAT, ADMIN_EMAIL, ADMIN_TG_CHAT_ID
 
 
 def export_users_excel(users):
@@ -29,12 +29,12 @@ def export_users_excel(users):
 
 def send_email_to_admin(question):
     """Письмо админу при появлении уникального вопроса."""
-    send_mail('Поступил новый вопрос', question, [constants.ADMIN_EMAIL], fail_silently=False)
+    send_mail('Поступил новый вопрос', question, [ADMIN_EMAIL], fail_silently=False)
 
 
 async def send_tg_notification_to_admin(question):
     """Уведомление админу в Telegram
     при появлении уникального вопроса."""
     bot = Bot(token=constants.TOKEN)
-    await bot.send_message(chat_id=constants.ADMIN_TG_CHAT_ID,
+    await bot.send_message(chat_id=ADMIN_TG_CHAT_ID,
         text=f'Поступил новый вопрос: {question}')

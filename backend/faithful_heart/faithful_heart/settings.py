@@ -21,7 +21,7 @@ AUTH_USER_MODEL = 'users.User'
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = "django"
 
 DEBUG = os.getenv("DEBUG_MODE", default="ON").lower() in ("on", "yes", "true")
 
@@ -35,11 +35,12 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    'rest_framework_simplejwt.token_blacklist',
     "django_filters",
     "api.apps.ApiConfig",
     "questions.apps.QuestionsConfig",
     "users.apps.UsersConfig",
-    'rest_framework_simplejwt.token_blacklist',
+
 ]
 
 MIDDLEWARE = [

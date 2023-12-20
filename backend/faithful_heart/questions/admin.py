@@ -1,1 +1,31 @@
 from django.contrib import admin
+
+from questions.models import (FrequentlyAskedQuestion, UniqueQuestion)
+
+
+class FrequentlyAskedQuestionAdmin(admin.ModelAdmin):
+    list_display = (
+        'pk',
+        'text',
+        'answer',
+        'is_main',
+        'is_relevant'
+    )
+    list_display_links = ('pk', 'text', 'answer')
+    search_fields = ('text', 'answer')
+    list_editable = ('is_main', 'is_relevant')
+
+
+class UniqueQuestionAdmin(admin.ModelAdmin):
+    list_display = (
+        'pk',
+        'text',
+        'owner',
+        'answer'
+    )
+    list_display_links = ('pk', 'text', 'owner', 'answer')
+    search_fields = ('text', 'answer')
+
+
+admin.site.register(FrequentlyAskedQuestion, FrequentlyAskedQuestionAdmin)
+admin.site.register(UniqueQuestion, UniqueQuestionAdmin)

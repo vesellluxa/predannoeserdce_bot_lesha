@@ -11,7 +11,7 @@ class FrequentlyAskedQuestionAdmin(admin.ModelAdmin):
         'is_main',
         'is_relevant'
     )
-    list_display_links = ('pk', 'text', 'answer')
+    list_display_links = ('text', 'answer')
     search_fields = ('text', 'answer')
     list_editable = ('is_main', 'is_relevant')
 
@@ -23,7 +23,7 @@ class UniqueQuestionAdmin(admin.ModelAdmin):
         'owner',
         'answer'
     )
-    list_display_links = ('pk', 'text', 'owner', 'answer')
+    list_display_links = ('text', 'owner', 'answer')
     search_fields = ('text', 'answer')
 
 

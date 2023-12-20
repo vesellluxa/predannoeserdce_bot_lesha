@@ -7,13 +7,13 @@ NAME_MIN_LENGTH = 1
 NAME_MAX_LENGTH = 64
 PHONE_NUMBER = r'^[0-9]+$'
 FAQ_MAX_LENGTH = 256
-CHAT_ID_LENGTH = 9
+CHAT_ID_LENGTH = 10
 
-DATETIME_FORMAT = '%Y/%m/%d_%H:%M:%S'
+DATETIME_FORMAT = "%Y%m%d"
 
 # admin contacts
-ADMIN_EMAIL = 'sabina_045@mail.ru'
+ADMIN_EMAIL = 'admin@mail.ru'
 ADMIN_TG_CHAT_ID = 1865316035
 
 # telegram
-TOKEN = None
+TOKEN = '6452077272:AAEfpwBtfJTQHPqZjf6i5ZhkLptAhcQwJZ4'

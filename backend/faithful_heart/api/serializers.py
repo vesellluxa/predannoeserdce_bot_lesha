@@ -48,7 +48,6 @@ class UserSerializer(ModelSerializer):
         regex=PHONE_NUMBER,
         max_length=CHAT_ID_LENGTH)
 
-
     class Meta:
         model = TelegramUser
         fields = ('name', 'surname', 'email', 'phone', 'chat_id',)
@@ -59,6 +58,7 @@ class FrequentlyAskedQuestionSerializer(ModelSerializer):
     class Meta:
         model = FrequentlyAskedQuestion
         fields = ('text', 'id',)
+        # fields = '__all__'
 
 
 class FaqAnswerSerializer(ModelSerializer):

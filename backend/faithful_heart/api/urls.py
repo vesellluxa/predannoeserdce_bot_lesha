@@ -1,10 +1,10 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from django.urls import path
 from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 
-from .views import (APILogoutView, UsersView, FrequentlyAskedQuestionView, UniqueQuestionView)
+from .views import (APILogoutView, UsersView, FrequentlyAskedQuestionView,
+                    UniqueQuestionView, DownloadUserInformationView)
 
 app_name = 'api'
 
@@ -13,7 +13,7 @@ router_v1 = DefaultRouter()
 router_v1.register(r'users', UsersView)
 router_v1.register(r'faq', FrequentlyAskedQuestionView)
 router_v1.register(r'unique_question', UniqueQuestionView)
-
+router_v1.register(r'download_user_information', DownloadUserInformationView)
 
 urlpatterns = [
     path('v1/', include(router_v1.urls), name='api-root'),

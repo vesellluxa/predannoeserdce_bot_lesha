@@ -5,23 +5,12 @@ from pathlib import Path
 
 load_dotenv()
 
-FAQ_MAX_LENGTH = 256
-USERNAME_MAX_LENGTH = 32
-USERNAME_MIN_LENGHT = 5
-PHONE_NUMBER = r'^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$'
-PHONE_LENGTH = 12
-CHAT_ID_LENGTH = 9
-NAME_MAX_LENGTH = 64
-SURNAME_MAX_LENGTH = 64
-NAME_MIN_LENGHT = 1
-SURNAME_MIN_LENGHT = 1
-
 AUTH_USER_MODEL = 'users.User'
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = "django"
 
 DEBUG = os.getenv("DEBUG_MODE", default="ON").lower() in ("on", "yes", "true")
 
@@ -35,11 +24,12 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    'rest_framework_simplejwt.token_blacklist',
     "django_filters",
     "api.apps.ApiConfig",
     "questions.apps.QuestionsConfig",
     "users.apps.UsersConfig",
-    'rest_framework_simplejwt.token_blacklist',
+
 ]
 
 MIDDLEWARE = [
@@ -152,3 +142,7 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+MEDIA_ROOT = BASE_DIR/'media'
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = BASE_DIR/'sent_emails'

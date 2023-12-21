@@ -1,12 +1,9 @@
-import asyncio
-
-from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.generics import GenericAPIView, CreateAPIView
+from rest_framework.generics import CreateAPIView
 from rest_framework.mixins import (CreateModelMixin, UpdateModelMixin,
                                    ListModelMixin, RetrieveModelMixin)
 from rest_framework_simplejwt.token_blacklist.models import (BlacklistedToken,
@@ -14,7 +11,8 @@ from rest_framework_simplejwt.token_blacklist.models import (BlacklistedToken,
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import (UserSerializer, UniqueQuestionSerializer,
-                          FrequentlyAskedQuestionSerializer, FaqAnswerSerializer)
+                          FrequentlyAskedQuestionSerializer, FaqAnswerSerializer,
+                          UserCreateSerializer)
 from users.models import TelegramUser
 from questions.models import UniqueQuestion, FrequentlyAskedQuestion
 from .api_service import (export_users_excel, send_email_to_admin,
@@ -27,16 +25,27 @@ class UsersView(CreateModelMixin,
     """Регистрация и обновление пользователей."""
     queryset = TelegramUser.objects.all()
     serializer_class = UserSerializer
+    http_method_names = ['post', 'patch', ]
 
-    @action(detail=False,
-            url_path='download_user_information',
-            permission_classes=(IsAdminUser,))
-    def download_user_information(self, request):
-        """Эндпойнт для выгрузки информации о пользователях в Excel."""
-        users = TelegramUser.objects.all()
-        export_users_excel(users)
+    def get_serializer_class(self):
+        if self.action in ('create',):
 
-        # return response
+            return UserCreateSerializer
+
+        return UserSerializer
+
+
+class DownloadUserInformationView(ListModelMixin, GenericViewSet):
+    """Эндпойнт для выгрузки информации о пользователях в Excel."""
+    queryset = TelegramUser.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (IsAdminUser,)
+
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = UserSerializer(queryset, many=True)
+        export_users_excel(queryset)
+        return Response(serializer.data)
 
 
 class FrequentlyAskedQuestionView(
@@ -66,10 +75,9 @@ class UniqueQuestionView(CreateAPIView, GenericViewSet):
 
     def perform_create(self, serializer):
         serializer.save()
-        question = serializer.validated_data.get('question')
+        question = serializer.validated_data.get('text')
         send_email_to_admin(question)
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(send_tg_notification_to_admin(question))
+        send_tg_notification_to_admin(question)
 
 
 class APILogoutView(APIView):

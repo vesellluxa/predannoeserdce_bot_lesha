@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer, Serializer
+from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework import serializers
 
@@ -53,22 +53,21 @@ class UserSerializer(ModelSerializer):
         fields = ('name', 'surname', 'email', 'phone', 'chat_id',)
 
 
-class FrequentlyAskedQuestionSerializer(ModelSerializer):
+class FrequentlyAskedQuestionSerializer(serializers.ModelSerializer):
     """Сериализатор для получения списка вопросов."""
     class Meta:
         model = FrequentlyAskedQuestion
         fields = ('text', 'id',)
-        # fields = '__all__'
 
 
-class FaqAnswerSerializer(ModelSerializer):
+class FaqAnswerSerializer(serializers.ModelSerializer):
     """Сериализатор для ответа на выбранный вопрос."""
     class Meta:
         model = FrequentlyAskedQuestion
         fields = ('answer',)
 
 
-class UniqueQuestionSerializer(ModelSerializer):
+class UniqueQuestionSerializer(serializers.ModelSerializer):
     """Сериализатор для уникального вопроса пользователя."""
     text = serializers.CharField(max_length=FAQ_MAX_LENGTH,)
     owner = TelegramUser
@@ -79,6 +78,6 @@ class UniqueQuestionSerializer(ModelSerializer):
         extra_kwargs = {'text': {'required': True}}
 
 
-class TokenSerializer(Serializer):
+class TokenSerializer(serializers.Serializer):
     """Сериализатор токена."""
     pass

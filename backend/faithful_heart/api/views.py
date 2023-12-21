@@ -1,15 +1,11 @@
-import asyncio
-
-from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.generics import CreateAPIView, GenericAPIView
+from rest_framework.generics import CreateAPIView
 from rest_framework.mixins import (CreateModelMixin, UpdateModelMixin,
                                    ListModelMixin, RetrieveModelMixin)
-from rest_framework.viewsets import GenericViewSet
 from rest_framework_simplejwt.token_blacklist.models import (BlacklistedToken,
                                                              OutstandingToken)
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -29,7 +25,7 @@ class UsersView(CreateModelMixin,
     """Регистрация и обновление пользователей."""
     queryset = TelegramUser.objects.all()
     serializer_class = UserSerializer
-    http_method_names = ['post', 'patch',]
+    http_method_names = ['post', 'patch', ]
 
     def get_serializer_class(self):
         if self.action in ('create',):

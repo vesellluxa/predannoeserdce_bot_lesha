@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from rest_framework import serializers
 
 from users.models import TelegramUser
 from questions.models import UniqueQuestion, FrequentlyAskedQuestion
@@ -10,7 +9,7 @@ from constants import (USERNAME_REGEX, USERNAME_MIN_LENGTH,
                        NAME_MAX_LENGTH, CHAT_ID_LENGTH)
 
 
-class UserCreateSerializer(ModelSerializer):
+class UserCreateSerializer(serializers.ModelSerializer):
     """Сериализатор для создания первой записи пользователя."""
     username = serializers.RegexField(
         regex=USERNAME_REGEX,
@@ -26,7 +25,7 @@ class UserCreateSerializer(ModelSerializer):
         fields = ('username', )
 
 
-class UserSerializer(ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     """Сериализатор для добавления данных пользователя."""
     name = serializers.RegexField(
         regex=NAME_REGEX,

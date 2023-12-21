@@ -41,7 +41,7 @@ def export_users_excel(users):
 def send_email_to_admin(question):
     """Письмо админу при появлении уникального вопроса."""
     send_mail('Поступил новый вопрос', question, from_email=ADMIN_EMAIL,
-                recipient_list=[ADMIN_EMAIL,], fail_silently=False)
+                recipient_list=[ADMIN_EMAIL, ], fail_silently=False)
 
 
 @async_to_sync

@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 
 from .views import (APILogoutView, UsersView, FrequentlyAskedQuestionView,
-                    UniqueQuestionView, DownloadUserInformationView)
+                    UniqueQuestionView, DownloadUserInformationView, PingPongView)
 
 app_name = 'api'
 
@@ -24,4 +24,5 @@ urlpatterns = [
     ),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('logout_token/', APILogoutView.as_view(), name='logout_token'),
+    path('ping/', PingPongView.as_view(), name='ping'),
 ]

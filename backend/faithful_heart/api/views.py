@@ -1,3 +1,6 @@
+from django.urls import reverse
+import requests
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.views import APIView
@@ -17,6 +20,8 @@ from users.models import TelegramUser
 from questions.models import UniqueQuestion, FrequentlyAskedQuestion
 from .api_service import (export_users_excel, send_email_to_admin,
                           send_tg_notification_to_admin)
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.models import TokenUser
 
 
 class UsersView(CreateModelMixin,
@@ -93,3 +98,34 @@ class APILogoutView(APIView):
         token = RefreshToken(token=refresh_token)
         token.blacklist()
         return Response({"status": "Вы вышли из системы"})
+
+
+class PingPongView(APIView):
+    """Проверка доступности сервера"""
+    def get(self, request):
+        return Response({'response': 'pong'}, status=status.HTTP_200_OK)
+
+
+class SendRequest(APIView):
+    def post(self, request):
+        url = request.data.get('url')
+        data = request.data.get('data')
+        user_id = request.user.id
+        ping_response = requests.get(reverse("api:ping"))
+        if ping_response.status_code == 200:
+            token = self.get_user_token(user_id)
+            if token:
+                headers = {'Authorization': f'Bearer {token}'}
+                response = requests.post(url, data=data, headers=headers)
+                return Response(response.json(), status=response.status_code)
+            else:
+                return Response({'response': 'Токен не найден'})
+        else:
+            return Response({'error': 'Server is not available'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+    def get_user_token(self, user_id):
+        try:
+            token_user = OutstandingToken.objects.get(user_id=user_id)
+            return token_user.token
+        except OutstandingToken.DoesNotExist:
+            return None

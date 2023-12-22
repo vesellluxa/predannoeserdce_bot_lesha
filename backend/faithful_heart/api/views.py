@@ -11,7 +11,8 @@ from rest_framework_simplejwt.token_blacklist.models import (BlacklistedToken,
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import (UserSerializer, UniqueQuestionSerializer,
-                          FrequentlyAskedQuestionSerializer, FaqAnswerSerializer,
+                          FrequentlyAskedQuestionSerializer,
+                          FrequentlyAskedQuestionAnswerSerializer,
                           UserCreateSerializer)
 from users.models import TelegramUser
 from questions.models import UniqueQuestion, FrequentlyAskedQuestion
@@ -62,7 +63,7 @@ class FrequentlyAskedQuestionView(
     def get_serializer_class(self):
         if self.action in ('retrieve',):
 
-            return FaqAnswerSerializer
+            return FrequentlyAskedQuestionAnswerSerializer
 
         return FrequentlyAskedQuestionSerializer
 

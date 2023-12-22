@@ -3,78 +3,57 @@ from rest_framework.validators import UniqueValidator
 
 from users.models import TelegramUser
 from questions.models import UniqueQuestion, FrequentlyAskedQuestion
-from constants import (USERNAME_REGEX, USERNAME_MIN_LENGTH,
+from faithful_heart.constants import (USERNAME_REGEX, USERNAME_MIN_LENGTH,
                        USERNAME_MAX_LENGTH, NAME_REGEX,
                        PHONE_NUMBER, FAQ_MAX_LENGTH, NAME_MIN_LENGTH,
-                       NAME_MAX_LENGTH, CHAT_ID_LENGTH)
+                       NAME_MAX_LENGTH, CHAT_ID_LENGTH,
+                       UNIQUE_QUESTION_MAX_LENGTH)
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
     """Сериализатор для создания первой записи пользователя."""
-    username = serializers.RegexField(
-        regex=USERNAME_REGEX,
-        min_length=USERNAME_MIN_LENGTH,
-        max_length=USERNAME_MAX_LENGTH,
-        validators=[
-            UniqueValidator(queryset=TelegramUser.objects.all())
-        ]
-    )
 
     class Meta:
         model = TelegramUser
-        fields = ('username', )
+        fields = ('username', 'chat_id', )
 
 
 class UserSerializer(serializers.ModelSerializer):
     """Сериализатор для добавления данных пользователя."""
-    name = serializers.RegexField(
-        regex=NAME_REGEX,
-        min_length=NAME_MIN_LENGTH,
-        max_length=NAME_MAX_LENGTH
-    )
-    surname = serializers.RegexField(
-        regex=NAME_REGEX,
-        min_length=NAME_MIN_LENGTH,
-        max_length=NAME_MAX_LENGTH
-    )
-    email = serializers.EmailField(
-        validators=[
-            UniqueValidator(queryset=TelegramUser.objects.all())
-        ]
-    )
-    phone = serializers.RegexField(regex=PHONE_NUMBER,)
-    chat_id = serializers.RegexField(
-        regex=PHONE_NUMBER,
-        max_length=CHAT_ID_LENGTH)
 
     class Meta:
         model = TelegramUser
-        fields = ('name', 'surname', 'email', 'phone', 'chat_id',)
+        fields = ('name', 'surname', 'email', 'phone', )
 
 
 class FrequentlyAskedQuestionSerializer(serializers.ModelSerializer):
     """Сериализатор для получения списка вопросов."""
     class Meta:
         model = FrequentlyAskedQuestion
-        fields = ('text', 'id',)
+        fields = ('text', 'id', )
 
 
-class FaqAnswerSerializer(serializers.ModelSerializer):
+class FrequentlyAskedQuestionAnswerSerializer(serializers.ModelSerializer):
     """Сериализатор для ответа на выбранный вопрос."""
     class Meta:
         model = FrequentlyAskedQuestion
-        fields = ('answer',)
+        fields = ('answer', )
 
 
 class UniqueQuestionSerializer(serializers.ModelSerializer):
     """Сериализатор для уникального вопроса пользователя."""
-    text = serializers.CharField(max_length=FAQ_MAX_LENGTH,)
-    owner = TelegramUser
+    text = serializers.CharField(max_length=UNIQUE_QUESTION_MAX_LENGTH,)
+    owner = serializers.SlugRelatedField(
+        queryset=TelegramUser.objects.all(),
+        many=False,
+        slug_field='chat_id',
+    )
 
     class Meta:
         model = UniqueQuestion
-        fields = ('text', 'owner',)
+        fields = ('text', 'owner', )
         extra_kwargs = {'text': {'required': True}}
+        lookup_field = 'chat_id'
 
 
 class TokenSerializer(serializers.Serializer):

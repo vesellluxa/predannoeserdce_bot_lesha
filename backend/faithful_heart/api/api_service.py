@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 from openpyxl import Workbook
 from aiogram import Bot
 
-from constants import DATETIME_FORMAT
+from faithful_heart.constants import DATETIME_FORMAT
 from faithful_heart.settings import MEDIA_ROOT
 
 

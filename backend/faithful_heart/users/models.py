@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinLengthValidator, RegexValidator
 from django.db import models
-from constants import (CHAT_ID_LENGTH, USERNAME_MIN_LENGTH, NAME_MAX_LENGTH,
+from faithful_heart.constants import (CHAT_ID_LENGTH, USERNAME_MIN_LENGTH, NAME_MAX_LENGTH,
                        CHAT_ID_LENGTH, USERNAME_MAX_LENGTH, NAME_MIN_LENGTH,
                        SURNAME_MAX_LENGTH, SURNAME_MIN_LENGHT, PHONE_LENGTH,
                        PHONE_NUMBER)

@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
 from users.models import TelegramUser
-from constants import FAQ_MAX_LENGTH
+from faithful_heart.constants import FAQ_MAX_LENGTH
 
 
 class AbstractQuestion(models.Model):

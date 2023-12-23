@@ -47,6 +47,11 @@ certifi==2023.11.17
     #   aiogram
     #   httpcore
     #   httpx
+    #   requests
+charset-normalizer==3.3.2
+    # via
+    #   -r requirements.in
+    #   requests
 click==8.1.7
     # via
     #   -r requirements.in
@@ -85,6 +90,7 @@ idna==3.6
     #   -r requirements.in
     #   anyio
     #   httpx
+    #   requests
     #   yarl
 iniconfig==2.0.0
     # via
@@ -168,6 +174,8 @@ pytz==2023.3.post1
     # via
     #   -r requirements.in
     #   djangorestframework
+requests==2.31.0
+    # via -r requirements.in
 rsa==4.9
     # via
     #   -r requirements.in
@@ -189,6 +197,10 @@ typing-extensions==4.9.0
     #   aiogram
     #   pydantic
     #   pydantic-core
+urllib3==2.1.0
+    # via
+    #   -r requirements.in
+    #   requests
 wheel==0.42.0
     # via pip-tools
 yarl==1.9.4

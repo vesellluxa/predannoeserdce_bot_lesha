@@ -12,10 +12,7 @@ from router import router
 load_dotenv(dotenv_path="./bot/.env")
 
 DEBUG = os.getenv("DEBUG_MODE", default="ON").lower() in ("on", "yes", "true")
-
-TOKEN = os.getenv("BOT_TOKEN")
-
-"""  + "/test" if DEBUG else "" """
+TOKEN = os.getenv("BOT_TOKEN") + "/test" if DEBUG else os.getenv("BOT_TOKEN")
 
 
 async def main() -> None:

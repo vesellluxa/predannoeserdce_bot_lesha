@@ -9,6 +9,7 @@ from aiogram.types import (
 )
 
 from constants import BOT_ANSWERS
+from schemas import CreateUserDto
 
 
 class Question:
@@ -36,8 +37,9 @@ async def fetch_faq_questions():
     return {}
 
 
-async def add_user_to_db(user):
-    async with httpx.AsyncClient() as client:
+async def add_user_to_db(user: CreateUserDto):
+    logging.info(f"Adding user to db: {user}")
+    """ async with httpx.AsyncClient() as client:
         try:
             response = await client.post(
                 "http://localhost:3005/users", json=user
@@ -46,4 +48,4 @@ async def add_user_to_db(user):
                 return response.json()
         except httpx.HTTPError as e:
             logging.error(f"Error adding user to db: {e}")
-    return {}
+    return {} """

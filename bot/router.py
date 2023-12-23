@@ -16,6 +16,7 @@ from aiogram.exceptions import TelegramBadRequest
 from constants import BOT_ANSWERS, PAGINATION
 from helpers import (
     Question,
+    add_user_to_db,
 )
 from middelwares import QuestionsMiddelware
 from keyboards import (
@@ -32,8 +33,9 @@ router.callback_query.middleware(QuestionsMiddelware())
 class PersonalDataForm(StatesGroup):
     permission = State()
     name = State()
+    surname = State()
     email = State()
-    phone_number = State()
+    phone = State()
 
 
 class InformationAboutShelter(StatesGroup):
@@ -87,7 +89,7 @@ async def process_permission(message: Message, state: FSMContext) -> None:
     else:
         await state.set_state(PersonalDataForm.name)
         await message.answer(
-            BOT_ANSWERS.first_name.value,
+            BOT_ANSWERS.name.value,
             reply_markup=ReplyKeyboardRemove(),
         )
 
@@ -106,10 +108,28 @@ async def process_name(message: Message, state: FSMContext) -> None:
     """
     logging.info("process_name")
     await state.update_data(name=message.text)
+    await state.set_state(PersonalDataForm.surname)
+    await message.answer(
+        BOT_ANSWERS.surname.value
+    )
+
+@router.message(PersonalDataForm.surname)
+async def process_surname(message: Message, state: FSMContext) -> None:
+    """
+    Process the user's name and update the state.
+
+    Args:
+      message (Message): The incoming message from the user.
+      state (FSMContext): The current state of the conversation.
+
+    Returns:
+      None
+    """
+    logging.info("process_surname")
+    await state.update_data(surname=message.text)
     await state.set_state(PersonalDataForm.email)
     await message.answer(
         BOT_ANSWERS.email.value,
-        reply_markup=ReplyKeyboardRemove(),
     )
 
 
@@ -127,12 +147,12 @@ async def process_email(message: Message, state: FSMContext) -> None:
     """
     logging.info("process_email")
     await state.update_data(email=message.text)
-    await state.set_state(PersonalDataForm.phone_number)
-    await message.answer(BOT_ANSWERS.phone_number.value)
+    await state.set_state(PersonalDataForm.phone)
+    await message.answer(BOT_ANSWERS.phone.value)
 
 
-@router.message(PersonalDataForm.phone_number)
-async def process_phone_number(message: Message, state: FSMContext) -> None:
+@router.message(PersonalDataForm.phone)
+async def process_phone(message: Message, state: FSMContext) -> None:
     """
     Processes the phone number entered by the user and updates the state data.
     Sends a message with the user's personal information and clears the state.
@@ -145,13 +165,17 @@ async def process_phone_number(message: Message, state: FSMContext) -> None:
     Returns:
       None
     """
-    logging.info("process_phone_number")
-    await state.update_data(phone_number=message.text)
-    data = await state.update_data(language=message.text)
-    text = f"Ваше ФИО: {data['name']}\n"
-    text += f"Ваш email: {data['email']}\n"
-    text += f"Ваш номер телефона: {data['phone_number']}\n"
-    await message.answer(text)
+    logging.info("process_phone")
+    data = await state.update_data(phone=message.text)
+    user = {
+        "name": data["name"],
+        "surname": data["surname"],
+        "email": "daadasdadadadada",
+        "phone": data["phone"],
+        "chat_id": message.chat.id,
+        "username": message.chat.username,
+    }
+    await add_user_to_db(user)
     await state.clear()
     await state.set_state(InformationAboutShelter.main_interaction)
     await send_main_interaction_buttons(

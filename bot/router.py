@@ -1,29 +1,27 @@
 import logging
 
 from aiogram import F, Router
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import (
-    Message,
     CallbackQuery,
-    ReplyKeyboardRemove,
-    InlineKeyboardMarkup,
     InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    Message,
+    ReplyKeyboardRemove,
 )
-from aiogram.exceptions import TelegramBadRequest
-
 from constants import BOT_ANSWERS, PAGINATION
-from helpers import (
-    Question,
-    add_user_to_db,
-)
-from middelwares import QuestionsMiddelware
+from helpers import Question, add_unique_question, add_user_to_db, get_shelter_info
 from keyboards import (
-    YES_NO_KEYBOARD,
+    CANCEL_KEYBOARD,
     FAQ_UNIQUE_CANCEL_KEYBOARD,
+    TRY_AGAIN_KEYBOARD,
+    YES_NO_KEYBOARD,
     send_main_interaction_buttons,
 )
+from middelware import QuestionsMiddelware
 
 router = Router()
 router.message.middleware(QuestionsMiddelware())
@@ -41,12 +39,13 @@ class PersonalDataForm(StatesGroup):
 class InformationAboutShelter(StatesGroup):
     main_interaction = State()
     questions = State()
+    unique_question = State()
 
 
 @router.message(CommandStart())
 async def command_start(message: Message, state: FSMContext) -> None:
     """
-    Handle the start command.
+    Handles the start command.
 
     Args:
       message (Message): The incoming message.
@@ -57,21 +56,57 @@ async def command_start(message: Message, state: FSMContext) -> None:
     """
     logging.info("Start command received")
     await state.set_state(PersonalDataForm.permission)
-    await message.answer(
-        BOT_ANSWERS.greeting.value, reply_markup=YES_NO_KEYBOARD
-    )
+    await message.answer(BOT_ANSWERS.greeting.value, reply_markup=YES_NO_KEYBOARD)
+
+
+@router.message(
+    PersonalDataForm.name, F.text.casefold() == BOT_ANSWERS.cancel.value.casefold()
+)
+@router.message(
+    PersonalDataForm.surname, F.text.casefold() == BOT_ANSWERS.cancel.value.casefold()
+)
+@router.message(
+    PersonalDataForm.email, F.text.casefold() == BOT_ANSWERS.cancel.value.casefold()
+)
+@router.message(
+    PersonalDataForm.phone, F.text.casefold() == BOT_ANSWERS.cancel.value.casefold()
+)
+@router.message(
+    InformationAboutShelter.main_interaction,
+    F.text.casefold() == BOT_ANSWERS.cancel.value.casefold(),
+)
+@router.message(
+    InformationAboutShelter.questions,
+    F.text.casefold() == BOT_ANSWERS.cancel.value.casefold(),
+)
+@router.message(
+    InformationAboutShelter.unique_question,
+    F.text.casefold() == BOT_ANSWERS.cancel.value.casefold(),
+)
+async def process_cancel(message: Message, state: FSMContext) -> None:
+    """
+    Handles the "cancel" messages for the both states.
+
+    Args:
+      message (Message): The incoming message.
+      state (FSMContext): The state of the conversation.
+
+    Returns:
+      None
+    """
+    await state.set_state(PersonalDataForm.permission)
+    await message.answer(BOT_ANSWERS.greeting.value, reply_markup=YES_NO_KEYBOARD)
 
 
 @router.message(
     PersonalDataForm.permission,
-    (
-        (F.text.casefold() == BOT_ANSWERS.no.value.casefold())
-        | (F.text.casefold() == BOT_ANSWERS.yes.value.casefold())
-    ),
+    (F.text.casefold() == BOT_ANSWERS.no.value.casefold())
+    | (F.text.casefold() == BOT_ANSWERS.yes.value.casefold())
+    | (F.text.casefold() == BOT_ANSWERS.try_again.value.casefold()),
 )
 async def process_permission(message: Message, state: FSMContext) -> None:
     """
-    Process the user's response to the permission question.
+    Processes the user's response to the permission question.
 
     Args:
       message (Message): The incoming message from the user.
@@ -81,23 +116,23 @@ async def process_permission(message: Message, state: FSMContext) -> None:
       None
     """
     logging.info("process_permission")
+    current_state = await state.get_state()
+    logging.info(current_state)
     if message.text.casefold() == BOT_ANSWERS.no.value.casefold():
         await state.set_state(InformationAboutShelter.main_interaction)
-        await send_main_interaction_buttons(
-            message, BOT_ANSWERS.permission.value
-        )
+        await send_main_interaction_buttons(message, BOT_ANSWERS.permission.value)
     else:
         await state.set_state(PersonalDataForm.name)
         await message.answer(
             BOT_ANSWERS.name.value,
-            reply_markup=ReplyKeyboardRemove(),
+            reply_markup=CANCEL_KEYBOARD,
         )
 
 
 @router.message(PersonalDataForm.name)
 async def process_name(message: Message, state: FSMContext) -> None:
     """
-    Process the user's name and update the state.
+    Processes the user's name and update the state.
 
     Args:
       message (Message): The incoming message from the user.
@@ -109,14 +144,13 @@ async def process_name(message: Message, state: FSMContext) -> None:
     logging.info("process_name")
     await state.update_data(name=message.text)
     await state.set_state(PersonalDataForm.surname)
-    await message.answer(
-        BOT_ANSWERS.surname.value
-    )
+    await message.answer(BOT_ANSWERS.surname.value)
+
 
 @router.message(PersonalDataForm.surname)
 async def process_surname(message: Message, state: FSMContext) -> None:
     """
-    Process the user's name and update the state.
+    Processes the user's surname and update the state.
 
     Args:
       message (Message): The incoming message from the user.
@@ -136,7 +170,7 @@ async def process_surname(message: Message, state: FSMContext) -> None:
 @router.message(PersonalDataForm.email)
 async def process_email(message: Message, state: FSMContext) -> None:
     """
-    Process the email entered by the user.
+    Processes the email entered by the user.
 
     Args:
       message (Message): The message object containing the user's input.
@@ -155,7 +189,7 @@ async def process_email(message: Message, state: FSMContext) -> None:
 async def process_phone(message: Message, state: FSMContext) -> None:
     """
     Processes the phone number entered by the user and updates the state data.
-    Sends a message with the user's personal information and clears the state.
+    Sends the request to add the user to the database and clears the state.
     Sets the state to the main interaction state and sends the main interaction buttons.
 
     Args:
@@ -170,17 +204,22 @@ async def process_phone(message: Message, state: FSMContext) -> None:
     user = {
         "name": data["name"],
         "surname": data["surname"],
-        "email": "daadasdadadadada",
+        "email": data["email"],
         "phone": data["phone"],
         "chat_id": message.chat.id,
         "username": message.chat.username,
     }
-    await add_user_to_db(user)
+    user = await add_user_to_db(user)
+    logging.info(user)
+    if user is None:
+        await state.set_state(PersonalDataForm.permission)
+        await message.answer(
+            BOT_ANSWERS.validation_error.value, reply_markup=TRY_AGAIN_KEYBOARD
+        )
+        return
     await state.clear()
     await state.set_state(InformationAboutShelter.main_interaction)
-    await send_main_interaction_buttons(
-        message, BOT_ANSWERS.registration_message.value
-    )
+    await send_main_interaction_buttons(message, BOT_ANSWERS.registration_message.value)
 
 
 @router.message(
@@ -190,9 +229,16 @@ async def process_phone(message: Message, state: FSMContext) -> None:
         | (F.text.casefold() == BOT_ANSWERS.shelter.value.casefold())
     ),
 )
-async def process_main_interaction(
-    message: Message, state: FSMContext
-) -> None:
+async def process_main_interaction(message: Message) -> None:
+    """
+    Processes the main interaction with the bot.
+
+    Args:
+      message (Message): The incoming message.
+
+    Returns:
+      None
+    """
     logging.info("process_main_interaction")
     if message.text.casefold() == BOT_ANSWERS.questions.value.casefold():
         await message.answer(
@@ -200,31 +246,91 @@ async def process_main_interaction(
             reply_markup=FAQ_UNIQUE_CANCEL_KEYBOARD,
         )
     else:
-        await message.answer(BOT_ANSWERS.shelter_info.value)
+        shelter_info = await get_shelter_info()
+        await message.answer(
+            shelter_info,
+            reply_markup=FAQ_UNIQUE_CANCEL_KEYBOARD,
+        )
 
 
 @router.message(
     InformationAboutShelter.main_interaction,
-    F.text.casefold() == BOT_ANSWERS.faq.value.casefold(),
+    (
+        (F.text.casefold() == BOT_ANSWERS.faq.value.casefold())
+        | (F.text.casefold() == BOT_ANSWERS.unique_question.value.casefold())
+    ),
 )
-async def process_faq(
-    message: Message, state: FSMContext, questions: dict[int, Question]
+async def process_questions(
+    message: Message, questions: dict[int, Question], state: FSMContext
 ) -> None:
-    logging.info("process_faq")
-    await send_questions_page(message, questions, 0)
+    """
+    Processes the interaction with the bot for the questions.
+    Sends back paginated faq questions or allows user to ask a unique question.
+
+    Args:
+      message (Message): The incoming message.
+      questions (dict[int, Question]): The dictionary of questions.
+      state (FSMContext): The state of the conversation.
+
+    Returns:
+      None
+    """
+    logging.info("process_questions")
+    if message.text.casefold() == BOT_ANSWERS.faq.value.casefold():
+        await send_questions_page(message, questions, 0)
+    elif message.text.casefold() == BOT_ANSWERS.unique_question.value.casefold():
+        await state.set_state(InformationAboutShelter.unique_question)
+        await message.answer(BOT_ANSWERS.enter_unique_question.value)
+
+
+@router.message(InformationAboutShelter.unique_question)
+async def process_unique_question(message: Message, state: FSMContext) -> None:
+    """
+    Processes the unique question entered by the user.
+    Adds the question to the database and sends a reply.
+
+    Args:
+      message (Message): The incoming message.
+      state (FSMContext): The state of the conversation.
+
+    Returns:
+      None
+    """
+    logging.info("process_unique_question")
+    question = {
+        "question": message.text,
+        "username": message.chat.username,
+        "chat_id": message.chat.id,
+    }
+    await add_unique_question(question)
+    await state.set_state(InformationAboutShelter.main_interaction)
+    await message.answer(BOT_ANSWERS.unique_question_reply.value)
 
 
 async def send_questions_page(
     message: Message, questions: dict[int, Question], page: int
 ) -> None:
+    """
+    Sends the paginated questions to the user.
+
+    Args:
+      message (Message): The incoming message.
+      questions (dict[int, Question]): The dictionary of questions.
+      page (int): The page number.
+
+    Returns:
+      None
+    """
     logging.info("send_questions_page")
-    start_idx = page * PAGINATION + 1
+    # It is better to use a list of indexes, as the indexes in the database may not be consistent if records are deleted
+    indexes = list(questions)
+    start_idx = page * PAGINATION
     end_idx = start_idx + PAGINATION
     buttons = [
         [
             InlineKeyboardButton(
-                text=questions[i].question,
-                callback_data=f"faq_{i}",
+                text=questions[indexes[i]].question,
+                callback_data=f"faq_{indexes[i]}",
             )
         ]
         for i in range(
@@ -233,19 +339,11 @@ async def send_questions_page(
     ]
     if page > 0:
         buttons.append(
-            [
-                InlineKeyboardButton(
-                    text="◀️ Назад", callback_data=f"page_{page - 1}"
-                )
-            ]
+            [InlineKeyboardButton(text="◀️ Назад", callback_data=f"page_{page - 1}")]
         )
     if end_idx < len(questions):
         buttons.append(
-            [
-                InlineKeyboardButton(
-                    text="Вперед ▶️", callback_data=f"page_{page + 1}"
-                )
-            ]
+            [InlineKeyboardButton(text="Вперед ▶️", callback_data=f"page_{page + 1}")]
         )
 
     try:
@@ -256,7 +354,7 @@ async def send_questions_page(
         )
     except TelegramBadRequest:
         await message.answer(
-            BOT_ANSWERS.questions_title.value,
+            BOT_ANSWERS.faq.value,
             reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons),
         )
 
@@ -270,6 +368,7 @@ async def process_faq_callback(
 
     Args:
       callback_query (CallbackQuery): The callback query object.
+      questions (dict[int, Question]): The dictionary of questions.
 
     Returns:
       None
@@ -292,6 +391,7 @@ async def process_page_callback(
 
     Args:
       callback_query (CallbackQuery): The callback query object.
+      questions (dict[int, Question]): The dictionary of questions.
 
     Returns:
       None
@@ -299,18 +399,3 @@ async def process_page_callback(
     logging.info("process_page_callback")
     page = int(callback_query.data.split("_")[1])
     await send_questions_page(callback_query.message, questions, page)
-
-
-@router.message(Command("cancel"))
-@router.message(F.text.casefold() == "cancel")
-async def cancel_handler(message: Message, state: FSMContext) -> None:
-    current_state = await state.get_state()
-    if current_state is None:
-        return
-
-    logging.info("Cancelling state %r", current_state)
-    await state.clear()
-    await message.answer(
-        "Cancelled.",
-        reply_markup=ReplyKeyboardRemove(),
-    )

@@ -1,9 +1,8 @@
 import datetime
-from typing import Any, Callable, Dict, Awaitable
+from typing import Any, Awaitable, Callable, Dict
 
 from aiogram import BaseMiddleware
 from aiogram.types import Message
-
 from helpers import fetch_faq_questions
 
 
@@ -36,13 +35,18 @@ class QuestionsMiddelware(BaseMiddleware):
         data: Dict[str, Any],
     ) -> Any:
         if not self._questions:
-            self._questions = await fetch_faq_questions()
+            response = await fetch_faq_questions()
+            if not response:
+                return await handler(event, data)
+            self._questions = response
             self._last_fetch_time = datetime.datetime.now()
-        if (
-            datetime.datetime.now() - self._last_fetch_time
-            > datetime.timedelta(minutes=10)
+        if datetime.datetime.now() - self._last_fetch_time > datetime.timedelta(
+            minutes=10
         ):
-            self._questions = await fetch_faq_questions()
+            response = await fetch_faq_questions()
+            if not response:
+                return await handler(event, data)
+            self._questions = response
             self._last_fetch_time = datetime.datetime.now()
         data["questions"] = self._questions
         return await handler(event, data)

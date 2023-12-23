@@ -1,8 +1,6 @@
 import asyncio
-import django
 import logging
 import os
-from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
 import sys
 
 from aiogram import Bot, Dispatcher, types
@@ -13,9 +11,6 @@ from aiogram.utils.markdown import hbold
 from dotenv import load_dotenv
 import requests
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'faithful_heart.settings')
-django.setup()
-
 
 load_dotenv(dotenv_path="./bot/.env")
 
@@ -23,6 +18,8 @@ DEBUG = os.getenv("DEBUG_MODE", default="ON").lower() in ("on", "yes", "true")
 
 TOKEN = os.getenv("BOT_TOKEN") + "/test" if DEBUG else ""
 dp = Dispatcher()
+
+global_token = None
 
 
 @dp.message(CommandStart())
@@ -45,18 +42,22 @@ async def echo_handler(message: types.Message) -> None:
         await message.answer("Тип данных для копирования не поддерживается")
 
 
-async def main() -> None:
-    bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
-    await dp.start_polling(bot)
+async def get_token(username, password):
+    global global_token
+    token_response = requests.post(
+        'http://127.0.0.1:8000/api/obtain_token/',
+        data={'username': username, 'password': password}
+    )
+    if token_response.status_code == 200:
+        global_token = token_response.json().get('access')
 
 
-async def send_request(url, data, user_id):
+async def send_request(url, data):
     ping_response = requests.get('http://127.0.0.1:8000/api/ping/')
     if ping_response.status_code == 200:
-        queryset = OutstandingToken.objects.filter(user_id=user_id)
-        token = queryset.first().token
-        if token:
-            headers = {'Authorization': f'Bearer {token}'}
+        global global_token
+        if global_token:
+            headers = {'Authorization': f'Bearer {global_token}'}
             return requests.post(url, data=data, headers=headers)
         else:
             return 'Токен не найден'
@@ -64,6 +65,14 @@ async def send_request(url, data, user_id):
         return 'Сервер не доступен'
 
 
+async def main() -> None:
+    bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
+    await dp.start_polling(bot)
+
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     asyncio.run(main())
+    username = os.getenv("ADMIN_USERNAME")
+    password = os.getenv("ADMIN_PASSWORD")
+    get_token(username, password)

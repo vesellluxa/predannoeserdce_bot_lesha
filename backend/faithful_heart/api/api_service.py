@@ -21,7 +21,7 @@ ADMIN_TG_CHAT_ID = os.getenv('ADMIN_TG_CHAT_ID')
 def export_users_excel(users):
     """Создание файла excel с данными пользователей."""
     date_now = datetime.now()
-    date_now_formatted = date_now.strftime(constants.DATETIME_FORMAT)
+    date_now_formatted = date_now.strftime(DATETIME_FORMAT)
     workbook = Workbook()
     sheet = workbook.active
     sheet.column_dimensions['A'].width = 10

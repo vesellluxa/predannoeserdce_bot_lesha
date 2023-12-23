@@ -7,14 +7,6 @@ from faithful_heart import constants
 
 class UserCreateSerializer(serializers.ModelSerializer):
     """Сериализатор для создания первой записи пользователя."""
-    username = serializers.RegexField(
-        regex=constants.USERNAME_REGEX,
-        min_length=constants.USERNAME_MIN_LENGTH,
-        max_length=constants.USERNAME_MAX_LENGTH,
-        validators=[
-            UniqueValidator(queryset=TelegramUser.objects.all())
-        ]
-    )
 
     class Meta:
         model = TelegramUser
@@ -23,25 +15,6 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     """Сериализатор для добавления данных пользователя."""
-    name = serializers.RegexField(
-        regex=constants.NAME_REGEX,
-        min_length=constants.NAME_MIN_LENGTH,
-        max_length=constants.NAME_MAX_LENGTH
-    )
-    surname = serializers.RegexField(
-        regex=constants.NAME_REGEX,
-        min_length=constants.NAME_MIN_LENGTH,
-        max_length=constants.NAME_MAX_LENGTH
-    )
-    email = serializers.EmailField(
-        validators=[
-            UniqueValidator(queryset=TelegramUser.objects.all())
-        ]
-    )
-    phone = serializers.RegexField(regex=constants.PHONE_NUMBER,)
-    chat_id = serializers.RegexField(
-        regex=constants.PHONE_NUMBER,
-        max_length=constants.CHAT_ID_LENGTH)
 
     class Meta:
         model = TelegramUser

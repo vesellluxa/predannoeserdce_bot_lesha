@@ -21,6 +21,12 @@ dp = Dispatcher()
 
 global_token = None
 
+METHODS = {
+    "POST": requests.post,
+    "GET": requests.get,
+    "PATCH": requests.patch,
+}
+
 
 @dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
@@ -52,13 +58,13 @@ async def get_token(username, password):
         global_token = token_response.json().get('access')
 
 
-async def send_request(url, data):
+async def send_request(url, data, method):
     ping_response = requests.get('http://127.0.0.1:8000/api/ping/')
     if ping_response.status_code == 200:
         global global_token
         if global_token:
             headers = {'Authorization': f'Bearer {global_token}'}
-            return requests.post(url, data=data, headers=headers)
+            return METHODS[method](url, data=data, headers=headers)
         else:
             return 'Токен не найден'
     else:

@@ -7,8 +7,10 @@ from faithful_heart import constants
 class AbstractQuestion(models.Model):
     """Абстрактная модель FAQ."""
 
-    text = models.TextField(max_length=constants.FAQ_MAX_LENGTH,
-                            verbose_name='Текст вопроса')
+    text = models.TextField(
+        max_length=constants.FAQ_MAX_LENGTH,
+        verbose_name='Текст вопроса'
+    )
 
     class Meta:
         """Абстрактная модель."""
@@ -19,8 +21,10 @@ class AbstractQuestion(models.Model):
 class FrequentlyAskedQuestion(AbstractQuestion):
     """Модель FAQ."""
 
-    answer = models.TextField(max_length=constants.FAQ_MAX_LENGTH,
-                              verbose_name='Текст ответа')
+    answer = models.TextField(
+        max_length=constants.FAQ_MAX_LENGTH,
+        verbose_name='Текст ответа'
+    )
     is_main = models.BooleanField()
     is_relevant = models.BooleanField()
 
@@ -28,12 +32,16 @@ class FrequentlyAskedQuestion(AbstractQuestion):
 class UniqueQuestion(AbstractQuestion):
     """Модель для уникального вопроса."""
 
-    owner = models.ForeignKey(TelegramUser,
-                              on_delete=models.CASCADE,
-                              verbose_name='Автор вопроса')
-    answer = models.TextField(max_length=constants.FAQ_MAX_LENGTH,
-                              verbose_name='Текст ответа',
-                              blank=True)
+    owner = models.ForeignKey(
+        TelegramUser,
+        on_delete=models.CASCADE,
+        verbose_name='Автор вопроса'
+    )
+    answer = models.TextField(
+        max_length=constants.FAQ_MAX_LENGTH,
+        verbose_name='Текст ответа',
+        blank=True
+    )
 
     @property
     def is_answered(self):

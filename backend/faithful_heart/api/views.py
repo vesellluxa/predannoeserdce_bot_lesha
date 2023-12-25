@@ -20,6 +20,9 @@ from questions.models import UniqueQuestion, FrequentlyAskedQuestion
 from .api_service import (export_users_excel, send_email_to_admin,
                           send_tg_notification_to_admin)
 
+import http
+http.HTTPStatus.NO_CONTENT
+
 
 class UsersView(CreateModelMixin,
                 UpdateModelMixin,
@@ -31,9 +34,7 @@ class UsersView(CreateModelMixin,
 
     def get_serializer_class(self):
         if self.action in ('create',):
-
             return UserCreateSerializer
-
         return UserSerializer
 
 

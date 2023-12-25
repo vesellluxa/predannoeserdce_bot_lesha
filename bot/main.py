@@ -6,7 +6,6 @@ import sys
 from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode
 from dotenv import load_dotenv
-
 from router import router
 
 load_dotenv(dotenv_path="./bot/.env")

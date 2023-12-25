@@ -1,15 +1,10 @@
-import requests
-import httpx
+import asyncio
 import logging
 
-from aiogram.types import (
-    KeyboardButton,
-    Message,
-    ReplyKeyboardMarkup,
-)
-
+import httpx
 from constants import BOT_ANSWERS
-from schemas import CreateUserDto
+from pydantic import ValidationError
+from schemas import CreateUserDto, QuestionDto
 
 
 class Question:
@@ -22,10 +17,9 @@ class Question:
 
 
 async def fetch_faq_questions():
-    response = requests.get("http://127.0.0.1:3005/faq")
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.get("http://localhost:3005/faq")
+            response = await client.get("http://localhost:8000/api/v1/faq")
             if response.status_code == 200:
                 raw_questions = response.json()
                 return {
@@ -38,14 +32,28 @@ async def fetch_faq_questions():
 
 
 async def add_user_to_db(user: CreateUserDto):
-    logging.info(f"Adding user to db: {user}")
-    """ async with httpx.AsyncClient() as client:
-        try:
-            response = await client.post(
-                "http://localhost:3005/users", json=user
-            )
-            if response.status_code == 201:
-                return response.json()
-        except httpx.HTTPError as e:
-            logging.error(f"Error adding user to db: {e}")
-    return {} """
+    try:
+        validated_user = CreateUserDto(**user)
+        logging.info(f"Adding user to db: {validated_user}")
+        await asyncio.sleep(1)
+        return validated_user
+    except ValidationError as e:
+        logging.error(f"Error validating user: {e}")
+        return None
+
+
+async def add_unique_question(question: QuestionDto):
+    try:
+        validated_question = QuestionDto(**question)
+        logging.info(f"Asking unique question: {validated_question}")
+        await asyncio.sleep(1)
+        return validated_question
+    except ValidationError as e:
+        logging.error(f"Error validating question: {e}")
+        return None
+
+
+async def get_shelter_info():
+    logging.info("get_shelter_info")
+    await asyncio.sleep(1)
+    return BOT_ANSWERS.shelter_info.value

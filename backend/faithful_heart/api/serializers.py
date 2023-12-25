@@ -10,7 +10,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TelegramUser
-        fields = ('username', 'chat_id', )
+        fields = ('username', 'chat_id', 'id', )
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -25,7 +25,7 @@ class FrequentlyAskedQuestionSerializer(serializers.ModelSerializer):
     """Сериализатор для получения списка вопросов."""
     class Meta:
         model = FrequentlyAskedQuestion
-        fields = ('text', 'id', )
+        fields = ('text', 'answer', 'id', )
 
 
 class FrequentlyAskedQuestionAnswerSerializer(serializers.ModelSerializer):

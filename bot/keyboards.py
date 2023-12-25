@@ -1,12 +1,4 @@
-from aiogram.types import (
-    CallbackQuery,
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    KeyboardButton,
-    Message,
-    ReplyKeyboardMarkup,
-    ReplyKeyboardRemove,
-)
+from aiogram.types import KeyboardButton, Message, ReplyKeyboardMarkup
 from constants import BOT_ANSWERS
 
 YES_NO_KEYBOARD = ReplyKeyboardMarkup(
@@ -43,6 +35,7 @@ FAQ_UNIQUE_CANCEL_KEYBOARD = ReplyKeyboardMarkup(
         [
             KeyboardButton(text=BOT_ANSWERS.faq.value),
             KeyboardButton(text=BOT_ANSWERS.unique_question.value),
+            KeyboardButton(text=BOT_ANSWERS.shelter.value),
             KeyboardButton(text=BOT_ANSWERS.cancel.value),
         ]
     ],

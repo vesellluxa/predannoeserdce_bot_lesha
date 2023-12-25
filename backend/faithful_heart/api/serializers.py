@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from users.models import TelegramUser
 from questions.models import UniqueQuestion, FrequentlyAskedQuestion
+from faithful_heart import constants
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -36,11 +37,8 @@ class FrequentlyAskedQuestionAnswerSerializer(serializers.ModelSerializer):
 
 class UniqueQuestionSerializer(serializers.ModelSerializer):
     """Сериализатор для уникального вопроса пользователя."""
-    owner = serializers.SlugRelatedField(
-        queryset=TelegramUser.objects.all(),
-        many=False,
-        slug_field='chat_id',
-    )
+    text = serializers.CharField(max_length=constants.FAQ_MAX_LENGTH,)
+    owner = TelegramUser
 
     class Meta:
         model = UniqueQuestion

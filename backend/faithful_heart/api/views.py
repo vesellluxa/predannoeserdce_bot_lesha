@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.views import APIView
@@ -103,3 +104,9 @@ class APILogoutView(APIView):
         token = RefreshToken(token=refresh_token)
         token.blacklist()
         return Response({"status": "Вы вышли из системы"})
+
+
+class PingPongView(APIView):
+    """Проверка доступности сервера"""
+    def get(self, request):
+        return Response({'response': 'pong'}, status=status.HTTP_200_OK)

@@ -35,6 +35,7 @@ class BOT_ANSWERS(str, Enum):
     no = "Нет"
     try_again = "Попробовать ввести данные еще раз"
     validation_error = "Ошибка валидации, попробуйте еще раз"
+    something_went_wrong = "Что-то пошло не так, попробуйте еще раз"
 
 
 PAGINATION = 3

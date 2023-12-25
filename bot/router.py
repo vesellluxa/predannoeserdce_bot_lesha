@@ -261,7 +261,7 @@ async def process_main_interaction(message: Message) -> None:
     ),
 )
 async def process_questions(
-    message: Message, questions: dict[int, Question], state: FSMContext
+    message: Message, state: FSMContext, questions: dict[int, Question] = {}
 ) -> None:
     """
     Processes the interaction with the bot for the questions.
@@ -322,6 +322,9 @@ async def send_questions_page(
       None
     """
     logging.info("send_questions_page")
+    if not questions:
+        await message.answer(BOT_ANSWERS.something_went_wrong.value)
+        return
     # It is better to use a list of indexes, as the indexes in the database may not be consistent if records are deleted
     indexes = list(questions)
     start_idx = page * PAGINATION

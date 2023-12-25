@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.views import APIView
@@ -27,6 +28,8 @@ class UsersView(CreateModelMixin,
     queryset = TelegramUser.objects.all()
     serializer_class = UserSerializer
     http_method_names = ['post', 'patch', ]
+    lookup_field = 'chat_id'
+
 
     def get_serializer_class(self):
         if self.action in ('create',):
@@ -34,6 +37,12 @@ class UsersView(CreateModelMixin,
             return UserCreateSerializer
 
         return UserSerializer
+
+    def get_object(self):
+
+        user = get_object_or_404(TelegramUser, chat_id=self.kwargs.get("chat_id"))
+
+        return user
 
 
 class DownloadUserInformationView(ListModelMixin, GenericViewSet):

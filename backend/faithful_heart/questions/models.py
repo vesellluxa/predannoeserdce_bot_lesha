@@ -2,15 +2,13 @@ from django.conf import settings
 from django.db import models
 from users.models import TelegramUser
 from faithful_heart import constants
-from questions.validators import validate_is_profane_russian
 
 
 class AbstractQuestion(models.Model):
     """Абстрактная модель FAQ."""
 
     text = models.TextField(max_length=constants.FAQ_MAX_LENGTH,
-                            verbose_name='Текст вопроса',
-                            validators=[validate_is_profane_russian])
+                            verbose_name='Текст вопроса',)
 
     class Meta:
         """Абстрактная модель."""

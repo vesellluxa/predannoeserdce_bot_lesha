@@ -29,7 +29,6 @@ class UniqueQuestionSerializer(serializers.ModelSerializer):
     """
     Сериализатор для уникального вопроса от пользователя.
     """
-    text = serializers.CharField(max_length=constants.FAQ_MAX_LENGTH, )
     owner = serializers.SlugRelatedField(
         queryset=TelegramUser.objects.all(),
         slug_field='chat_id'

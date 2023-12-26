@@ -10,7 +10,6 @@ from aiogram import Bot
 from faithful_heart import constants
 from faithful_heart.settings import MEDIA_ROOT
 
-
 load_dotenv()
 
 TOKEN = os.getenv('TOKEN')
@@ -19,7 +18,9 @@ ADMIN_TG_CHAT_ID = os.getenv('ADMIN_TG_CHAT_ID')
 
 
 def export_users_excel(users):
-    """Создание файла excel с данными пользователей."""
+    """
+    Создание файла excel с данными пользователей.
+    """
     date_now = datetime.now()
     date_now_formatted = date_now.strftime(constants.DATETIME_FORMAT)
     workbook = Workbook()
@@ -34,20 +35,24 @@ def export_users_excel(users):
     sheet.append(headers)
     for user in users:
         sheet.append([user.name, user.surname, user.phone, user.username,
-                            user.chat_id, user.email])
+                      user.chat_id, user.email])
     workbook.save(f'{MEDIA_ROOT}/Пользователи_{date_now_formatted}.xlsx')
 
 
 def send_email_to_admin(question):
-    """Письмо админу при появлении уникального вопроса."""
+    """
+    Отправка email Администратору при создании уникального вопроса.
+    """
     send_mail('Поступил новый вопрос', question, from_email=ADMIN_EMAIL,
-                recipient_list=[ADMIN_EMAIL, ], fail_silently=False)
+              recipient_list=[ADMIN_EMAIL, ], fail_silently=False)
 
 
 @async_to_sync
 async def send_tg_notification_to_admin(question):
-    """Уведомление админу в Telegram
-    при появлении уникального вопроса."""
+    """
+    Отправка сообщения Администратору в Telegram
+    при создании уникального вопроса.
+    """
     bot = Bot(token=TOKEN)
     await bot.send_message(chat_id=ADMIN_TG_CHAT_ID,
-        text=f'Поступил новый вопрос: {question}')
+                           text=f'Поступил новый вопрос: {question}')

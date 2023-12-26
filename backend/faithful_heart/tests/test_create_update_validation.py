@@ -81,3 +81,17 @@ def test_unique_question_data_validation(
         '`/api/v1/unique_question/` валидация '
         'выполняется правильно.'
    )
+
+@pytest.mark.django_db
+def test_unique_required_fields(api_client):
+   url = '/api/v1/users/'
+   data = {
+       'username': 'angelina56',
+       'chat_id': '4965823419'
+   }
+   response = api_client.post(url, data=data)
+   assert response.status_code == 400, (
+        'Проверьте, что при POST-запросе пользователя к '
+        '`/api/v1/users/` валидация на уникальность полей '
+        'выполняется правильно.'
+   )

@@ -29,7 +29,7 @@ async def obtain_token(username: str, password: str):
     async with httpx.AsyncClient() as client:
         try:
             response = await client.post(
-                "http://127.0.0.1:8000/api/obtain_token/",
+                "http://127.0.0.1:8000/api/v1/obtain_token/",
                 data={"username": username, "password": password},
             )
             if response.status_code == 200:
@@ -43,7 +43,7 @@ async def refresh_token(refresh_token: str):
     async with httpx.AsyncClient() as client:
         try:
             response = await client.post(
-                "http://127.0.0.1:8000/api/token/refresh/",
+                "http://127.0.0.1:8000/api/v1/token/refresh/",
                 data={"refresh": refresh_token},
             )
             if response.status_code == 200:

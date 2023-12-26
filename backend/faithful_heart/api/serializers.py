@@ -6,11 +6,13 @@ from faithful_heart import constants
 
 
 class TelegramUserSerializer(serializers.ModelSerializer):
-    """Сериализатор для получения списка вопросов."""
+    """
+    Сериализатор для получения списка вопросов.
+    """
 
     class Meta:
         model = FrequentlyAskedQuestion
-        fields = ('text', 'id', )
+        fields = ('text', 'answer', 'id', )
 
 
 class FrequentlyAskedQuestionAnswerSerializer(serializers.ModelSerializer):

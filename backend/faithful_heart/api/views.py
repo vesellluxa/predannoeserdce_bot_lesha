@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 from django_filters.rest_framework import DjangoFilterBackend
@@ -28,6 +28,7 @@ class UsersView(CreateModelMixin,
     queryset = TelegramUser.objects.all()
     serializer_class = UserSerializer
     http_method_names = ['post', 'patch', ]
+    permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
         if self.action in ('create',):
@@ -41,7 +42,7 @@ class DownloadUserInformationView(ListModelMixin, GenericViewSet):
     """Эндпойнт для выгрузки информации о пользователях в Excel."""
     queryset = TelegramUser.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (IsAdminUser,)
+    permission_classes = [IsAuthenticated]
 
     def list(self, request):
         queryset = self.get_queryset()
@@ -60,6 +61,7 @@ class FrequentlyAskedQuestionView(
     serializer_class = FrequentlyAskedQuestionSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('is_main',)
+    permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
         if self.action in ('retrieve',):
@@ -74,6 +76,7 @@ class UniqueQuestionView(CreateAPIView, GenericViewSet):
     Уведомление администратора по email и в Telegram."""
     queryset = UniqueQuestion.objects.all()
     serializer_class = UniqueQuestionSerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save()
@@ -83,7 +86,8 @@ class UniqueQuestionView(CreateAPIView, GenericViewSet):
 
 
 class APILogoutView(APIView):
-    permission_classes = (IsAuthenticated,)
+    """Разлогинивание пользователя"""
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         if self.request.data.get('all'):
@@ -99,5 +103,7 @@ class APILogoutView(APIView):
 
 class PingPongView(APIView):
     """Проверка доступности сервера"""
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         return Response({'response': 'pong'}, status=status.HTTP_200_OK)

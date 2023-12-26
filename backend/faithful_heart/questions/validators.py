@@ -1,6 +1,5 @@
 from django.core.exceptions import ValidationError
-from profanity.extras import ProfanityFilter
-
+from profanityfilter import ProfanityFilter
 
 words = []
 with open('filter_profanity.txt', 'r', encoding='utf-8') as f:

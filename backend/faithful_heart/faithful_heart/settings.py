@@ -29,8 +29,6 @@ INSTALLED_APPS = [
     "api.apps.ApiConfig",
     "questions.apps.QuestionsConfig",
     "users.apps.UsersConfig",
-    "profanity",
-
 ]
 
 MIDDLEWARE = [

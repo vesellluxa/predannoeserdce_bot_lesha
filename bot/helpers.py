@@ -53,7 +53,7 @@ async def refresh_token(refresh_token: str):
     return {}
 
 
-async def add_user_to_db_short(user: CreateUserShortDto, access: str):
+async def add_user_to_db(user: CreateUserShortDto, access: str):
     async with httpx.AsyncClient() as client:
         try:
             validated_user = CreateUserShortDto(**user)
@@ -71,21 +71,21 @@ async def add_user_to_db_short(user: CreateUserShortDto, access: str):
     return None
 
 
-async def add_user_to_db_full(user: CreateUserFullDto, access: str):
+async def patch_user(user: CreateUserFullDto, id: int, access: str):
     async with httpx.AsyncClient() as client:
         try:
             validated_user = CreateUserFullDto(**user)
-            response = await client.post(
-                "http://127.0.0.1:8000/api/v1/users/",
+            response = await client.patch(
+                f"http://127.0.0.1:8000/api/v1/users/{id}/",
                 json=validated_user.model_dump(),
                 headers={"Authorization": f"Bearer {access}"},
             )
-            if response.status_code == 201:
+            if response.status_code == 200:
                 return response.json()
         except httpx.HTTPError as e:
-            logging.error(f"Error adding user to DB: {e}")
+            logging.error(f"Error updating user data: {e}")
         except ValidationError as e:
-            logging.error(f"Error validating user: {e}")
+            logging.error(f"Error validating user data: {e}")
     return None
 
 

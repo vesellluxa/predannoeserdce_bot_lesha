@@ -74,8 +74,8 @@ class FetchingMiddleware(BaseMiddleware):
         "info": None,
     }
     _endpoints = {
-        "faq": "faq/?is_main=False",
-        "info": "faq/?is_main=True",
+        "faq": "faq/?category=Shelter_Info",
+        "info": "faq/?category=FAQ",
     }
     FETCH_INTERVAL = datetime.timedelta(minutes=10)
 

@@ -1,3 +1,5 @@
+import logging
+
 from aiogram import F, Router
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import CommandStart
@@ -12,8 +14,8 @@ from aiogram.types import (
 from constants import BOT_ANSWERS, PAGINATION
 from helpers import (
     add_unique_question,
-    add_user_to_db_full,
-    add_user_to_db_short,
+    patch_user,
+    add_user_to_db,
 )
 from keyboards import (
     CANCEL_KEYBOARD,
@@ -33,6 +35,7 @@ router.callback_query.middleware(FetchingMiddleware())
 
 class PersonalDataForm(StatesGroup):
     permission = State()
+    id = State()
     name = State()
     surname = State()
     email = State()
@@ -46,8 +49,24 @@ class InformationAboutShelter(StatesGroup):
 
 
 @router.message(CommandStart())
-async def command_start(message: Message, state: FSMContext) -> None:
+async def command_start(message: Message, state: FSMContext, access: str = "") -> None:
+    if access == "":
+        await state.set_state(InformationAboutShelter.main_interaction)
+        await message.answer(BOT_ANSWERS.something_went_wrong.value)
+        return
     await state.set_state(PersonalDataForm.permission)
+    user = {
+        "chat_id": message.chat.id,
+        "username": message.chat.username,
+    }
+    user_db = await add_user_to_db(user, access)
+    if user_db is None:
+        await message.answer(
+            BOT_ANSWERS.user_creation_error.value,
+            reply_markup=YES_NO_KEYBOARD,
+        )
+        return
+    await state.update_data(id=user_db["id"])
     await message.answer(
         BOT_ANSWERS.greeting.value, reply_markup=YES_NO_KEYBOARD
     )
@@ -148,7 +167,7 @@ async def process_phone(
         "chat_id": message.chat.id,
         "username": message.chat.username,
     }
-    user_db = await add_user_to_db_full(user, access)
+    user_db = await patch_user(user, data["id"], access)
     if user_db is None:
         await state.set_state(PersonalDataForm.permission)
         await message.answer(
@@ -210,13 +229,8 @@ async def process_unique_question(
         await state.set_state(InformationAboutShelter.main_interaction)
         await message.answer(BOT_ANSWERS.something_went_wrong.value)
         return
-    user = {"username": message.chat.username, "chat_id": message.chat.id}
-    user_db = await add_user_to_db_short(user, access)
-    if user_db is None:
-        await state.set_state(InformationAboutShelter.main_interaction)
-        await message.answer(BOT_ANSWERS.user_creation_error.value)
-        return
-    question = {"text": message.text, "owner": user_db["id"]}
+    data = await state.get_data()
+    question = {"text": message.text, "owner": data["id"]}
     question_db = await add_unique_question(question, access)
     if question_db is None:
         await state.set_state(InformationAboutShelter.main_interaction)

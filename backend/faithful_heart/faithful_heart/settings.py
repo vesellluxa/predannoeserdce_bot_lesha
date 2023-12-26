@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     "api.apps.ApiConfig",
     "questions.apps.QuestionsConfig",
     "users.apps.UsersConfig",
+    "profanity",
 
 ]
 
@@ -143,6 +144,6 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
 
-MEDIA_ROOT = BASE_DIR/'media'
+MEDIA_ROOT = BASE_DIR / 'media'
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = BASE_DIR/'sent_emails'
+EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'

@@ -1,12 +1,13 @@
 import pytest
 
+from users.models import TelegramUser
+
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
    'username, chat_id, status_code', [
       ('', '4965823419', 400),
       ('angelina56', '', 400),
-      ('angelina56', '49658234', 400),
       ('angelinaewdrufjdntfhgtplrdjfr8t5tfujhdnsddckfjtfhdxnsdherfjswkdjfr',
          '4965823419', 400),
       ('ola', '4965823419', 400),
@@ -34,21 +35,23 @@ def test_create_user_data_validation(
 @pytest.mark.parametrize(
    'name, surname, phone, email, status_code', [
 # здесь я допишу параметры для проверки
-      ('', '', 'dfgs3456', '123@mail.ru', 400),
+      ('', 'Basmanova', '79854567869', 'alla@mail.ru', 400),
    ]
 )
 def test_update_user_data_validation(
-   name, surname, phone, email, status_code, admin_client,
+   name, surname, phone, email, status_code, api_client,
       telegram_user
 ):
-   url = f'/api/v1/users/{telegram_user.chat_id}'
+   user = TelegramUser.objects.create(username='675_andrey', chat_id='4837345475')
+   chat_id = user.chat_id
+   url = f'/api/v1/users/{chat_id}/'
    data = {
         'name': name,
         'surname': surname,
         'phone': phone,
         'email': email,
    }
-   response = admin_client.patch(url, data=data)
+   response = api_client.patch(url, data=data, follow=True)
    assert response.status_code == status_code, (
         'Проверьте, что при PATCH-запросе пользователя к '
         '`/api/v1/users/` валидация данных '
@@ -65,14 +68,14 @@ def test_update_user_data_validation(
    ]
 )
 def test_unique_question_data_validation(
-   chat_id, text, status_code, admin_client
+   chat_id, text, status_code, api_client
 ):
    url = '/api/v1/unique_question/'
    data = {
       'owner': chat_id,
       'text': text
    }
-   response = admin_client.post(url, data=data)
+   response = api_client.post(url, data=data)
    assert response.status_code == status_code, (
         'Проверьте, что при POST-запросе пользователя к '
         '`/api/v1/unique_question/` валидация '

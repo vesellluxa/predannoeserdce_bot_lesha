@@ -38,7 +38,11 @@ class FrequentlyAskedQuestionAnswerSerializer(serializers.ModelSerializer):
 class UniqueQuestionSerializer(serializers.ModelSerializer):
     """Сериализатор для уникального вопроса пользователя."""
     text = serializers.CharField(max_length=constants.FAQ_MAX_LENGTH,)
-    owner = TelegramUser
+    owner = serializers.SlugRelatedField(
+        queryset=TelegramUser.objects.all(),
+        many=False,
+        slug_field='chat_id',
+    )
 
     class Meta:
         model = UniqueQuestion

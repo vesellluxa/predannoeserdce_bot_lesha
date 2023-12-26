@@ -13,20 +13,19 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import (UserSerializer, UniqueQuestionSerializer,
                           FrequentlyAskedQuestionSerializer,
-                          FrequentlyAskedQuestionAnswerSerializer,
+    # FrequentlyAskedQuestionAnswerSerializer,
                           UserCreateSerializer)
 from users.models import TelegramUser
 from questions.models import UniqueQuestion, FrequentlyAskedQuestion
 from .api_service import (export_users_excel, send_email_to_admin,
                           send_tg_notification_to_admin)
 
-import http
-http.HTTPStatus.NO_CONTENT
 
-
-class UsersView(CreateModelMixin,
-                UpdateModelMixin,
-                GenericViewSet):
+class UsersViewSet(
+    CreateModelMixin,
+    UpdateModelMixin,
+    GenericViewSet
+):
     """Регистрация и обновление пользователей."""
     queryset = TelegramUser.objects.all()
     serializer_class = UserSerializer
@@ -38,7 +37,9 @@ class UsersView(CreateModelMixin,
         return UserSerializer
 
 
-class DownloadUserInformationView(ListModelMixin, GenericViewSet):
+class DownloadUserInformationView(
+    GenericViewSet
+):
     """Эндпойнт для выгрузки информации о пользователях в Excel."""
     queryset = TelegramUser.objects.all()
     serializer_class = UserSerializer
@@ -52,25 +53,21 @@ class DownloadUserInformationView(ListModelMixin, GenericViewSet):
 
 
 class FrequentlyAskedQuestionView(
-        ListModelMixin,
-        RetrieveModelMixin,
-        GenericViewSet):
+    ListModelMixin,
+    GenericViewSet
+):
     """Запрос на получение списка вопросов.
     Получение ответа на вопрос."""
-    queryset = FrequentlyAskedQuestion.objects.all()
+    queryset = FrequentlyAskedQuestion.objects.filter(is_relevant=True)
     serializer_class = FrequentlyAskedQuestionSerializer
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('is_main',)
-
-    def get_serializer_class(self):
-        if self.action in ('retrieve',):
-
-            return FrequentlyAskedQuestionAnswerSerializer
-
-        return FrequentlyAskedQuestionSerializer
+    filterset_fields = ('category',)
 
 
-class UniqueQuestionView(CreateAPIView, GenericViewSet):
+class UniqueQuestionView(
+    CreateAPIView,
+    GenericViewSet
+):
     """Создание пользователем уникального вопроса.
     Уведомление администратора по email и в Telegram."""
     queryset = UniqueQuestion.objects.all()
@@ -83,7 +80,9 @@ class UniqueQuestionView(CreateAPIView, GenericViewSet):
         send_tg_notification_to_admin(question)
 
 
-class APILogoutView(APIView):
+class APILogoutView(
+    APIView
+):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
@@ -100,5 +99,6 @@ class APILogoutView(APIView):
 
 class PingPongView(APIView):
     """Проверка доступности сервера"""
+
     def get(self, request):
         return Response({'response': 'pong'}, status=status.HTTP_200_OK)

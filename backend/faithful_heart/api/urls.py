@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 
-from .views import (APILogoutView, UsersView,
+from .views import (APILogoutView, UsersViewSet,
                     FrequentlyAskedQuestionView,
                     UniqueQuestionView, DownloadUserInformationView,
                     PingPongView)
@@ -11,7 +11,7 @@ from .views import (APILogoutView, UsersView,
 app_name = 'api'
 router_v1 = DefaultRouter()
 
-router_v1.register(r'users', UsersView)
+router_v1.register(r'users', UsersViewSet)
 router_v1.register(r'faq', FrequentlyAskedQuestionView)
 router_v1.register(r'unique_question', UniqueQuestionView)
 router_v1.register(r'download_user_information', DownloadUserInformationView)

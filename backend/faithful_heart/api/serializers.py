@@ -25,14 +25,14 @@ class FrequentlyAskedQuestionSerializer(serializers.ModelSerializer):
     """Сериализатор для получения списка вопросов."""
     class Meta:
         model = FrequentlyAskedQuestion
-        fields = ('text', 'id', )
+        fields = ('text', 'answer', 'id', )
 
 
-class FrequentlyAskedQuestionAnswerSerializer(serializers.ModelSerializer):
-    """Сериализатор для ответа на выбранный вопрос."""
-    class Meta:
-        model = FrequentlyAskedQuestion
-        fields = ('answer', )
+# class FrequentlyAskedQuestionAnswerSerializer(serializers.ModelSerializer):
+#     """Сериализатор для ответа на выбранный вопрос."""
+#     class Meta:
+#         model = FrequentlyAskedQuestion
+#         fields = ('answer', )
 
 
 class UniqueQuestionSerializer(serializers.ModelSerializer):

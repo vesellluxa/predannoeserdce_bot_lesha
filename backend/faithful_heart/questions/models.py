@@ -21,12 +21,23 @@ class AbstractQuestion(models.Model):
 class FrequentlyAskedQuestion(AbstractQuestion):
     """Модель FAQ."""
 
+    QUESTION_CATEGORIES = {
+        "FAQ": "Часто Задаваемые Вопросы",
+        "Shelter_Info": "Узнать больше о приюте"
+
+    }
+
     answer = models.TextField(
         max_length=constants.FAQ_MAX_LENGTH,
         verbose_name='Текст ответа'
     )
-    is_main = models.BooleanField()
     is_relevant = models.BooleanField()
+    category = models.CharField(
+        max_length=24,
+        choices=QUESTION_CATEGORIES,
+        null=False,
+        blank=False
+    )
 
 
 class UniqueQuestion(AbstractQuestion):

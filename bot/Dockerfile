@@ -10,4 +10,4 @@ RUN pip3 install -r requirements.txt --no-cache-dir
 
 COPY ./ .
 
-CMD ["python3", "bot.py"]
+CMD ["python", "bot.py"]

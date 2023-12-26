@@ -4,50 +4,54 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, get_object_or_404
 from rest_framework.mixins import (CreateModelMixin, UpdateModelMixin,
-                                   ListModelMixin, RetrieveModelMixin)
+                                   ListModelMixin)
 from rest_framework_simplejwt.token_blacklist.models import (BlacklistedToken,
                                                              OutstandingToken)
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import (UserSerializer, UniqueQuestionSerializer,
-                          FrequentlyAskedQuestionSerializer,
-    # FrequentlyAskedQuestionAnswerSerializer,
-                          UserCreateSerializer)
+from .serializers import (TelegramUserSerializer, UniqueQuestionSerializer,
+                          FrequentlyAskedQuestionSerializer)
 from users.models import TelegramUser
 from questions.models import UniqueQuestion, FrequentlyAskedQuestion
 from .api_service import (export_users_excel, send_email_to_admin,
                           send_tg_notification_to_admin)
 
 
-class UsersViewSet(
+class TelegramUsersViewSet(
     CreateModelMixin,
     UpdateModelMixin,
     GenericViewSet
 ):
-    """Регистрация и обновление пользователей."""
+    """
+    Добавление и обновление пользователей.
+    """
     queryset = TelegramUser.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = TelegramUserSerializer
     http_method_names = ['post', 'patch', ]
 
-    def get_serializer_class(self):
-        if self.action in ('create',):
-            return UserCreateSerializer
-        return UserSerializer
+    def get_object(self):
+        user = get_object_or_404(
+            TelegramUser,
+            chat_id=self.request.data.get("chat_id")
+        )
+        return user
 
 
 class DownloadUserInformationView(
     GenericViewSet
 ):
-    """Эндпойнт для выгрузки информации о пользователях в Excel."""
+    """
+    Эндпоинт для выгрузки информации пользователей в Excel.
+    """
     queryset = TelegramUser.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = TelegramUserSerializer
     permission_classes = (IsAdminUser,)
 
     def list(self, request):
         queryset = self.get_queryset()
-        serializer = UserSerializer(queryset, many=True)
+        serializer = TelegramUserSerializer(queryset, many=True)
         export_users_excel(queryset)
         return Response(serializer.data)
 
@@ -56,8 +60,12 @@ class FrequentlyAskedQuestionView(
     ListModelMixin,
     GenericViewSet
 ):
-    """Запрос на получение списка вопросов.
-    Получение ответа на вопрос."""
+    """
+    Запрос на получение списка вопросов.
+    Получение ответа на вопрос.
+    Фильтрация по категории позволяет получить вопросы
+    для двух категорий - Часто задаваемые вопросы и Информация о приюте
+    """
     queryset = FrequentlyAskedQuestion.objects.filter(is_relevant=True)
     serializer_class = FrequentlyAskedQuestionSerializer
     filter_backends = (DjangoFilterBackend,)
@@ -68,8 +76,10 @@ class UniqueQuestionView(
     CreateAPIView,
     GenericViewSet
 ):
-    """Создание пользователем уникального вопроса.
-    Уведомление администратора по email и в Telegram."""
+    """
+    Создание пользователем уникального вопроса.
+    Уведомление администратора по email и в Telegram.
+    """
     queryset = UniqueQuestion.objects.all()
     serializer_class = UniqueQuestionSerializer
 
@@ -83,6 +93,9 @@ class UniqueQuestionView(
 class APILogoutView(
     APIView
 ):
+    """
+    Эндпоинт для выхода из системы (удаление токена).
+    """
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
@@ -97,8 +110,12 @@ class APILogoutView(
         return Response({"status": "Вы вышли из системы"})
 
 
-class PingPongView(APIView):
-    """Проверка доступности сервера"""
+class PingPongView(
+    APIView
+):
+    """
+    Проверка доступности сервера
+    """
 
     def get(self, request):
         return Response({'response': 'pong'}, status=status.HTTP_200_OK)

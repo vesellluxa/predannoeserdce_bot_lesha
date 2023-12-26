@@ -1,11 +1,12 @@
-from django.conf import settings
 from django.db import models
 from users.models import TelegramUser
 from faithful_heart import constants
 
 
 class AbstractQuestion(models.Model):
-    """Абстрактная модель FAQ."""
+    """
+    Абстрактная модель Вопроса.
+    """
 
     text = models.TextField(
         max_length=constants.FAQ_MAX_LENGTH,
@@ -13,13 +14,14 @@ class AbstractQuestion(models.Model):
     )
 
     class Meta:
-        """Абстрактная модель."""
 
         abstract = True
 
 
 class FrequentlyAskedQuestion(AbstractQuestion):
-    """Модель FAQ."""
+    """
+    Модель FAQ (Часто задаваемые вопросы).
+    """
 
     QUESTION_CATEGORIES = {
         "FAQ": "Часто Задаваемые Вопросы",
@@ -41,7 +43,9 @@ class FrequentlyAskedQuestion(AbstractQuestion):
 
 
 class UniqueQuestion(AbstractQuestion):
-    """Модель для уникального вопроса."""
+    """
+    Модель уникального вопроса.
+    """
 
     owner = models.ForeignKey(
         TelegramUser,
@@ -56,5 +60,7 @@ class UniqueQuestion(AbstractQuestion):
 
     @property
     def is_answered(self):
-        """Функция, определяющая был ли получени ответ на вопрос."""
+        """
+        Функция, определяющая был ли получени ответ на вопрос.
+        """
         return self.answer != ''

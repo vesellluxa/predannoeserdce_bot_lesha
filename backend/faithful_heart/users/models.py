@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinLengthValidator, RegexValidator
 from django.db import models
@@ -15,7 +14,9 @@ class User(AbstractUser):
 
 
 class TelegramUser(models.Model):
-    """Модель для сбора данных пользователей."""
+    """
+    Модель для сбора данных пользователей.
+    """
 
     username = models.CharField(
         max_length=constants.USERNAME_MAX_LENGTH,
@@ -27,27 +28,34 @@ class TelegramUser(models.Model):
     )
     email = models.EmailField(
         verbose_name='E-mail пользователя',
-        unique=True
+        unique=True,
+        blank=True,
+        null=True
+
     )
     name = models.CharField(
         verbose_name='Имя',
         max_length=constants.NAME_MAX_LENGTH,
         validators=[
             MinLengthValidator(
-                constants.NAME_MIN_LENGTH)]
+                constants.NAME_MIN_LENGTH)],
+        blank=True
     )
     surname = models.CharField(
         verbose_name='Фамилия',
         max_length=constants.SURNAME_MAX_LENGTH,
         validators=[
             MinLengthValidator(
-                constants.SURNAME_MIN_LENGHT)]
+                constants.SURNAME_MIN_LENGHT)],
+        blank=True
     )
     phone = models.CharField(
         verbose_name='Номер телефона',
         max_length=constants.PHONE_LENGTH,
         validators=[RegexValidator(constants.PHONE_NUMBER)],
-        unique=True
+        unique=True,
+        blank=True,
+        null=True
     )
 
     chat_id = models.CharField(

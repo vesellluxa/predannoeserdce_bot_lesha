@@ -5,47 +5,36 @@ from questions.models import UniqueQuestion, FrequentlyAskedQuestion
 from faithful_heart import constants
 
 
-class UserCreateSerializer(serializers.ModelSerializer):
-    """Сериализатор для создания первой записи пользователя."""
+class TelegramUserSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для создания и изменения данных пользователя.
+    """
 
     class Meta:
         model = TelegramUser
-        fields = ('username', 'chat_id', )
-
-
-class UserSerializer(serializers.ModelSerializer):
-    """Сериализатор для добавления данных пользователя."""
-
-    class Meta:
-        model = TelegramUser
-        fields = ('name', 'surname', 'email', 'phone', )
+        fields = ('username', 'chat_id', 'name', 'surname', 'email', 'phone',)
 
 
 class FrequentlyAskedQuestionSerializer(serializers.ModelSerializer):
-    """Сериализатор для получения списка вопросов."""
+    """
+    Сериализатор часто задаваемых вопросов.
+    """
+
     class Meta:
         model = FrequentlyAskedQuestion
-        fields = ('text', 'answer', 'id', )
-
-
-# class FrequentlyAskedQuestionAnswerSerializer(serializers.ModelSerializer):
-#     """Сериализатор для ответа на выбранный вопрос."""
-#     class Meta:
-#         model = FrequentlyAskedQuestion
-#         fields = ('answer', )
+        fields = ('text', 'answer', 'id',)
 
 
 class UniqueQuestionSerializer(serializers.ModelSerializer):
-    """Сериализатор для уникального вопроса пользователя."""
-    text = serializers.CharField(max_length=constants.FAQ_MAX_LENGTH,)
-    owner = TelegramUser
+    """
+    Сериализатор для уникального вопроса от пользователя.
+    """
+    text = serializers.CharField(max_length=constants.FAQ_MAX_LENGTH, )
+    owner = serializers.SlugRelatedField(
+        queryset=TelegramUser.objects.all(),
+        slug_field='chat_id'
+    )
 
     class Meta:
         model = UniqueQuestion
-        fields = ('text', 'owner', )
-        lookup_field = 'chat_id'
-
-
-class TokenSerializer(serializers.Serializer):
-    """Сериализатор токена."""
-    pass
+        fields = ('text', 'owner',)

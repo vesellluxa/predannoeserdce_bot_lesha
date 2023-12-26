@@ -22,7 +22,7 @@ urlpatterns = [
         TokenObtainPairView.as_view(),
         name='token_obtain_pair'
     ),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('v1/logout_token/', APILogoutView.as_view(), name='logout_token'),
     path('v1/ping/', PingPongView.as_view(), name='ping'),
 ]

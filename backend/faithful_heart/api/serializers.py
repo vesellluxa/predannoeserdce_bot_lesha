@@ -16,12 +16,12 @@ class TelegramUserSerializer(serializers.ModelSerializer):
         fields = ('text', 'answer', 'id', )
 
 
-class FrequentlyAskedQuestionSerializer(serializers.ModelSerializer):
+class FrequentlyAskedQuestionAnswerSerializer(serializers.ModelSerializer):
     """Сериализатор для ответа на выбранный вопрос."""
 
     class Meta:
-        model = FrequentlyAskedQuestion
-        fields = ('text', 'answer', 'id',)
+        model = TelegramUser
+        fields = ('username', 'chat_id', 'name', 'surname', 'email', 'phone',)
 
 
 class UniqueQuestionSerializer(serializers.ModelSerializer):

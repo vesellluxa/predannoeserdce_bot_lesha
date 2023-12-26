@@ -14,9 +14,7 @@ class TelegramUserSerializer(serializers.ModelSerializer):
 
 
 class FrequentlyAskedQuestionAnswerSerializer(serializers.ModelSerializer):
-    """
-    Сериализатор для ответа на выбранный вопрос.
-    """
+    """Сериализатор для ответа на выбранный вопрос."""
 
     class Meta:
         model = TelegramUser

@@ -8,7 +8,7 @@ class AbstractQuestion(models.Model):
     """Абстрактная модель FAQ."""
 
     text = models.TextField(max_length=constants.FAQ_MAX_LENGTH,
-                            verbose_name='Текст вопроса')
+                            verbose_name='Текст вопроса',)
 
     class Meta:
         """Абстрактная модель."""

@@ -8,11 +8,8 @@ class AbstractQuestion(models.Model):
     Абстрактная модель Вопроса.
     """
 
-    text = models.TextField(
-        max_length=constants.FAQ_MAX_LENGTH,
-        verbose_name='Текст вопроса'
-    )
-
+    text = models.TextField(max_length=constants.FAQ_MAX_LENGTH,
+                            verbose_name='Текст вопроса',)
     class Meta:
 
         abstract = True

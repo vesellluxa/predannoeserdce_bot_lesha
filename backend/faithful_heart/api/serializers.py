@@ -6,9 +6,15 @@ from faithful_heart import constants
 
 
 class TelegramUserSerializer(serializers.ModelSerializer):
-    """
-    Сериализатор для создания и изменения данных пользователя.
-    """
+    """Сериализатор для получения списка вопросов."""
+
+    class Meta:
+        model = FrequentlyAskedQuestion
+        fields = ('text', 'id', )
+
+
+class FrequentlyAskedQuestionAnswerSerializer(serializers.ModelSerializer):
+    """Сериализатор для ответа на выбранный вопрос."""
 
     class Meta:
         model = TelegramUser

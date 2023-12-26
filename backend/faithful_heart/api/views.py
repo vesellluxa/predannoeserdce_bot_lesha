@@ -12,7 +12,7 @@ from rest_framework_simplejwt.token_blacklist.models import (BlacklistedToken,
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import (TelegramUserSerializer, UniqueQuestionSerializer,
-                          FrequentlyAskedQuestionSerializer)
+                          FrequentlyAskedQuestionAnswerSerializer)
 from users.models import TelegramUser
 from questions.models import UniqueQuestion, FrequentlyAskedQuestion
 from .api_service import (export_users_excel, send_email_to_admin,
@@ -67,7 +67,7 @@ class FrequentlyAskedQuestionView(
     для двух категорий - Часто задаваемые вопросы и Информация о приюте
     """
     queryset = FrequentlyAskedQuestion.objects.filter(is_relevant=True)
-    serializer_class = FrequentlyAskedQuestionSerializer
+    serializer_class = FrequentlyAskedQuestionAnswerSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('category',)
 

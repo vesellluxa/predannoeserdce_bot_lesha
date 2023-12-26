@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 from django_filters.rest_framework import DjangoFilterBackend
@@ -30,7 +30,6 @@ class TelegramUsersViewSet(
     queryset = TelegramUser.objects.all()
     serializer_class = TelegramUserSerializer
     http_method_names = ['post', 'patch', ]
-    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         user = get_object_or_404(
@@ -47,8 +46,8 @@ class DownloadUserInformationView(
     Эндпоинт для выгрузки информации пользователей в Excel.
     """
     queryset = TelegramUser.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    serializer_class = TelegramUserSerializer
+    permission_classes = (IsAdminUser,)
 
     def list(self, request):
         queryset = self.get_queryset()
@@ -70,11 +69,6 @@ class FrequentlyAskedQuestionView(
     queryset = FrequentlyAskedQuestion.objects.filter(is_relevant=True)
     serializer_class = FrequentlyAskedQuestionSerializer
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('is_main',)
-    permission_classes = [IsAuthenticated]
-
-    def get_serializer_class(self):
-        if self.action in ('retrieve',):
     filterset_fields = ('category',)
 
 
@@ -88,7 +82,6 @@ class UniqueQuestionView(
     """
     queryset = UniqueQuestion.objects.all()
     serializer_class = UniqueQuestionSerializer
-    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save()
@@ -104,7 +97,7 @@ class APILogoutView(
     """
     Эндпоинт для выхода из системы (удаление токена).
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request):
         if self.request.data.get('all'):
@@ -125,7 +118,6 @@ class PingPongView(
     """
     Проверка доступности сервера
     """
-    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         return Response({'response': 'pong'}, status=status.HTTP_200_OK)

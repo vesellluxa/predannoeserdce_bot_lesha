@@ -32,7 +32,6 @@ class TelegramUsersViewSet(
     serializer_class = TelegramUserSerializer
     http_method_names = ['post', 'patch', ]
     lookup_field = 'chat_id'
-
     permission_classes = [IsAuthenticated]
 
     def get_object(self):

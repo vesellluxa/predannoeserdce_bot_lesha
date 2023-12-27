@@ -6,7 +6,7 @@ from users.models import TelegramUser
 class TestStatusCodeAPI:
 
     def obtain_token(self, api_client, admin_user):
-        url = '/api/obtain_token/'
+        url = '/api/v1/obtain_token/'
         data = {
             'username': admin_user.username,
             'password': '12345qwerty'

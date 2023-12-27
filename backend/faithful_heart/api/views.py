@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -35,7 +34,10 @@ class TelegramUsersViewSet(
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        user = get_object_or_404(TelegramUser, chat_id=self.kwargs.get("chat_id"))
+        user = get_object_or_404(
+            TelegramUser,
+            chat_id=self.kwargs.get("chat_id")
+        )
 
         return user
 

@@ -165,3 +165,4 @@ migrations/
 
 requirements.in
 pyproject.toml
+get-pip.py

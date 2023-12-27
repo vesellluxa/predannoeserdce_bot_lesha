@@ -8,12 +8,12 @@ class FrequentlyAskedQuestionAdmin(admin.ModelAdmin):
         'pk',
         'text',
         'answer',
-        'is_main',
+        'category',
         'is_relevant'
     )
     list_display_links = ('text', 'answer')
     search_fields = ('text', 'answer')
-    list_editable = ('is_main', 'is_relevant')
+    list_editable = ('category', 'is_relevant')
 
 
 class UniqueQuestionAdmin(admin.ModelAdmin):

@@ -9,6 +9,20 @@ YES_NO_KEYBOARD = ReplyKeyboardMarkup(
         ]
     ],
     resize_keyboard=True,
+    input_field_placeholder="Выберите вариант: ",
+)
+
+SEND_CONTACT_KEYBOARD = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(
+                text=BOT_ANSWERS.send_contact.value, request_contact=True
+            ),
+            KeyboardButton(text=BOT_ANSWERS.cancel.value),
+        ]
+    ],
+    resize_keyboard=True,
+    input_field_placeholder="Введите номер телефона: ",
 )
 
 CANCEL_KEYBOARD = ReplyKeyboardMarkup(
@@ -18,28 +32,43 @@ CANCEL_KEYBOARD = ReplyKeyboardMarkup(
         ]
     ],
     resize_keyboard=True,
+    input_field_placeholder="Сообщение: ",
 )
 
 TRY_AGAIN_KEYBOARD = ReplyKeyboardMarkup(
     keyboard=[
         [
             KeyboardButton(text=BOT_ANSWERS.try_again.value),
+            KeyboardButton(text=BOT_ANSWERS.cancel.value),
         ]
     ],
     resize_keyboard=True,
 )
 
-
 FAQ_INFO_CANCEL_KEYBOARD = ReplyKeyboardMarkup(
     keyboard=[
         [
             KeyboardButton(text=BOT_ANSWERS.faq.value),
-            KeyboardButton(text=BOT_ANSWERS.shelter.value),
+            KeyboardButton(text=BOT_ANSWERS.info.value),
+        ],
+        [
             KeyboardButton(text=BOT_ANSWERS.needs.value),
             KeyboardButton(text=BOT_ANSWERS.cancel.value),
+        ],
+    ],
+    resize_keyboard=True,
+    input_field_placeholder="Выберите категорию: ",
+)
+
+MAIN_INTERACTION_KEYBOARD = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text=BOT_ANSWERS.unique_question.value),
+            KeyboardButton(text=BOT_ANSWERS.shelter.value),
         ]
     ],
     resize_keyboard=True,
+    input_field_placeholder="Выберите категорию: ",
 )
 
 
@@ -54,16 +83,4 @@ async def send_main_interaction_buttons(message: Message, text: str) -> None:
     Returns:
       None
     """
-    keyboard = [
-        [
-            KeyboardButton(text=BOT_ANSWERS.questions.value),
-            KeyboardButton(text=BOT_ANSWERS.shelter.value),
-        ]
-    ]
-    await message.answer(
-        text,
-        reply_markup=ReplyKeyboardMarkup(
-            keyboard=keyboard,
-            resize_keyboard=True,
-        ),
-    )
+    await message.answer(text, reply_markup=MAIN_INTERACTION_KEYBOARD)

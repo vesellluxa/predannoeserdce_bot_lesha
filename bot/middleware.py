@@ -5,8 +5,8 @@ from typing import Any, Awaitable, Callable, Dict
 from aiogram import BaseMiddleware, Bot
 from aiogram.types import Message
 from dotenv import load_dotenv
-from helpers import fetch_data, obtain_token, refresh_token
 from schemas import Question
+from services import fetch_data, obtain_token, refresh_token
 
 load_dotenv(dotenv_path="./bot/.env")
 
@@ -51,6 +51,7 @@ class TokenMiddleware(BaseMiddleware):
                 return await handler(event, data)
             self._access_token = response.get("access")
             self._refresh_token = response.get("refresh")
+            self._last_token_refresh_time = datetime.datetime.now()
         if (
             self._access_token
             and self._refresh_token
@@ -65,6 +66,8 @@ class TokenMiddleware(BaseMiddleware):
                     return await handler(event, data)
                 self._access_token = response.get("access")
                 self._refresh_token = response.get("refresh")
+                self._last_token_refresh_time = datetime.datetime.now()
+            self._last_token_refresh_time = datetime.datetime.now()
             self._access_token = response.get("access")
         data["access"] = self._access_token
         return await handler(event, data)
@@ -82,14 +85,17 @@ class FetchingMiddleware(BaseMiddleware):
     _shelter_information = {
         "faq": {},
         "info": {},
+        "needs": {},
     }
     _last_fetch_time = {
         "faq": None,
         "info": None,
+        "needs": None,
     }
     _endpoints = {
         "faq": "faq/?category=Shelter_Info",
         "info": "faq/?category=FAQ",
+        "needs": "faq/?category=Needs",
     }
     FETCH_INTERVAL = datetime.timedelta(minutes=10)
 

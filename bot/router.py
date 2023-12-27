@@ -1,7 +1,4 @@
-import logging
-
-
-from aiogram import F, Router, Bot
+from aiogram import Bot, F, Router
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
@@ -12,22 +9,25 @@ from aiogram.types import (
     InlineKeyboardMarkup,
     Message,
 )
-from constants import BOT_ANSWERS, PAGINATION, NEEDS
-from helpers import (
-    add_unique_question,
-    add_user_to_db,
-    patch_user,
-    check_user_status,
-)
+from constants import BOT_ANSWERS, PAGINATION
+from helpers import check_message, delete_inline_keyboard
 from keyboards import (
     CANCEL_KEYBOARD,
     FAQ_INFO_CANCEL_KEYBOARD,
+    MAIN_INTERACTION_KEYBOARD,
+    SEND_CONTACT_KEYBOARD,
     TRY_AGAIN_KEYBOARD,
     YES_NO_KEYBOARD,
     send_main_interaction_buttons,
 )
 from middleware import FetchingMiddleware, TokenMiddleware
 from schemas import InformationSchema
+from services import (
+    add_unique_question,
+    add_user_to_db,
+    check_user_status,
+    patch_user,
+)
 
 router = Router()
 router.message.middleware(TokenMiddleware())
@@ -106,10 +106,6 @@ async def command_start(
     F.text.casefold() == BOT_ANSWERS.cancel.value.casefold(),
 )
 @router.message(
-    InformationAboutShelter.main_interaction,
-    F.text.casefold() == BOT_ANSWERS.cancel.value.casefold(),
-)
-@router.message(
     InformationAboutShelter.questions,
     F.text.casefold() == BOT_ANSWERS.cancel.value.casefold(),
 )
@@ -117,42 +113,78 @@ async def command_start(
     InformationAboutShelter.unique_question,
     F.text.casefold() == BOT_ANSWERS.cancel.value.casefold(),
 )
-async def process_cancel(message: Message, state: FSMContext) -> None:
+async def process_cancel(
+    message: Message, state: FSMContext, bot: Bot
+) -> None:
     await state.set_state(InformationAboutShelter.main_interaction)
+    await delete_inline_keyboard(message, bot)
     await send_main_interaction_buttons(
         message, BOT_ANSWERS.greeting_full_data.value
     )
 
 
-@router.message(
-    PersonalDataForm.permission,
-    (F.text.casefold() == BOT_ANSWERS.no.value.casefold())
-    | (F.text.casefold() == BOT_ANSWERS.yes.value.casefold())
-    | (F.text.casefold() == BOT_ANSWERS.try_again.value.casefold()),
-)
+@router.message(PersonalDataForm.permission)
 async def process_permission(message: Message, state: FSMContext) -> None:
-    if message.text.casefold() == BOT_ANSWERS.no.value.casefold():
-        await state.set_state(InformationAboutShelter.main_interaction)
-        await send_main_interaction_buttons(
-            message, BOT_ANSWERS.permission.value
+    responses = {
+        BOT_ANSWERS.no.value.casefold(): {
+            "state": InformationAboutShelter.main_interaction,
+            "message": BOT_ANSWERS.permission.value,
+            "keyboard": MAIN_INTERACTION_KEYBOARD,
+        },
+        BOT_ANSWERS.yes.value.casefold(): {
+            "state": PersonalDataForm.first_name,
+            "message": BOT_ANSWERS.first_name.value,
+            "keyboard": CANCEL_KEYBOARD,
+        },
+    }
+    if (
+        not hasattr(message.text, "casefold")
+        or not message.text.casefold() in responses
+    ):
+        await message.reply(
+            BOT_ANSWERS.choose_correct_option.value,
+            reply_markup=YES_NO_KEYBOARD,
         )
-    else:
-        await state.set_state(PersonalDataForm.first_name)
-        await message.answer(
-            BOT_ANSWERS.name.value,
-            reply_markup=CANCEL_KEYBOARD,
-        )
+        return
+
+    response = responses[message.text.casefold()]
+    await state.set_state(response["state"])
+    await message.answer(
+        response["message"], reply_markup=response.get("keyboard")
+    )
 
 
 @router.message(PersonalDataForm.first_name)
 async def process_name(message: Message, state: FSMContext) -> None:
-    await state.update_data(name=message.text)
+    if not await check_message(
+        message,
+        BOT_ANSWERS.enter_correct_value.value,
+    ):
+        return
+    await state.update_data(first_name=message.text)
+    await state.set_state(PersonalDataForm.second_name)
+    await message.answer(BOT_ANSWERS.second_name.value)
+
+
+@router.message(PersonalDataForm.second_name)
+async def process_name(message: Message, state: FSMContext) -> None:
+    if not await check_message(
+        message,
+        BOT_ANSWERS.enter_correct_value.value,
+    ):
+        return
+    await state.update_data(second_name=message.text)
     await state.set_state(PersonalDataForm.surname)
     await message.answer(BOT_ANSWERS.surname.value)
 
 
 @router.message(PersonalDataForm.surname)
 async def process_surname(message: Message, state: FSMContext) -> None:
+    if not await check_message(
+        message,
+        BOT_ANSWERS.enter_correct_value.value,
+    ):
+        return
     await state.update_data(surname=message.text)
     await state.set_state(PersonalDataForm.email)
     await message.answer(
@@ -161,15 +193,17 @@ async def process_surname(message: Message, state: FSMContext) -> None:
 
 
 @router.message(PersonalDataForm.email)
-async def process_email(message: Message, state: FSMContext) -> None:
+async def process_email(message: Message, state: FSMContext, bot: Bot) -> None:
+    if not await check_message(
+        message,
+        BOT_ANSWERS.enter_correct_value.value,
+    ):
+        return
     await state.update_data(email=message.text)
     await state.set_state(PersonalDataForm.phone_number)
-    await message.answer(BOT_ANSWERS.phone_number.value)
-
-    # await message.answer(
-    #     f"Ваш номер: {message.contact.phone_number_number}, верно?",
-    #     reply_markup=YES_NO_KEYBOARD,
-    # )
+    await message.answer(
+        BOT_ANSWERS.phone_number.value, reply_markup=SEND_CONTACT_KEYBOARD
+    )
 
 
 @router.message(
@@ -182,16 +216,26 @@ async def process_phone_number(
         await state.set_state(InformationAboutShelter.main_interaction)
         await message.answer(BOT_ANSWERS.something_went_wrong.value)
         return
-    data = await state.update_data(phone_number=message.text)
+    if not message.contact and not await check_message(
+        message,
+        BOT_ANSWERS.enter_correct_value.value,
+    ):
+        return
+    if message.contact:
+        data = await state.update_data(
+            phone_number=message.contact.phone_number
+        )
+    else:
+        data = await state.update_data(phone_number=message.text)
     user = {
         "name": data["first_name"],
+        "second_name": data["second_name"],
         "surname": data["surname"],
         "email": data["email"],
         "phone_number": data["phone_number"],
         "chat_id": message.chat.id,
         "username": message.chat.username,
     }
-    logging.info(user)
     user_db = await patch_user(user, access)
     if user_db is None:
         await state.set_state(PersonalDataForm.permission)
@@ -206,67 +250,88 @@ async def process_phone_number(
     )
 
 
-@router.message(
-    InformationAboutShelter.main_interaction,
-    (
-        (F.text.casefold() == BOT_ANSWERS.unique_question.value.casefold())
-        | (F.text.casefold() == BOT_ANSWERS.shelter.value.casefold())
-    ),
-)
+@router.message(InformationAboutShelter.main_interaction)
 async def process_main_interaction(
     message: Message, state: FSMContext
 ) -> None:
-    if message.text.casefold() == BOT_ANSWERS.unique_question.value.casefold():
-        await state.set_state(InformationAboutShelter.unique_question)
-        await message.answer(BOT_ANSWERS.enter_unique_question.value)
-    elif message.text.casefold() == BOT_ANSWERS.shelter.value.casefold():
-        await state.set_state(InformationAboutShelter.questions)
-        await message.answer(
-            BOT_ANSWERS.questions_title.value,
-            reply_markup=FAQ_INFO_CANCEL_KEYBOARD,
+    responses = {
+        BOT_ANSWERS.unique_question.value.casefold(): {
+            "state": InformationAboutShelter.unique_question,
+            "message": BOT_ANSWERS.enter_unique_question.value,
+            "keyboard": CANCEL_KEYBOARD,
+        },
+        BOT_ANSWERS.shelter.value.casefold(): {
+            "state": InformationAboutShelter.questions,
+            "message": BOT_ANSWERS.questions_title.value,
+            "keyboard": FAQ_INFO_CANCEL_KEYBOARD,
+        },
+        BOT_ANSWERS.cancel.value.casefold(): {
+            "state": InformationAboutShelter.main_interaction,
+            "message": "Отменять нечего, мы и так в самом начале :)",
+            "keyboard": MAIN_INTERACTION_KEYBOARD,
+        },
+    }
+    if (
+        not hasattr(message.text, "casefold")
+        or not message.text.casefold() in responses
+    ):
+        await message.reply(
+            BOT_ANSWERS.choose_correct_option.value,
+            reply_markup=MAIN_INTERACTION_KEYBOARD,
         )
+        return
+
+    response = responses[message.text.casefold()]
+    await state.set_state(response["state"])
+    await message.answer(
+        response["message"], reply_markup=response.get("keyboard")
+    )
 
 
 @router.message(
     InformationAboutShelter.questions,
-    (
-        (F.text.casefold() == BOT_ANSWERS.faq.value.casefold())
-        | (F.text.casefold() == BOT_ANSWERS.shelter.value.casefold())
-        | (F.text.casefold() == BOT_ANSWERS.needs.value.casefold())
-    ),
 )
 async def process_questions(
     message: Message,
+    bot: Bot,
     shelter_information: InformationSchema = {},
 ) -> None:
-    if message.text.casefold() == BOT_ANSWERS.faq.value.casefold():
-        await send_paginated_data(message, shelter_information, "faq", 0)
-    elif message.text.casefold() == BOT_ANSWERS.shelter.value.casefold():
-        await send_paginated_data(message, shelter_information, "info", 0)
-    elif message.text.casefold() == BOT_ANSWERS.needs.value.casefold():
-        buttons = [
-            [
-                InlineKeyboardButton(
-                    text=text,
-                    callback_data=f"needs_{text}",
-                )
-            ]
-            for text in ["Срочные нужды", "Аптека обычная"]
-        ]
-        await message.answer(
-            BOT_ANSWERS.needs_info.value,
-            reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons),
+    category_mapping = {
+        BOT_ANSWERS.faq.value.casefold(): "faq",
+        BOT_ANSWERS.info.value.casefold(): "info",
+        BOT_ANSWERS.needs.value.casefold(): "needs",
+    }
+    if (
+        not hasattr(message.text, "casefold")
+        or not message.text.casefold() in category_mapping
+    ):
+        await message.reply(
+            BOT_ANSWERS.choose_correct_category.value,
+            reply_markup=FAQ_INFO_CANCEL_KEYBOARD,
         )
+        return
+
+    category = message.text.casefold()
+
+    await delete_inline_keyboard(message, bot)
+    await send_paginated_data(
+        message, shelter_information, category_mapping[category], 0
+    )
 
 
 @router.message(InformationAboutShelter.unique_question)
 async def process_unique_question(
-    message: Message, state: FSMContext, access: str = ""
+    message: Message, state: FSMContext, access: str = None
 ) -> None:
-    if access == "":
+    if not access:
         await state.set_state(InformationAboutShelter.main_interaction)
         await message.answer(BOT_ANSWERS.something_went_wrong.value)
         return
+    if not await check_message(
+        message, BOT_ANSWERS.enter_correct_question.value
+    ):
+        return
+
     question = {"text": message.text, "owner": message.chat.id}
     question_db = await add_unique_question(question, access)
     if question_db is None:
@@ -274,7 +339,10 @@ async def process_unique_question(
         await message.answer(BOT_ANSWERS.question_creation_error.value)
         return
     await state.set_state(InformationAboutShelter.main_interaction)
-    await message.answer(BOT_ANSWERS.unique_question_reply.value)
+    await message.answer(
+        BOT_ANSWERS.unique_question_reply.value,
+        reply_markup=MAIN_INTERACTION_KEYBOARD,
+    )
 
 
 async def send_paginated_data(
@@ -303,49 +371,65 @@ async def send_paginated_data(
             end_idx if end_idx < len(information) else len(information),
         )
     ]
-    if page > 0:
-        buttons.append(
-            [
-                InlineKeyboardButton(
-                    text="◀️ Назад", callback_data=f"{key}_page_{page - 1}"
-                )
-            ]
-        )
-    if end_idx < len(information):
-        buttons.append(
-            [
-                InlineKeyboardButton(
-                    text="Вперед ▶️", callback_data=f"{key}_page_{page + 1}"
-                )
-            ]
-        )
+    pagination_buttons = []
 
-    try:
-        await message.edit_reply_markup(
-            reply_markup=InlineKeyboardMarkup(
-                inline_keyboard=buttons,
+    if page > 0:
+        pagination_buttons.append(
+            InlineKeyboardButton(
+                text="◀️ Назад", callback_data=f"{key}_page_{page - 1}"
             )
         )
+    if end_idx < len(information):
+        pagination_buttons.append(
+            InlineKeyboardButton(
+                text="Вперед ▶️", callback_data=f"{key}_page_{page + 1}"
+            )
+        )
+
+    split_pagination_buttons = [
+        pagination_buttons[i : i + 2]
+        for i in range(0, len(pagination_buttons), 2)
+    ]
+
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=buttons + split_pagination_buttons,
+    )
+    try:
+        await message.edit_reply_markup(reply_markup=keyboard)
     except TelegramBadRequest:
         await message.answer(
-            BOT_ANSWERS.faq.value,
-            reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons),
+            BOT_ANSWERS[key + "_reply"].value,
+            reply_markup=keyboard,
         )
 
 
 @router.callback_query(
-    (F.data.contains("faq_") | F.data.contains("info_"))
+    (
+        F.data.contains("faq_")
+        | F.data.contains("info_")
+        | F.data.contains("needs_")
+    )
     & ~F.data.contains("page_")
 )
 async def process_faq_callback(
-    callback_query: CallbackQuery, shelter_information: InformationSchema
+    callback_query: CallbackQuery,
+    shelter_information: InformationSchema,
+    bot: Bot,
 ) -> None:
     data, quiestion_id = callback_query.data.split("_")
     question = shelter_information.get(data).get(int(quiestion_id))
     if question is None:
         await callback_query.answer("Информация не найдена")
         return
-    await callback_query.message.answer(question.answer)
+    message = callback_query.message.message_id
+    try:
+        await bot.edit_message_text(
+            text=question.answer,
+            chat_id=callback_query.message.chat.id,
+            message_id=message + 1,
+        )
+    except Exception as e:
+        await callback_query.message.answer(question.answer)
 
 
 @router.callback_query(F.data.contains("page_"))
@@ -356,19 +440,3 @@ async def process_page_callback(
     await send_paginated_data(
         callback_query.message, shelter_information, key, int(page)
     )
-
-
-@router.callback_query(F.data.contains("needs_"))
-async def process_page_callback(
-    callback_query: CallbackQuery, bot: Bot
-) -> None:
-    key = callback_query.data.split("_")[1]
-    message = callback_query.message.message_id
-    try:
-        await bot.edit_message_text(
-            text=NEEDS[key],
-            chat_id=callback_query.message.chat.id,
-            message_id=message + 1,
-        )
-    except Exception as e:
-        await callback_query.message.answer(NEEDS[key])

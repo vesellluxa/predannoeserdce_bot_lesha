@@ -6,8 +6,8 @@ import sys
 from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode
 from dotenv import load_dotenv
-from router import router
 from middleware import BotMiddelware
+from router import router
 
 load_dotenv(dotenv_path="./bot/.env")
 
@@ -20,6 +20,7 @@ async def main() -> None:
     dp = Dispatcher()
     dp.include_router(router)
     dp.callback_query.middleware(BotMiddelware(bot))
+    dp.message.middleware(BotMiddelware(bot))
 
     await dp.start_polling(bot)
 

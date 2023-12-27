@@ -31,7 +31,6 @@ class TelegramUsersViewSet(
     queryset = TelegramUser.objects.all()
     serializer_class = TelegramUserSerializer
     http_method_names = ['post', 'patch', ]
-    lookup_field = 'chat_id'
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
@@ -39,12 +38,6 @@ class TelegramUsersViewSet(
             TelegramUser,
             chat_id=self.request.data.get("chat_id")
         )
-        return user
-
-    def get_object(self):
-
-        user = get_object_or_404(TelegramUser, chat_id=self.kwargs.get("chat_id"))
-
         return user
 
 

@@ -1,0 +1,82 @@
+[
+    {
+      "model": "questions.frequentlyaskedquestion",
+      "pk": 1,
+      "fields": {
+        "text": "Хочу узнать часы посещения приюта",
+        "answer": "Посетить приют можно:\r\nСреда и четверг: с 18.00- 20.00\r\nСуббота и воскресение: c 17.00-20.00",
+        "is_relevant": true,
+        "category": "Shelter_Info"
+      }
+    },
+    {
+      "model": "questions.frequentlyaskedquestion",
+      "pk": 2,
+      "fields": {
+        "text": "Хочу узнать адрес приюта",
+        "answer": "г.Санкт Петербург\r\nм.Кировский Завод\r\nАвтовская 31 лит И.",
+        "is_relevant": true,
+        "category": "Shelter_Info"
+      }
+    },
+    {
+      "model": "questions.frequentlyaskedquestion",
+      "pk": 3,
+      "fields": {
+        "text": "Хочу посетить приют",
+        "answer": "Чтобы посетить приют, надо пройти по ссылке  predannoeserdce.timepad.ru, приобрести любой подходящий вам билет и прийти в приют в часы посещения.",
+        "is_relevant": true,
+        "category": "Shelter_Info"
+      }
+    },
+    {
+      "model": "questions.frequentlyaskedquestion",
+      "pk": 4,
+      "fields": {
+        "text": "Хочу записать группу на посещение приюта",
+        "answer": "Для посещения приюта для бездомных животных \"Преданное Сердце\" необходимо приобрести билет, пройдя по ссылке predannoeserdce.timepad.ru и потом позвонить менеджеру по телефону 8(952) 209-39-51 для согласования времени и дня посещения.",
+        "is_relevant": true,
+        "category": "Shelter_Info"
+      }
+    },
+    {
+      "model": "questions.frequentlyaskedquestion",
+      "pk": 5,
+      "fields": {
+        "text": "Хочу отдать животное в приют",
+        "answer": "Для того, чтобы отдать животное в приют, нужно ( используйте один из вариантов)\r\n1. написать письмо на почту организации:\r\npredannoe.serdce.spb@gmail.com\r\n2. по тел.\r\n☎ +7 (921) 554-05-64\r\n: с 18:00 до 20:00 ежедневно\r\n\r\n3. Запись онлайн в Гугл таблице:\r\nhttps://docs.google.com/forms/d/1f99Js0gn_cNf9g1lbWfUcgZQ7ngFfSdnm6tal2-2LOI/viewform?edit_requested=true",
+        "is_relevant": true,
+        "category": "FAQ"
+      }
+    },
+    {
+      "model": "questions.frequentlyaskedquestion",
+      "pk": 6,
+      "fields": {
+        "text": "Хочу помочь животным приюта",
+        "answer": "1. По СБП https://clck.ru/357iUB\r\n\r\n2. Переводом на сайте : https://predannoeserdce.ru/\r\n\r\n3. Нажав на кнопочку здесь, в группе ВК https://vk.com/app8168823_-97508475\r\n⠀\r\n4. На короткий номер 3434 можно отправить смс с текстом «спасикотика\" пробел \"сумма цифрами\", например \"спасикотика 500\"\r\n⠀\r\n5. По qr-коду или на реквизиты АНО Приют для животных \" Преданное Сердце\"\r\n\r\nНаш инн 7839070690, кпп 780501001, бик 044030653\r\nр/с № 40703810655040000898",
+        "is_relevant": true,
+        "category": "FAQ"
+      }
+    },
+    {
+      "model": "questions.frequentlyaskedquestion",
+      "pk": 7,
+      "fields": {
+        "text": "Хочу заказать доставку на приют",
+        "answer": "Заказать доставку из любого магазина  или онлайн магазина можно на адрес приюта ул.Автовская 31И, ежедневно с 10:00 до 22:00, телефон для связи +7 (952) 209-39-51 Инна Алиева.",
+        "is_relevant": true,
+        "category": "FAQ"
+      }
+    },
+    {
+      "model": "questions.frequentlyaskedquestion",
+      "pk": 8,
+      "fields": {
+        "text": "Хочу заказать доставку в Озоне",
+        "answer": "Заказать доставку из Озон в приют можно несколькими способами:\r\n1. Заказать доставку  на адрес приюта ул.Автовская 31И, ежедневно с 10:00 до 22:00, телефон для связи +7 (952) 209-39-51 Инна Петровна.\r\n\r\n2. Заказать в пункт выдачи ОЗОН ближайший к нам по адресу: ул. Маршала Говорова д.8. лит А. на имя Алиевой Инны +7 (952) 209-39-51 ,только выслать нам штрихкод для получения заказа.",
+        "is_relevant": true,
+        "category": "FAQ"
+      }
+    }
+]

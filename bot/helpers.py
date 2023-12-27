@@ -43,7 +43,7 @@ async def refresh_token(refresh_token: str):
     async with httpx.AsyncClient() as client:
         try:
             response = await client.post(
-                "http://127.0.0.1:8000/api/v1/token/refresh/",
+                "http://127.0.0.1:8000/api/token/refresh/",
                 data={"refresh": refresh_token},
             )
             if response.status_code == 200:
@@ -63,6 +63,8 @@ async def add_user_to_db(user: CreateUserShortDto, access: str):
                 headers={"Authorization": f"Bearer {access}"},
             )
             if response.status_code == 201:
+                res = response.json()
+                logging.info(res)
                 return response.json()
         except httpx.HTTPError as e:
             logging.error(f"Error adding user to DB: {e}")

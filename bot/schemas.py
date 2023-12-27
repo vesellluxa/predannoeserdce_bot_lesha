@@ -17,7 +17,7 @@ class CreateUserFullDto(CreateUserShortDto):
 
 class CreateQuestionDto(BaseModel):
     text: str = Field(..., min_length=1, max_length=256)
-    owner: int
+    owner: str
 
 
 class QuestionSchema(BaseModel):

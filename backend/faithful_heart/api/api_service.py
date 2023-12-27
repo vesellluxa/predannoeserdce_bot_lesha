@@ -31,10 +31,10 @@ def export_users_excel(users):
     sheet.column_dimensions['D'].width = 18
     sheet.column_dimensions['E'].width = 18
     sheet.column_dimensions['F'].width = 18
-    headers = ['Name', 'Surname', 'Phone', 'Username', 'Chat_id', 'Email']
+    headers = ['Name', 'Surname', 'Phone Number', 'Username', 'Chat_id', 'Email']
     sheet.append(headers)
     for user in users:
-        sheet.append([user.name, user.surname, user.phone, user.username,
+        sheet.append([user.name, user.surname, user.phone_number, user.username,
                       user.chat_id, user.email])
     workbook.save(f'{MEDIA_ROOT}/Пользователи_{date_now_formatted}.xlsx')
 

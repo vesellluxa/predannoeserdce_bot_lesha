@@ -165,8 +165,4 @@ migrations/
 
 requirements.in
 pyproject.toml
-<<<<<<< HEAD
-
-=======
 get-pip.py
->>>>>>> dev

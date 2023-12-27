@@ -2,13 +2,27 @@ import datetime
 import os
 from typing import Any, Awaitable, Callable, Dict
 
-from aiogram import BaseMiddleware
+from aiogram import BaseMiddleware, Bot
 from aiogram.types import Message
 from dotenv import load_dotenv
 from helpers import fetch_data, obtain_token, refresh_token
 from schemas import Question
 
 load_dotenv(dotenv_path="./bot/.env")
+
+
+class BotMiddelware(BaseMiddleware):
+    def __init__(self, bot: Bot) -> None:
+        self.bot = bot
+
+    async def __call__(
+        self,
+        handler: Callable[[Message, Dict[str, Any]], Awaitable[Any]],
+        event: Message,
+        data: Dict[str, Any],
+    ) -> Any:
+        data["bot"] = self.bot
+        return await handler(event, data)
 
 
 class TokenMiddleware(BaseMiddleware):

@@ -1,9 +1,10 @@
 import logging
 import urllib.parse
+from random import choice
 
 import httpx
 from pydantic import ValidationError
-from schemas import CreateQuestionDto, CreateUserFullDto, CreateUserShortDto
+from schemas import CreateQuestionDto, UpdateUser, CreateUserShortDto
 
 
 async def fetch_data(endpoint: str, access: str):
@@ -32,6 +33,7 @@ async def obtain_token(username: str, password: str):
                 "http://127.0.0.1:8000/api/v1/obtain_token/",
                 data={"username": username, "password": password},
             )
+            logging.info(response)
             if response.status_code == 200:
                 return response.json()
         except httpx.HTTPError as e:
@@ -63,9 +65,13 @@ async def add_user_to_db(user: CreateUserShortDto, access: str):
                 headers={"Authorization": f"Bearer {access}"},
             )
             if response.status_code == 201:
-                res = response.json()
-                logging.info(res)
                 return response.json()
+            if response.status_code == 400:
+                response = response.json()
+                if response.get("username") == [
+                    "telegram user с таким Имя пользователя уже существует."
+                ]:
+                    return {"details": "User already exists"}
         except httpx.HTTPError as e:
             logging.error(f"Error adding user to DB: {e}")
         except ValidationError as e:
@@ -73,12 +79,31 @@ async def add_user_to_db(user: CreateUserShortDto, access: str):
     return None
 
 
-async def patch_user(user: CreateUserFullDto, id: int, access: str):
+async def check_user_status(chat_id: int, access: str):
+    data = [True, False]
+    return {"is_fully_filled": choice(data)}
+
+    """async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(
+                f"http://127.0.0.1:8000/api/v1/users/{chat_id}/get_state/",
+                headers={"Authorization": f"Bearer {access}"},
+            )
+            if response.status_code == 200:
+                return response.json()
+        except httpx.HTTPError as e:
+            logging.error(f"Error adding user to DB: {e}")
+        except ValidationError as e:
+            logging.error(f"Error validating user: {e}")
+    return None"""
+
+
+async def patch_user(user: UpdateUser, access: str):
     async with httpx.AsyncClient() as client:
         try:
-            validated_user = CreateUserFullDto(**user)
+            validated_user = UpdateUser(**user)
             response = await client.patch(
-                f"http://127.0.0.1:8000/api/v1/users/{id}/",
+                f"http://127.0.0.1:8000/api/v1/users/{validated_user.chat_id}/",
                 json=validated_user.model_dump(),
                 headers={"Authorization": f"Bearer {access}"},
             )

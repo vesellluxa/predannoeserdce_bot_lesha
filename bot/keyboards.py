@@ -30,12 +30,12 @@ TRY_AGAIN_KEYBOARD = ReplyKeyboardMarkup(
 )
 
 
-FAQ_UNIQUE_CANCEL_KEYBOARD = ReplyKeyboardMarkup(
+FAQ_INFO_CANCEL_KEYBOARD = ReplyKeyboardMarkup(
     keyboard=[
         [
             KeyboardButton(text=BOT_ANSWERS.faq.value),
-            KeyboardButton(text=BOT_ANSWERS.unique_question.value),
             KeyboardButton(text=BOT_ANSWERS.shelter.value),
+            KeyboardButton(text=BOT_ANSWERS.needs.value),
             KeyboardButton(text=BOT_ANSWERS.cancel.value),
         ]
     ],

@@ -6,23 +6,24 @@ class CreateUserShortDto(BaseModel):
     chat_id: int
 
 
-class CreateUserFullDto(CreateUserShortDto):
+class UpdateUser(CreateUserShortDto):
     email: EmailStr
     name: str = Field(..., min_length=1, max_length=64)
     surname: str = Field(..., min_length=1, max_length=64)
     phone: str = Field(pattern=r"^[0-9]+$", max_length=12)
+    chat_id: int
 
     model_config = ConfigDict(regex_engine="python-re")
 
 
 class CreateQuestionDto(BaseModel):
     text: str = Field(..., min_length=1, max_length=256)
-    owner: str
+    owner: int
 
 
 class QuestionSchema(BaseModel):
     text: str = Field(..., min_length=1, max_length=256)
-    answer: str = Field(..., min_length=1, max_length=256)
+    answer: str = Field(..., min_length=1, max_length=2500)
 
 
 class InformationSchema(BaseModel):

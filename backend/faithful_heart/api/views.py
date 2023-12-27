@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -30,13 +31,13 @@ class TelegramUsersViewSet(
     queryset = TelegramUser.objects.all()
     serializer_class = TelegramUserSerializer
     http_method_names = ['post', 'patch', ]
+    lookup_field = 'chat_id'
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        user = get_object_or_404(
-            TelegramUser,
-            chat_id=self.request.data.get("chat_id")
-        )
+
+        user = get_object_or_404(TelegramUser, chat_id=self.kwargs.get("chat_id"))
+
         return user
 
 

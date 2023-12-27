@@ -23,8 +23,8 @@ class FrequentlyAskedQuestion(AbstractQuestion):
 
     QUESTION_CATEGORIES = {
         "FAQ": "Часто Задаваемые Вопросы",
-        "Shelter_Info": "Узнать больше о приюте"
-
+        "Shelter_Info": "Узнать больше о приюте",
+        "Needs": "Нужды приюта"
     }
 
     answer = models.TextField(

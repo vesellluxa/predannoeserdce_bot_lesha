@@ -78,5 +78,15 @@
         "is_relevant": true,
         "category": "FAQ"
       }
+    },
+    {
+      "model": "questions.frequentlyaskedquestion",
+      "pk": 9,
+      "fields": {
+        "text": "‼\uFE0FСРОЧНЫЕ НУЖДЫ‼\uFE0F",
+        "answer": "⚠\uFE0F Наполнитель древесный (любой)\n⚠\uFE0F Сухой корм для котят с 4 месяцев\nRoyal Canin Kitten\n⚠\uFE0F Сухой корм для котят от 1 до 4\nмесяцев и кошек Royal Canin\nMother&Babycat беременных и кормящих\n⚠\uFE0F Паучи (Шеба, Роял Канин, Гурме, ПроПлан) любые для взрослых кошек и для котят\n⚠\uFE0F Шприцы 2 мл и 20 мл\n⚠\uFE0F Юнидокс Солютаб\n⚠\uFE0F Перчатки нитриловые S, M, L\n⚠\uFE0F Мусорные мешки 35, 60, 120, 160, 200 литров\n",
+        "is_relevant": true,
+        "category": "Needs"
+    },
     }
 ]

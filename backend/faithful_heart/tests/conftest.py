@@ -3,20 +3,16 @@ import django
 import pytest
 
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'faithful_heart.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tests.test_settings')
 django.setup()
+
+pytest_plugins = ["pytest_django"]
 
 
 @pytest.fixture()
 def api_client():
    from rest_framework.test import APIClient
    return APIClient()
-
-
-@pytest.fixture()
-def telegram_user():
-   from users.models import TelegramUser
-   return TelegramUser.objects.create(username='Sveta_255', chat_id='4274875639')
 
 
 @pytest.fixture()

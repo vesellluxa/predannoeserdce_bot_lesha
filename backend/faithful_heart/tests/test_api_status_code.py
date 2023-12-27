@@ -3,7 +3,6 @@ from http import HTTPStatus
 from users.models import TelegramUser
 
 
-
 class TestStatusCodeAPI:
 
     def obtain_token(self, api_client, admin_user):
@@ -28,6 +27,7 @@ class TestStatusCodeAPI:
             'к `/api/v1/users/` '
             ' возвращается ответ со статусом 201.'
         )
+        print(TelegramUser.objects.all())
 
 
     @pytest.mark.django_db

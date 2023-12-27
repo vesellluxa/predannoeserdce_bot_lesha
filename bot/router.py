@@ -41,7 +41,7 @@ class PersonalDataForm(StatesGroup):
     second_name = State()
     surname = State()
     email = State()
-    phone = State()
+    phone_number = State()
 
 
 class InformationAboutShelter(StatesGroup):
@@ -102,7 +102,7 @@ async def command_start(
     F.text.casefold() == BOT_ANSWERS.cancel.value.casefold(),
 )
 @router.message(
-    PersonalDataForm.phone,
+    PersonalDataForm.phone_number,
     F.text.casefold() == BOT_ANSWERS.cancel.value.casefold(),
 )
 @router.message(
@@ -163,41 +163,35 @@ async def process_surname(message: Message, state: FSMContext) -> None:
 @router.message(PersonalDataForm.email)
 async def process_email(message: Message, state: FSMContext) -> None:
     await state.update_data(email=message.text)
-    await state.set_state(PersonalDataForm.phone)
-    await message.answer(BOT_ANSWERS.phone.value)
+    await state.set_state(PersonalDataForm.phone_number)
+    await message.answer(BOT_ANSWERS.phone_number.value)
 
     # await message.answer(
-    #     f"Ваш номер: {message.contact.phone_number}, верно?",
+    #     f"Ваш номер: {message.contact.phone_number_number}, верно?",
     #     reply_markup=YES_NO_KEYBOARD,
     # )
 
 
 @router.message(
-    PersonalDataForm.phone,
+    PersonalDataForm.phone_number,
 )
-async def process_phone(
-    message: Message, state: FSMContext, access: str = ""
+async def process_phone_number(
+    message: Message, state: FSMContext, access: str = None
 ) -> None:
-    """if message.text.casefold() == BOT_ANSWERS.no.value.casefold():
-        await message.answer(BOT_ANSWERS.phone.value)
-        return
-    elif message.text.casefold() == BOT_ANSWERS.yes.value.casefold():
-        data = await state.update_data(phone=message.contact.phone_number)
-    else:
-        data = await state.update_data(phone=message.text)"""
-    if access == "":
+    if not access:
         await state.set_state(InformationAboutShelter.main_interaction)
         await message.answer(BOT_ANSWERS.something_went_wrong.value)
         return
-    data = await state.update_data(phone=message.text)
+    data = await state.update_data(phone_number=message.text)
     user = {
         "name": data["first_name"],
         "surname": data["surname"],
         "email": data["email"],
-        "phone": data["phone"],
+        "phone_number": data["phone_number"],
         "chat_id": message.chat.id,
         "username": message.chat.username,
     }
+    logging.info(user)
     user_db = await patch_user(user, access)
     if user_db is None:
         await state.set_state(PersonalDataForm.permission)

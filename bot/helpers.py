@@ -80,10 +80,7 @@ async def add_user_to_db(user: CreateUserShortDto, access: str):
 
 
 async def check_user_status(chat_id: int, access: str):
-    data = [True, False]
-    return {"is_fully_filled": choice(data)}
-
-    """async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient() as client:
         try:
             response = await client.get(
                 f"http://127.0.0.1:8000/api/v1/users/{chat_id}/get_state/",
@@ -95,10 +92,11 @@ async def check_user_status(chat_id: int, access: str):
             logging.error(f"Error adding user to DB: {e}")
         except ValidationError as e:
             logging.error(f"Error validating user: {e}")
-    return None"""
+    return None
 
 
 async def patch_user(user: UpdateUser, access: str):
+    logging.info(user)
     async with httpx.AsyncClient() as client:
         try:
             validated_user = UpdateUser(**user)

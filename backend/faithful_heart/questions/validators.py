@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from profanity.extras import ProfanityFilter
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-file_path = os.path.join(base_dir, "filter_profanity.txt")
+file_path = os.path.join(base_dir, "data", "filter_profanity.txt")
 
 words = []
 with open(file_path, "r", encoding="utf-8") as f:

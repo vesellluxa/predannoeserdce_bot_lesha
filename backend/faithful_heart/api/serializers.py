@@ -8,12 +8,12 @@ from questions.validators import validate_is_profane_russian
 
 class TelegramUserSerializer(serializers.ModelSerializer):
     """
-    Сериализатор для получения списка вопросов.
+    Сериализатор пользователя.
     """
 
     class Meta:
-        model = FrequentlyAskedQuestion
-        fields = ('text', 'answer', 'id', )
+        model = TelegramUser
+        fields = '__all__'
 
 
 class FrequentlyAskedQuestionSerializer(serializers.ModelSerializer):

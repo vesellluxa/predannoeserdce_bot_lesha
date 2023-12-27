@@ -1,4 +1,5 @@
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -17,6 +18,7 @@ from users.models import TelegramUser
 from questions.models import UniqueQuestion, FrequentlyAskedQuestion
 from .api_service import (export_users_excel, send_email_to_admin,
                           send_tg_notification_to_admin)
+from http import HTTPStatus
 
 
 class TelegramUsersViewSet(
@@ -29,15 +31,29 @@ class TelegramUsersViewSet(
     """
     queryset = TelegramUser.objects.all()
     serializer_class = TelegramUserSerializer
-    http_method_names = ['post', 'patch', ]
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
         user = get_object_or_404(
             TelegramUser,
-            chat_id=self.request.data.get("chat_id")
+            chat_id=self.kwargs.get("chat_id")
         )
+
         return user
+
+    @action(
+        methods=['get', ],
+        detail=True,
+        permission_classes=(IsAuthenticated,)
+    )
+    def get_state(self, request, pk):
+        tg_user = TelegramUser.objects.get(chat_id=pk)
+        return Response(
+            status=HTTPStatus.OK,
+            data={
+                "is_fully_filled": tg_user.is_fully_filled
+            }
+        )
 
 
 class DownloadUserInformationView(
@@ -93,7 +109,6 @@ class UniqueQuestionView(
         send_tg_notification_to_admin(question)
 
 
-
 class APILogoutView(
     APIView
 ):
@@ -112,7 +127,6 @@ class APILogoutView(
         token = RefreshToken(token=refresh_token)
         token.blacklist()
         return Response({"status": "Вы вышли из системы"})
-
 
 
 class PingPongView(

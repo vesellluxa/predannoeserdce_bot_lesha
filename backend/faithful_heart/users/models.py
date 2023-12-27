@@ -4,6 +4,14 @@ from django.db import models
 from faithful_heart import constants
 
 
+class TimeMixin:
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
+
+
 class User(AbstractUser):
     """Модель для менеджера приюта."""
 
@@ -13,7 +21,7 @@ class User(AbstractUser):
     )
 
 
-class TelegramUser(models.Model):
+class TelegramUser(models.Model, TimeMixin):
     """
     Модель для сбора данных пользователей.
     """
@@ -41,7 +49,7 @@ class TelegramUser(models.Model):
                 constants.NAME_MIN_LENGTH)],
         blank=True
     )
-    surname = models.CharField(
+    second_name = models.CharField(
         verbose_name='Фамилия',
         max_length=constants.SURNAME_MAX_LENGTH,
         validators=[
@@ -49,7 +57,15 @@ class TelegramUser(models.Model):
                 constants.SURNAME_MIN_LENGHT)],
         blank=True
     )
-    phone = models.CharField(
+    surname = models.CharField(
+        verbose_name='Отчество',
+        max_length=constants.SURNAME_MAX_LENGTH,
+        validators=[
+            MinLengthValidator(
+                constants.SURNAME_MIN_LENGHT)],
+        blank=True
+    )
+    phone_number = models.CharField(
         verbose_name='Номер телефона',
         max_length=constants.PHONE_LENGTH,
         validators=[RegexValidator(constants.PHONE_NUMBER)],
@@ -64,6 +80,21 @@ class TelegramUser(models.Model):
     )
 
     class Meta:
-        """Сортировка по имени."""
+        """
+        Сортировка по имени.
+        """
 
         ordering = ('name',)
+
+    @property
+    def is_fully_filled(self):
+        """
+        Проверяет заполнены ли дополнительные поля пользователя.
+        """
+        fields_list = [
+            self.name, self.second_name, self.surname,
+            self.phone_number, self.email
+        ]
+        if any(field is None or field == '' for field in fields_list) is True:
+            return False
+        return True

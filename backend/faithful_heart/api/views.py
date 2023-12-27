@@ -8,7 +8,7 @@ from rest_framework.viewsets import GenericViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import CreateAPIView, get_object_or_404
 from rest_framework.mixins import (CreateModelMixin, UpdateModelMixin,
-                                   ListModelMixin, RetrieveModelMixin)
+                                   ListModelMixin)
 from rest_framework_simplejwt.token_blacklist.models import (BlacklistedToken,
                                                              OutstandingToken)
 from rest_framework_simplejwt.tokens import RefreshToken

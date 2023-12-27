@@ -1,9 +1,9 @@
 from django.db import models
-from users.models import TelegramUser
+from users.models import TelegramUser, TimeMixin
 from faithful_heart import constants
 
 
-class AbstractQuestion(models.Model):
+class AbstractQuestion(models.Model, TimeMixin):
     """
     Абстрактная модель Вопроса.
     """
@@ -40,7 +40,7 @@ class FrequentlyAskedQuestion(AbstractQuestion):
     )
 
 
-class UniqueQuestion(AbstractQuestion):
+class UniqueQuestion(AbstractQuestion, TimeMixin):
     """
     Модель уникального вопроса.
     """

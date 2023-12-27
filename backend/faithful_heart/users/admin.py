@@ -9,13 +9,14 @@ class TelegramUserAdmin(admin.ModelAdmin):
         'username',
         'email',
         'name',
+        'second_name',
         'surname',
-        'phone',
+        'phone_number',
         'chat_id'
     )
     list_display_links = ('username', 'email', 'name',)
     list_filter = ('chat_id',)
-    search_fields = ('username', 'surname', 'email', 'phone')
+    search_fields = ('username', 'surname', 'email',  'phone_number')
 
 
 class UserAdmin(admin.ModelAdmin):

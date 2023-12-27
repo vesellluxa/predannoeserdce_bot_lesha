@@ -3,7 +3,7 @@ from profanity.extras import ProfanityFilter
 
 
 words = []
-with open('filter_profanity.txt', 'r', encoding='utf-8') as f:
+with open('data/filter_profanity.txt', 'r', encoding='utf-8') as f:
     words = [line.strip() for line in f.readlines()]
 
 pf = ProfanityFilter()

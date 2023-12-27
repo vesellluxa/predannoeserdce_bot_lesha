@@ -92,7 +92,8 @@ class TelegramUser(models.Model, TimeMixin):
         Проверяет заполнены ли дополнительные поля пользователя.
         """
         fields_list = [
-            self.name, self.second_name, self.surname, self.phone_number, self.email
+            self.name, self.second_name, self.surname,
+            self.phone_number, self.email
         ]
         if any(field is None or field == '' for field in fields_list) is True:
             return False

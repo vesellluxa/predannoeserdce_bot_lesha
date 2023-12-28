@@ -165,5 +165,6 @@ EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost',
-    'http://127.0.0.1'
+    'http://127.0.0.1',
+    'http://51.250.11.96/',
 ]

@@ -17,7 +17,14 @@ class User(AbstractUser):
 
     chat_id = models.CharField(
         verbose_name='Чат ID',
-        max_length=constants.CHAT_ID_LENGTH
+        max_length=constants.CHAT_ID_LENGTH,
+        validators=[
+            RegexValidator(
+                regex=constants.CHAT_ID_REGEX,
+                message='Chat ID должен состоять только из цифр',
+                code='invalid_chat_id'
+            )
+        ]
     )
 
 
@@ -30,7 +37,16 @@ class TelegramUser(models.Model, TimeMixin):
         max_length=constants.USERNAME_MAX_LENGTH,
         validators=[
             MinLengthValidator(
-                constants.USERNAME_MIN_LENGTH)],
+                constants.USERNAME_MIN_LENGTH
+            ),
+            RegexValidator(
+                regex=constants.TELEGRAM_USERNAME_REGEX,
+                message=("Имя пользователя должно состоять"
+                         " только из букв английского алфавита"
+                         " и / или цифр, а также может иметь символ '_'."),
+                code="invalid_username"
+            )
+        ],
         verbose_name='Имя пользователя',
         unique=True
     )
@@ -46,7 +62,15 @@ class TelegramUser(models.Model, TimeMixin):
         max_length=constants.NAME_MAX_LENGTH,
         validators=[
             MinLengthValidator(
-                constants.NAME_MIN_LENGTH)],
+                constants.NAME_MIN_LENGTH
+            ),
+            RegexValidator(
+                regex=constants.NAME_REGEX,
+                message=("Имя должно состоять"
+                         " только из букв русского алфавита"),
+                code="invalid_name"
+            )
+        ],
         blank=True
     )
     second_name = models.CharField(
@@ -54,7 +78,15 @@ class TelegramUser(models.Model, TimeMixin):
         max_length=constants.SURNAME_MAX_LENGTH,
         validators=[
             MinLengthValidator(
-                constants.SURNAME_MIN_LENGHT)],
+                constants.NAME_MIN_LENGTH
+            ),
+            RegexValidator(
+                regex=constants.NAME_REGEX,
+                message=("Фамидия должна состоять"
+                         " только из букв русского алфавита"),
+                code="invalid_second_name"
+            )
+        ],
         blank=True
     )
     surname = models.CharField(
@@ -62,13 +94,28 @@ class TelegramUser(models.Model, TimeMixin):
         max_length=constants.SURNAME_MAX_LENGTH,
         validators=[
             MinLengthValidator(
-                constants.SURNAME_MIN_LENGHT)],
+                constants.NAME_MIN_LENGTH
+            ),
+            RegexValidator(
+                regex=constants.NAME_REGEX,
+                message=("Отчество должно состоять"
+                         " только из букв русского алфавита"),
+                code="invalid_surname"
+            )
+        ],
         blank=True
     )
     phone_number = models.CharField(
         verbose_name='Номер телефона',
-        max_length=constants.PHONE_LENGTH,
-        validators=[RegexValidator(constants.PHONE_NUMBER)],
+        max_length=constants.PHONE_NUMBER_LENGTH,
+        validators=[
+            RegexValidator(
+                regex=constants.PHONE_NUMBER_REGEX,
+                message=('Номер телефона должен состоять'
+                         ' только из цифр и иметь правильную длину'),
+                code='invalid_phone_number'
+            )
+        ],
         unique=True,
         blank=True,
         null=True
@@ -76,7 +123,18 @@ class TelegramUser(models.Model, TimeMixin):
 
     chat_id = models.CharField(
         max_length=constants.CHAT_ID_LENGTH,
-        unique=True
+        unique=True,
+        validators=[
+            MinLengthValidator(
+                constants.CHAT_ID_LENGTH
+            ),
+            RegexValidator(
+                regex=constants.CHAT_ID_REGEX,
+                message=('Chat ID должен состоять только'
+                         ' из цифр и иметь длину 10'),
+                code='invalid_chat_id'
+            )
+        ]
     )
 
     class Meta:
@@ -85,6 +143,9 @@ class TelegramUser(models.Model, TimeMixin):
         """
 
         ordering = ('name',)
+
+    def __str__(self):
+        return self.username
 
     @property
     def is_fully_filled(self):

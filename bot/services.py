@@ -34,6 +34,12 @@ async def fetch_data(endpoint: str, access: str):
                 if response.status_code == 200:
                     data.extend(response.json().get("results"))
                     next_page = response.json().get("next")
+                elif response.status_code == 401:
+                    logging.error("Authorization error")
+                    break
+                elif response.status_code == 400:
+                    logging.error("Bad request")
+                    break
 
         except httpx.HTTPError as e:
             logging.error(f"Error fetching data from endpoint {endpoint}: {e}")

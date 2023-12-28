@@ -5,8 +5,7 @@ from rest_framework_simplejwt.views import (TokenObtainPairView,
 
 from .views import (APILogoutView, TelegramUsersViewSet,
                     FrequentlyAskedQuestionView,
-                    UniqueQuestionView, DownloadUserInformationView,
-                    PingPongView)
+                    UniqueQuestionView, DownloadUserInformationView)
 
 app_name = 'api'
 router_v1 = DefaultRouter()
@@ -25,5 +24,4 @@ urlpatterns = [
     ),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('v1/logout_token/', APILogoutView.as_view(), name='logout_token'),
-    path('v1/ping/', PingPongView.as_view(), name='ping'),
 ]

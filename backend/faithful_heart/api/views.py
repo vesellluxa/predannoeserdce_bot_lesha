@@ -126,15 +126,3 @@ class APILogoutView(
         token = RefreshToken(token=refresh_token)
         token.blacklist()
         return Response({"status": "Вы вышли из системы"})
-
-
-class PingPongView(
-    APIView
-):
-    """
-    Проверка доступности сервера
-    """
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        return Response({'response': 'pong'}, status=status.HTTP_200_OK)

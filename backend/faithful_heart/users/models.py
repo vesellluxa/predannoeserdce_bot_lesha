@@ -17,7 +17,7 @@ class User(AbstractUser):
 
     chat_id = models.CharField(
         verbose_name='Чат ID',
-        max_length=constants.CHAT_ID_LENGTH,
+        max_length=constants.CHAT_ID_MAX_LENGTH,
         validators=[
             RegexValidator(
                 regex=constants.CHAT_ID_REGEX,
@@ -139,11 +139,11 @@ class TelegramUser(models.Model, TimeMixin):
     )
 
     chat_id = models.CharField(
-        max_length=constants.CHAT_ID_LENGTH,
+        max_length=constants.CHAT_ID_MAX_LENGTH,
         unique=True,
         validators=[
             MinLengthValidator(
-                constants.CHAT_ID_LENGTH
+                constants.CHAT_ID_MIN_LENGTH
             ),
             RegexValidator(
                 regex=constants.CHAT_ID_REGEX,

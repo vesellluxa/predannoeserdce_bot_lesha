@@ -36,9 +36,8 @@ class TelegramUsersViewSet(
     def get_object(self):
         user = get_object_or_404(
             TelegramUser,
-            chat_id=self.kwargs.get("chat_id")
+            chat_id=self.kwargs.get("pk")
         )
-
         return user
 
     @action(

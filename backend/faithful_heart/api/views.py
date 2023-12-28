@@ -105,7 +105,7 @@ class UniqueQuestionView(
         serializer.save()
         question = serializer.validated_data.get('text')
         send_email_to_admin(question)
-        send_tg_notification_to_admin(question)
+        # send_tg_notification_to_admin(question)
 
 
 class APILogoutView(

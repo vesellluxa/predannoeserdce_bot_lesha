@@ -7,18 +7,15 @@ import httpx
 from pydantic import ValidationError
 from schemas import CreateQuestionDto, CreateUserShortDto, UpdateUser
 
-load_dotenv(dotenv_path="./bot/.env")
+load_dotenv()
 
 PROCUCTION = os.getenv("PRODUCTION", default="False").lower() in (
     "on",
     "yes",
     "true",
 )
-BASE_URL = (
-    os.getenv("BASE_URL", default="http://127.0.0.1:8000")
-    if PROCUCTION
-    else "http://127.0.0.1:8000"
-)
+
+BASE_URL = os.getenv("BASE_URL") if PROCUCTION else "http://localhost:8000"
 
 
 async def fetch_data(endpoint: str, access: str):
@@ -42,7 +39,9 @@ async def fetch_data(endpoint: str, access: str):
                     break
 
         except httpx.HTTPError as e:
-            logging.error(f"Error fetching data from endpoint {endpoint}: {e}")
+            logging.error(
+                f"Error fetching data from endpoint {next_page}: {e}"
+            )
     return data
 
 
@@ -78,6 +77,7 @@ async def add_user_to_db(user: CreateUserShortDto, access: str):
     async with httpx.AsyncClient() as client:
         try:
             validated_user = CreateUserShortDto(**user)
+            logging.info(f"Adding user to DB: {validated_user.model_dump()}")
             response = await client.post(
                 f"{BASE_URL}/api/v1/users/",
                 json=validated_user.model_dump(),
@@ -87,6 +87,7 @@ async def add_user_to_db(user: CreateUserShortDto, access: str):
                 return response.json()
             if response.status_code == 400:
                 response = response.json()
+                logging.error(f"Error adding user to DB: {response}")
                 if response.get("username") == [
                     "telegram user с таким Имя пользователя уже существует."
                 ]:
@@ -117,18 +118,20 @@ async def check_user_status(chat_id: int, access: str):
 async def patch_user(user: UpdateUser, access: str):
     async with httpx.AsyncClient() as client:
         try:
-            validated_user = UpdateUser(**user)
+            logging.info(f"Updating user data: {user}")
             response = await client.patch(
-                f"{BASE_URL}/api/v1/users/{validated_user.chat_id}/",
-                json=validated_user.model_dump(),
+                f"{BASE_URL}/api/v1/users/{user.get('chat_id')}/",
+                json=user,
                 headers={"Authorization": f"Bearer {access}"},
             )
             if response.status_code == 200:
                 return response.json()
+            if response.status_code == 400:
+                response = response.json()
+                response["details"] = "Backend validation error"
+                return response
         except httpx.HTTPError as e:
             logging.error(f"Error updating user data: {e}")
-        except ValidationError as e:
-            logging.error(f"Error validating user data: {e}")
     return None
 
 

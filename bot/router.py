@@ -136,6 +136,11 @@ async def process_permission(message: Message, state: FSMContext) -> None:
             "message": BOT_ANSWERS.first_name.value,
             "keyboard": CANCEL_KEYBOARD,
         },
+        BOT_ANSWERS.try_again.value.casefold(): {
+            "state": PersonalDataForm.first_name,
+            "message": BOT_ANSWERS.first_name.value,
+            "keyboard": CANCEL_KEYBOARD,
+        },
     }
     if (
         not hasattr(message.text, "casefold")
@@ -242,6 +247,14 @@ async def process_phone_number(
         await message.answer(
             BOT_ANSWERS.validation_error.value, reply_markup=TRY_AGAIN_KEYBOARD
         )
+        return
+    if user_db.get("details") == "Backend validation error":
+        answer = "Ошибка валидации:\n"
+        for key, value in user_db.items():
+            if key != "details":
+                answer += f"{' ,'.join(value)}\n"
+        await state.set_state(PersonalDataForm.permission)
+        await message.answer(answer, reply_markup=TRY_AGAIN_KEYBOARD)
         return
     await state.clear()
     await state.set_state(InformationAboutShelter.main_interaction)

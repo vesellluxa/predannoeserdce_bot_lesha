@@ -1,16 +1,31 @@
 import logging
+import os
 import urllib.parse
 
+from dotenv import load_dotenv
 import httpx
 from pydantic import ValidationError
 from schemas import CreateQuestionDto, CreateUserShortDto, UpdateUser
+
+load_dotenv(dotenv_path="./bot/.env")
+
+PROCUCTION = os.getenv("PRODUCTION", default="False").lower() in (
+    "on",
+    "yes",
+    "true",
+)
+BASE_URL = (
+    os.getenv("BASE_URL", default="http://127.0.0.1:8000")
+    if PROCUCTION
+    else "http://127.0.0.1:8000"
+)
 
 
 async def fetch_data(endpoint: str, access: str):
     data = []
     async with httpx.AsyncClient() as client:
         try:
-            next_page = f"http://127.0.0.1:8000/api/v1/{endpoint}"
+            next_page = f"{BASE_URL}/api/v1/{endpoint}"
             while next_page:
                 response = await client.get(
                     urllib.parse.unquote(next_page),
@@ -29,7 +44,7 @@ async def obtain_token(username: str, password: str):
     async with httpx.AsyncClient() as client:
         try:
             response = await client.post(
-                "http://127.0.0.1:8000/api/v1/obtain_token/",
+                f"{BASE_URL}/api/v1/obtain_token/",
                 data={"username": username, "password": password},
             )
             if response.status_code == 200:
@@ -43,7 +58,7 @@ async def refresh_token(refresh_token: str):
     async with httpx.AsyncClient() as client:
         try:
             response = await client.post(
-                "http://127.0.0.1:8000/api/token/refresh/",
+                f"{BASE_URL}/api/token/refresh/",
                 data={"refresh": refresh_token},
             )
             if response.status_code == 200:
@@ -58,7 +73,7 @@ async def add_user_to_db(user: CreateUserShortDto, access: str):
         try:
             validated_user = CreateUserShortDto(**user)
             response = await client.post(
-                "http://127.0.0.1:8000/api/v1/users/",
+                f"{BASE_URL}/api/v1/users/",
                 json=validated_user.model_dump(),
                 headers={"Authorization": f"Bearer {access}"},
             )
@@ -81,7 +96,7 @@ async def check_user_status(chat_id: int, access: str):
     async with httpx.AsyncClient() as client:
         try:
             response = await client.get(
-                f"http://127.0.0.1:8000/api/v1/users/{chat_id}/get_state/",
+                f"{BASE_URL}/api/v1/users/{chat_id}/get_state/",
                 headers={"Authorization": f"Bearer {access}"},
             )
             if response.status_code == 200:
@@ -98,7 +113,7 @@ async def patch_user(user: UpdateUser, access: str):
         try:
             validated_user = UpdateUser(**user)
             response = await client.patch(
-                f"http://127.0.0.1:8000/api/v1/users/{validated_user.chat_id}/",
+                f"{BASE_URL}/api/v1/users/{validated_user.chat_id}/",
                 json=validated_user.model_dump(),
                 headers={"Authorization": f"Bearer {access}"},
             )
@@ -116,7 +131,7 @@ async def add_unique_question(question: CreateQuestionDto, access: str):
         try:
             validated_question = CreateQuestionDto(**question)
             response = await client.post(
-                "http://127.0.0.1:8000/api/v1/unique_question/",
+                f"{BASE_URL}/api/v1/unique_question/",
                 json=validated_question.model_dump(),
                 headers={"Authorization": f"Bearer {access}"},
             )

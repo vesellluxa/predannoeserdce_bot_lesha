@@ -167,4 +167,4 @@ EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = BASE_DIR/'sent_emails'
 
 
-CSRF_TRUSTED_ORIGINS = ['http://localhost', 'http://51.250.11.96/']
+CSRF_TRUSTED_ORIGINS = ['http://localhost', 'http://51.250.11.96/', 'http://0.0.0.0:8000']

@@ -9,7 +9,6 @@ AUTH_USER_MODEL = 'users.User'
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 SECRET_KEY = "django"
 
 DEBUG = os.getenv("DEBUG_MODE", default="ON").lower() in ("on", "yes", "true")
@@ -63,7 +62,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "faithful_heart.wsgi.application"
 
-
 if DEBUG:
     DATABASES = {
         'default': {
@@ -82,7 +80,6 @@ else:
             'PORT': os.getenv('DB_PORT', default='5432')
         }
     }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -164,7 +161,9 @@ SIMPLE_JWT = {
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / 'media'
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = BASE_DIR/'sent_emails'
+EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
 
-
-CSRF_TRUSTED_ORIGINS = ['http://51.250.11.96/']
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost',
+    'http://127.0.0.1'
+]

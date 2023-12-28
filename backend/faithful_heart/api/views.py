@@ -27,7 +27,7 @@ from questions.models import UniqueQuestion, FrequentlyAskedQuestion
 from .api_service import (
     export_users_excel,
     send_email_to_admin,
-    send_tg_notification_to_admin,
+    # send_tg_notification_to_admin,
 )
 from http import HTTPStatus
 
@@ -105,7 +105,7 @@ class UniqueQuestionView(CreateAPIView, GenericViewSet):
         serializer.save()
         question = serializer.validated_data.get("text")
         send_email_to_admin(question)
-        send_tg_notification_to_admin(question)
+        # send_tg_notification_to_admin(question)
 
 
 class APILogoutView(APIView):

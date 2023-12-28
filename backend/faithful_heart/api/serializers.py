@@ -16,6 +16,7 @@ class TelegramUserSerializer(serializers.ModelSerializer):
             "username",
             "chat_id",
             "name",
+            "second_name",
             "surname",
             "email",
             "phone_number",
@@ -38,6 +39,10 @@ class UniqueQuestionSerializer(serializers.ModelSerializer):
     """
     Сериализатор для уникального вопроса от пользователя.
     """
+
+    owner = serializers.SlugRelatedField(
+        queryset=TelegramUser.objects.all(), slug_field="chat_id"
+    )
 
     def validate_text(self, text):
         validate_is_profane_russian(text)

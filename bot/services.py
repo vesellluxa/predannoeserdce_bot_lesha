@@ -94,7 +94,6 @@ async def check_user_status(chat_id: int, access: str):
 
 
 async def patch_user(user: UpdateUser, access: str):
-    logging.info(user)
     async with httpx.AsyncClient() as client:
         try:
             validated_user = UpdateUser(**user)

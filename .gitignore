@@ -165,4 +165,7 @@ migrations/
 
 requirements.in
 pyproject.toml
+/express
+.DS_Store
+/bot/.DS_Store
 get-pip.py

@@ -3,14 +3,13 @@ import logging
 import os
 import sys
 
+import requests
 from aiogram import Bot, Dispatcher, types
 from aiogram.enums import ParseMode
 from aiogram.filters import Command, CommandStart
 from aiogram.types import Message
 from aiogram.utils.markdown import hbold
 from dotenv import load_dotenv
-import requests
-
 
 load_dotenv()
 
@@ -51,24 +50,24 @@ async def echo_handler(message: types.Message) -> None:
 async def get_token(username, password):
     global global_token
     token_response = requests.post(
-        'http://127.0.0.1:8000/api/obtain_token/',
-        data={'username': username, 'password': password}
+        "http://127.0.0.1:8000/api/obtain_token/",
+        data={"username": username, "password": password},
     )
     if token_response.status_code == 200:
-        global_token = token_response.json().get('access')
+        global_token = token_response.json().get("access")
 
 
 async def send_request(url, data, method):
-    ping_response = requests.get('http://127.0.0.1:8000/api/ping/')
+    ping_response = requests.get("http://127.0.0.1:8000/api/ping/")
     if ping_response.status_code == 200:
         global global_token
         if global_token:
-            headers = {'Authorization': f'Bearer {global_token}'}
+            headers = {"Authorization": f"Bearer {global_token}"}
             return METHODS[method](url, data=data, headers=headers)
         else:
-            return 'Токен не найден'
+            return "Токен не найден"
     else:
-        return 'Сервер не доступен'
+        return "Сервер не доступен"
 
 
 async def main() -> None:

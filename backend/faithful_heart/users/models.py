@@ -26,6 +26,23 @@ class User(AbstractUser):
             )
         ]
     )
+    telegram_username = models.CharField(
+        max_length=constants.USERNAME_MAX_LENGTH,
+        validators=[
+            MinLengthValidator(
+                constants.USERNAME_MIN_LENGTH
+            ),
+            RegexValidator(
+                regex=constants.TELEGRAM_USERNAME_REGEX,
+                message=("Имя пользователя должно состоять"
+                         " только из букв английского алфавита"
+                         " и / или цифр, а также может иметь символ '_'."),
+                code="invalid_username"
+            )
+        ],
+        verbose_name='Имя пользователя',
+        unique=True
+    )
 
 
 class TelegramUser(models.Model, TimeMixin):

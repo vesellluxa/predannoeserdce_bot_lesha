@@ -9,12 +9,13 @@ from aiogram import Bot
 
 from faithful_heart import constants
 from faithful_heart.settings import MEDIA_ROOT
+from users.models import TelegramUser, User
 
 load_dotenv()
 
 TOKEN = os.getenv('TOKEN')
-ADMIN_EMAIL = os.getenv('ADMIN_EMAIL')
-ADMIN_TG_CHAT_ID = os.getenv('ADMIN_TG_CHAT_ID')
+# ADMIN_EMAIL = os.getenv('ADMIN_EMAIL')
+# ADMIN_TG_CHAT_ID = os.getenv('ADMIN_TG_CHAT_ID')
 
 
 def export_users_excel(users):
@@ -43,8 +44,9 @@ def send_email_to_admin(question):
     """
     Отправка email Администратору при создании уникального вопроса.
     """
-    send_mail('Поступил новый вопрос', question, from_email=ADMIN_EMAIL,
-              recipient_list=[ADMIN_EMAIL, ], fail_silently=False)
+    admin_email = User.objects.get(username='admin').email
+    send_mail('Поступил новый вопрос', question, from_email=admin_email,
+              recipient_list=[admin_email, ], fail_silently=False)
 
 
 @async_to_sync
@@ -54,5 +56,9 @@ async def send_tg_notification_to_admin(question):
     при создании уникального вопроса.
     """
     bot = Bot(token=TOKEN)
-    await bot.send_message(chat_id=ADMIN_TG_CHAT_ID,
+    admin = User.objects.get(username='admin')
+    tg_admin_user = TelegramUser.objects.get(
+        username=admin.telegram_username
+    )
+    await bot.send_message(chat_id=tg_admin_user.chat_id,
                            text=f'Поступил новый вопрос: {question}')

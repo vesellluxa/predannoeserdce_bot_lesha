@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from notifications.models import Notification, TelegramNewsletter
 from users.models import TelegramUser
 from questions.models import UniqueQuestion, FrequentlyAskedQuestion
 from questions.validators import validate_is_profane_russian
@@ -20,6 +21,14 @@ class TelegramUserSerializer(serializers.ModelSerializer):
             "surname",
             "email",
             "phone_number",
+        )
+
+
+class TelegramUserShortSerializer(TelegramUserSerializer):
+    class Meta:
+        model = TelegramUser
+        fields = (
+            "chat_id",
         )
 
 
@@ -54,3 +63,32 @@ class UniqueQuestionSerializer(serializers.ModelSerializer):
             "text",
             "owner",
         )
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    to = TelegramUserShortSerializer()
+
+    class Meta:
+        model = Notification
+        fields = (
+            "text",
+            "to",
+            "is_finished"
+        )
+
+
+class NewsletterSerializer(serializers.ModelSerializer):
+    users = serializers.SerializerMethodField()
+
+    class Meta:
+        model = TelegramNewsletter
+        fields = (
+            "id",
+            "text",
+            "sending_date",
+            "is_finished",
+            "users"
+        )
+
+    def get_users(self, value):
+        return list(TelegramUser.objects.values_list('chat_id', flat=True))

@@ -1,5 +1,6 @@
 from django.db import models
 from users.models import TelegramUser, TimeMixin
+from notifications.models import Notification
 from faithful_heart import constants
 
 
@@ -9,12 +10,10 @@ class AbstractQuestion(models.Model, TimeMixin):
     """
 
     text = models.TextField(max_length=constants.FAQ_MAX_LENGTH,
-                            verbose_name='Текст вопроса',)
+                            verbose_name='Текст вопроса', )
 
     class Meta:
         abstract = True
-
-
 
 
 class FrequentlyAskedQuestion(AbstractQuestion):
@@ -47,7 +46,6 @@ class FrequentlyAskedQuestion(AbstractQuestion):
         verbose_name_plural = "Вопросы"
 
 
-
 class UniqueQuestion(AbstractQuestion, TimeMixin):
     """
     Модель уникального вопроса.
@@ -69,10 +67,27 @@ class UniqueQuestion(AbstractQuestion, TimeMixin):
         verbose_name = "Вопрос от пользователя"
         verbose_name_plural = "Вопросы от пользователей"
 
-
     @property
     def is_answered(self):
         """
         Функция, определяющая был ли получени ответ на вопрос.
         """
         return self.answer != ''
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if not self.is_answered:
+            url_to_question = constants.PROD_URL.format(
+                question_url=f"/admin/questions/uniquequestion/{self.pk}/change/"
+            )
+            Notification.objects.create(
+                to=TelegramUser.get_admin_telegram_user(),
+                text=f"Поступил новый вопрос. Ссылка: {url_to_question}"
+            )
+        if self.is_answered:
+            Notification.objects.create(
+                to=self.owner,
+                text=f"Поступил ответ на ваш вопрос:"
+                     f"{self.answer}"
+
+            )

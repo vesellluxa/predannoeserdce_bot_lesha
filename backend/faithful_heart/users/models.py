@@ -15,18 +15,6 @@ class TimeMixin:
 class User(AbstractUser):
     """Модель для менеджера приюта."""
 
-    chat_id = models.CharField(
-        verbose_name='Чат ID',
-        max_length=constants.CHAT_ID_MAX_LENGTH,
-        validators=[
-            RegexValidator(
-                regex=constants.CHAT_ID_REGEX,
-                message='Chat ID должен состоять только из цифр',
-                code='invalid_chat_id'
-            )
-        ]
-    )
-
     telegram_username = models.CharField(
         max_length=constants.USERNAME_MAX_LENGTH,
         validators=[
@@ -54,7 +42,6 @@ class User(AbstractUser):
 
         verbose_name = "Пользователь админ-панели"
         verbose_name_plural = "Пользователи админ-панели"
-
 
 
 class TelegramUser(models.Model, TimeMixin):
@@ -196,3 +183,11 @@ class TelegramUser(models.Model, TimeMixin):
         if any(field is None or field == '' for field in fields_list) is True:
             return False
         return True
+
+    @staticmethod
+    def get_admin_telegram_user():
+        return TelegramUser.objects.filter(
+            username=User.objects.get(
+                username="admin"
+            ).telegram_username
+        ).first()

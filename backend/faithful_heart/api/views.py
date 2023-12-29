@@ -37,13 +37,12 @@ from http import HTTPStatus
 class TelegramUsersViewSet(
     CreateModelMixin,
     UpdateModelMixin,
-    ListModelMixin,
     GenericViewSet
 ):
     """
     Добавление и обновление пользователей.
     """
-
+    serializer_class = TelegramUserSerializer
     queryset = TelegramUser.objects.all()
     permission_classes = [IsAuthenticated]
 

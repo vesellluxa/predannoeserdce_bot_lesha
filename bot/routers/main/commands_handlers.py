@@ -7,6 +7,8 @@ from schemas.forms import InformationAboutShelter, PersonalDataForm
 from utils.helpers import delete_inline_keyboard
 from utils.services import add_user_to_db, check_user_status
 
+import logging
+
 
 async def command_cancel(
     message: Message, state: FSMContext, bot: Bot
@@ -31,6 +33,7 @@ async def command_start(
         "username": message.chat.username,
     }
     user_db = await add_user_to_db(user, access)
+    logging.info(f"User added to DB: {user_db}")
     if user_db is None:
         await message.answer(
             BOT_ANSWERS.user_creation_error.value,

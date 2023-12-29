@@ -8,6 +8,9 @@ from schemas.schemas import NewsletterSchema
 
 async def process_newsletters(bot: Bot, username: str, password: str):
     newsletters = await fetch_newsletters(username, password)
+    if not newsletters:
+        return None
+    logging.info(f"Newsletters: {newsletters}")
     filtered_newsletters = [
         newsletter
         for newsletter in newsletters
@@ -17,10 +20,11 @@ async def process_newsletters(bot: Bot, username: str, password: str):
         <= datetime.datetime.now()
     ]
     for newsletter in filtered_newsletters:
-        for user in newsletter.get("users"):
+        logging.info(f"Sending newsletter: {newsletter}")
+        for chat_id in newsletter.get("users"):
             try:
                 await bot.send_message(
-                    chat_id=user.get("chat_id"),
+                    chat_id=chat_id,
                     text=newsletter.get("text"),
                 )
             except Exception as e:

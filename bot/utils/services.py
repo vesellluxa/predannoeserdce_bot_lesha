@@ -95,7 +95,7 @@ async def add_user_to_db(user: CreateUserShortDto, access: str):
                 response = response.json()
                 logging.error(f"Error adding user to DB: {response}")
                 if response.get("username") == [
-                    "telegram user с таким Имя пользователя уже существует."
+                    "Telegram пользователь с таким Имя пользователя уже существует."
                 ]:
                     return {"details": "User already exists"}
         except httpx.HTTPError as e:
@@ -177,20 +177,19 @@ news = [
 ]
 
 
-async def fetch_newsletters(
-    username: str, password: str
-) -> [NewsletterSchema]:
+async def fetch_newsletters(username: str, password: str):
     token = await obtain_token(username, password)
     if not token or "access" not in token:
         return []
 
     access = token["access"]
     headers = {"Authorization": f"Bearer {access}"}
-    base_url = f"{BASE_URL}/api/v1/newsletter/"
 
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.get(f"{base_url}users/", headers=headers)
+            response = await client.get(
+                f"{BASE_URL}/api/v1/newsletter/", headers=headers
+            )
             if response.status_code == 200:
                 return response.json()
         except httpx.HTTPError as e:

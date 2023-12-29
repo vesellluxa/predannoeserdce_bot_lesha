@@ -51,6 +51,14 @@ class BOT_ANSWERS(str, Enum):
     user_creation_error = "Ошибка создания пользователя, попробуйте еще раз"
     question_creation_error = "Ошибка создания вопроса, попробуйте еще раз"
     something_went_wrong = "Что-то пошло не так, попробуйте еще раз"
+    monetary_aid = "Оказать финасовую помощь"
+    monetary_aid_title = "Как вы хотите оказать финансовую помощь?"
+    guardianship = "Участвовать в попечительской программе"
+    guardianship_url = (
+        "https://predannoeserdce.ru/programmy-prijuta/popechitelstvo/"
+    )
+    donation = "Сделать пожертвование"
+    donation_url = "https://predannoeserdce.ru/sms-pozhertvovanie/)"
 
 
 PAGINATION = 3

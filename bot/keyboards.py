@@ -1,4 +1,10 @@
-from aiogram.types import KeyboardButton, Message, ReplyKeyboardMarkup
+from aiogram.types import (
+    KeyboardButton,
+    Message,
+    ReplyKeyboardMarkup,
+    InlineKeyboardMarkup,
+    InlineKeyboardButton,
+)
 from constants import BOT_ANSWERS
 
 YES_NO_KEYBOARD = ReplyKeyboardMarkup(
@@ -65,10 +71,28 @@ MAIN_INTERACTION_KEYBOARD = ReplyKeyboardMarkup(
         [
             KeyboardButton(text=BOT_ANSWERS.unique_question.value),
             KeyboardButton(text=BOT_ANSWERS.shelter.value),
+            KeyboardButton(text=BOT_ANSWERS.monetary_aid.value),
         ]
     ],
     resize_keyboard=True,
     input_field_placeholder="Выберите категорию: ",
+)
+
+MONETARY_AID_KEYBOARD = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                text=BOT_ANSWERS.donation.value,
+                url=BOT_ANSWERS.donation_url.value,
+            ),
+        ],
+        [
+            InlineKeyboardButton(
+                text=BOT_ANSWERS.guardianship.value,
+                url=BOT_ANSWERS.guardianship_url.value,
+            ),
+        ],
+    ],
 )
 
 

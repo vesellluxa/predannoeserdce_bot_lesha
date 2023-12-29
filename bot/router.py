@@ -18,6 +18,7 @@ from keyboards import (
     SEND_CONTACT_KEYBOARD,
     TRY_AGAIN_KEYBOARD,
     YES_NO_KEYBOARD,
+    MONETARY_AID_KEYBOARD,
     send_main_interaction_buttons,
 )
 from middleware import FetchingMiddleware, TokenMiddleware
@@ -265,7 +266,7 @@ async def process_phone_number(
 
 @router.message(InformationAboutShelter.main_interaction)
 async def process_main_interaction(
-    message: Message, state: FSMContext
+    message: Message, state: FSMContext, bot: Bot
 ) -> None:
     responses = {
         BOT_ANSWERS.unique_question.value.casefold(): {
@@ -277,6 +278,11 @@ async def process_main_interaction(
             "state": InformationAboutShelter.questions,
             "message": BOT_ANSWERS.questions_title.value,
             "keyboard": FAQ_INFO_CANCEL_KEYBOARD,
+        },
+        BOT_ANSWERS.monetary_aid.value.casefold(): {
+            "state": InformationAboutShelter.main_interaction,
+            "message": BOT_ANSWERS.monetary_aid_title.value,
+            "keyboard": MONETARY_AID_KEYBOARD,
         },
         BOT_ANSWERS.cancel.value.casefold(): {
             "state": InformationAboutShelter.main_interaction,

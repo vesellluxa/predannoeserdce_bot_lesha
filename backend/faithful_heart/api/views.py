@@ -21,24 +21,30 @@ from .serializers import (
     TelegramUserSerializer,
     UniqueQuestionSerializer,
     FrequentlyAskedQuestionSerializer,
+    NewsletterSerializer,
+    NotificationSerializer
 )
 from users.models import TelegramUser
 from questions.models import UniqueQuestion, FrequentlyAskedQuestion
+from notifications.models import TelegramNewsletter, Notification
 from .api_service import (
     export_users_excel,
     send_email_to_admin,
-    # send_tg_notification_to_admin,
 )
 from http import HTTPStatus
 
 
-class TelegramUsersViewSet(CreateModelMixin, UpdateModelMixin, GenericViewSet):
+class TelegramUsersViewSet(
+    CreateModelMixin,
+    UpdateModelMixin,
+    ListModelMixin,
+    GenericViewSet
+):
     """
     Добавление и обновление пользователей.
     """
 
     queryset = TelegramUser.objects.all()
-    serializer_class = TelegramUserSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
@@ -125,3 +131,26 @@ class APILogoutView(APIView):
         token = RefreshToken(token=refresh_token)
         token.blacklist()
         return Response({"status": "Вы вышли из системы"})
+
+
+class TelegramNewsletterViewSet(
+    ListModelMixin,
+    UpdateModelMixin,
+    GenericViewSet
+):
+    queryset = TelegramNewsletter.objects.filter(
+        is_finished=False
+    )
+    serializer_class = NewsletterSerializer
+    pagination_class = None
+
+
+class NotificationViewSet(
+    ListModelMixin,
+    GenericViewSet
+):
+    queryset = Notification.objects.filter(
+        is_finished=False
+    )
+    serializer_class = NotificationSerializer
+    pagination_class = None

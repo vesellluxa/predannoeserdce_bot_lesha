@@ -6,6 +6,8 @@ from aiogram.types import (
     ReplyKeyboardMarkup,
 )
 from constants import BOT_ANSWERS
+from schemas.schemas import InformationSchema
+
 
 YES_NO_KEYBOARD = ReplyKeyboardMarkup(
     keyboard=[
@@ -91,23 +93,6 @@ MAIN_INTERACTION_KEYBOARD = ReplyKeyboardMarkup(
     input_field_placeholder="Выберите категорию: ",
 )
 
-MONETARY_AID_KEYBOARD = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [
-            InlineKeyboardButton(
-                text=BOT_ANSWERS.donation.value,
-                url=BOT_ANSWERS.donation_url.value,
-            ),
-        ],
-        [
-            InlineKeyboardButton(
-                text=BOT_ANSWERS.guardianship.value,
-                url=BOT_ANSWERS.guardianship_url.value,
-            ),
-        ],
-    ],
-)
-
 ANIMALS_KEYBOARD = InlineKeyboardMarkup(
     inline_keyboard=[
         [
@@ -132,3 +117,21 @@ async def send_main_interaction_buttons(message: Message, text: str) -> None:
       None
     """
     await message.answer(text, reply_markup=MAIN_INTERACTION_KEYBOARD)
+
+
+def create_donation_keyboard(shelter_information: InformationSchema):
+    donations = shelter_information.get("donations")
+    buttons = []
+    if donations:
+        for donation in donations.values():
+            buttons.append(
+                [
+                    InlineKeyboardButton(
+                        text=donation.text,
+                        url=donation.answer,
+                    ),
+                ],
+            )
+    if buttons:
+        return InlineKeyboardMarkup(inline_keyboard=buttons)
+    return None

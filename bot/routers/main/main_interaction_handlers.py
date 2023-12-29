@@ -6,7 +6,7 @@ from keyboards import (
     ANIMALS_KEYBOARD,
     FAQ_INFO_CANCEL_KEYBOARD,
     MAIN_INTERACTION_KEYBOARD,
-    MONETARY_AID_KEYBOARD,
+    create_donation_keyboard,
 )
 from schemas.forms import InformationAboutShelter
 from schemas.schemas import InformationSchema
@@ -19,7 +19,9 @@ from utils.services import add_unique_question
 
 
 async def process_main_interaction(
-    message: Message, state: FSMContext, bot: Bot
+    message: Message,
+    state: FSMContext,
+    shelter_information: InformationSchema,
 ) -> None:
     responses = {
         BOT_ANSWERS.shelter.value.casefold(): {
@@ -35,7 +37,7 @@ async def process_main_interaction(
         BOT_ANSWERS.monetary_aid.value.casefold(): {
             "state": InformationAboutShelter.main_interaction,
             "message": BOT_ANSWERS.monetary_aid_title.value,
-            "keyboard": MONETARY_AID_KEYBOARD,
+            "keyboard": create_donation_keyboard(shelter_information),
         },
         BOT_ANSWERS.cancel.value.casefold(): {
             "state": InformationAboutShelter.main_interaction,

@@ -86,16 +86,19 @@ class FetchingMiddleware(BaseMiddleware):
         "faq": {},
         "info": {},
         "needs": {},
+        "donations": {},
     }
     _last_fetch_time = {
         "faq": None,
         "info": None,
         "needs": None,
+        "donations": None,
     }
     _endpoints = {
         "faq": "faq/?category=Shelter_Info",
         "info": "faq/?category=FAQ",
         "needs": "faq/?category=Needs",
+        "donations": "faq/?category=Donations",
     }
     FETCH_INTERVAL = datetime.timedelta(minutes=10)
 
@@ -114,7 +117,7 @@ class FetchingMiddleware(BaseMiddleware):
             if not self._shelter_information[key] or self._fetch_required(key):
                 response = await fetch_data(endpoint, data.get("access"))
                 if not response:
-                    return await handler(event, data)
+                    continue
                 self._shelter_information[key] = {
                     raw_question.pop("id"): Question(**raw_question)
                     for raw_question in response

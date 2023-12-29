@@ -31,6 +31,7 @@ class InformationSchema(BaseModel):
     faq: dict[int, QuestionSchema]
     info: dict[int, QuestionSchema]
     needs: dict[int, QuestionSchema]
+    donations: dict[int, QuestionSchema]
 
 
 class Question:

@@ -148,5 +148,25 @@
         "is_relevant": true,
         "category": "Needs"
       }
+    },
+    {
+      "model": "questions.frequentlyaskedquestion",
+      "pk": 16,
+      "fields": {
+        "text": "Сделать пожертвование",
+        "answer": "https://predannoeserdce.ru/sms-pozhertvovanie/",
+        "is_relevant": true,
+        "category": "Donations"
+      }
+    },
+    {
+      "model": "questions.frequentlyaskedquestion",
+      "pk": 17,
+      "fields": {
+        "text": "Участвовать в попечительской программе",
+        "answer": "https://predannoeserdce.ru/programmy-prijuta/popechitelstvo/",
+        "is_relevant": true,
+        "category": "Donations"
+      }
     }
 ]

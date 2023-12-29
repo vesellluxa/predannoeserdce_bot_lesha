@@ -6,7 +6,12 @@ import urllib.parse
 import httpx
 from dotenv import load_dotenv
 from pydantic import ValidationError
-from schemas.schemas import CreateQuestionDto, CreateUserShortDto, UpdateUser
+from schemas.schemas import (
+    CreateQuestionDto,
+    CreateUserShortDto,
+    UpdateUser,
+    NewsletterSchema,
+)
 
 load_dotenv()
 
@@ -161,46 +166,52 @@ news = [
         "id": 1,
         "text": "Текст новости 1",
         "date": datetime.datetime.now() + datetime.timedelta(seconds=5),
-        "finished": False,
+        "is_finished": False,
     },
     {
         "id": 2,
         "text": "Текст новости 2",
         "date": datetime.datetime.now() + datetime.timedelta(seconds=15),
-        "finished": False,
+        "is_finished": False,
     },
 ]
 
 
-async def fetch_newsletters(username: str, password: str):
-    newsletter = {"users": [], "newsletters": []}
+async def fetch_newsletters(
+    username: str, password: str
+) -> [NewsletterSchema]:
     token = await obtain_token(username, password)
-
     if not token or "access" not in token:
-        return newsletter
+        return []
 
     access = token["access"]
     headers = {"Authorization": f"Bearer {access}"}
-    base_url = f"{BASE_URL}/api/v1/"
+    base_url = f"{BASE_URL}/api/v1/newsletter/"
 
     async with httpx.AsyncClient() as client:
         try:
-            users_task = client.get(f"{base_url}users/", headers=headers)
-            newsletters_task = client.get(
-                f"{base_url}newsletter/", headers=headers
-            )
-
-            responses = await asyncio.gather(users_task, newsletters_task)
-
-            for response in responses:
-                if response.status_code == 200:
-                    data = response.json()
-                    if "users" in data:
-                        newsletter["users"] = data["users"]
-                    elif "newsletters" in data:
-                        newsletter["newsletters"] = data["newsletters"]
+            response = await client.get(f"{base_url}users/", headers=headers)
+            if response.status_code == 200:
+                return response.json()
         except httpx.HTTPError as e:
             logging.error(f"Error fetching data: {e}")
+    return []
 
-    global news
-    return {"users": [{"chat_id": 196187013}], "newsletters": news}
+
+async def finish_newsletter(newsletter_id: int, username: str, password: str):
+    token = await obtain_token(username, password)
+    if not token or "access" not in token:
+        return None
+    access = token["access"]
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.patch(
+                f"{BASE_URL}/api/v1/newsletter/{newsletter_id}/",
+                json={"is_finished": True},
+                headers={"Authorization": f"Bearer {access}"},
+            )
+            if response.status_code == 200:
+                return response.json()
+        except httpx.HTTPError as e:
+            logging.error(f"Error finishing newsletter: {e}")
+    return None

@@ -1,4 +1,5 @@
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
+import datetime
 
 
 class CreateUserShortDto(BaseModel):
@@ -32,6 +33,18 @@ class InformationSchema(BaseModel):
     info: dict[int, QuestionSchema]
     needs: dict[int, QuestionSchema]
     donations: dict[int, QuestionSchema]
+
+
+class UserSchemaShort(BaseModel):
+    chat_id: int
+
+
+class NewsletterSchema(BaseModel):
+    id: int
+    text: str = Field(..., min_length=1, max_length=2500)
+    sending_date: datetime.datetime
+    is_finished: bool
+    users: list[UserSchemaShort]
 
 
 class Question:

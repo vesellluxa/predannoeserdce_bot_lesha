@@ -2,25 +2,22 @@ import datetime
 import logging
 
 from aiogram import Bot
-from utils.services import fetch_newsletters
+from utils.services import fetch_newsletters, finish_newsletter
+from schemas.schemas import NewsletterSchema
 
 
 async def process_newsletters(bot: Bot, username: str, password: str):
     newsletters = await fetch_newsletters(username, password)
-    if not newsletters.get("users"):
-        return
-    users = newsletters["users"]
-    if not newsletters.get("newsletters"):
-        return
-    newsletters = newsletters["newsletters"]
     filtered_newsletters = [
         newsletter
         for newsletter in newsletters
-        if not newsletter.get("finished")
-        and newsletter.get("date") <= datetime.datetime.now()
+        if datetime.datetime.strptime(
+            newsletter.get("sending_date"), "%Y-%m-%dT%H:%M:%SZ"
+        )
+        <= datetime.datetime.now()
     ]
     for newsletter in filtered_newsletters:
-        for user in users:
+        for user in newsletter.get("users"):
             try:
                 await bot.send_message(
                     chat_id=user.get("chat_id"),
@@ -28,4 +25,4 @@ async def process_newsletters(bot: Bot, username: str, password: str):
                 )
             except Exception as e:
                 logging.error(f"Error sending newsletter: {e}")
-        newsletter["finished"] = True
+        await finish_newsletter(newsletter.get("id"), username, password)

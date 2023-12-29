@@ -16,16 +16,17 @@ class AbstractQuestion(models.Model, TimeMixin):
         abstract = True
 
 
+
+
 class FrequentlyAskedQuestion(AbstractQuestion):
     """
     Модель FAQ (Часто задаваемые вопросы).
     """
 
-    QUESTION_CATEGORIES = {
-        "FAQ": "Часто Задаваемые Вопросы",
-        "Shelter_Info": "Узнать больше о приюте",
-        "Needs": "Нужды приюта"
-    }
+    class QuestionCategories(models.TextChoices):
+        FAQ = "FAQ", "Часто Задаваемые Вопросы"
+        SHELTER_INFO = "Shelter_Info", "Узнать больше о приюте"
+        NEEDS = "Needs", "Нужды приюта"
 
     answer = models.TextField(
         max_length=constants.FAQ_MAX_LENGTH,
@@ -34,7 +35,7 @@ class FrequentlyAskedQuestion(AbstractQuestion):
     is_relevant = models.BooleanField()
     category = models.CharField(
         max_length=24,
-        choices=QUESTION_CATEGORIES,
+        choices=QuestionCategories.choices,
         null=False,
         blank=False
     )

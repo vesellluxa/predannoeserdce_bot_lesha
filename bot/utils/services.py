@@ -1,11 +1,12 @@
+import asyncio
 import logging
 import os
 import urllib.parse
 
-from dotenv import load_dotenv
 import httpx
+from dotenv import load_dotenv
 from pydantic import ValidationError
-from schemas import CreateQuestionDto, CreateUserShortDto, UpdateUser
+from schemas.schemas import CreateQuestionDto, CreateUserShortDto, UpdateUser
 
 load_dotenv()
 
@@ -128,7 +129,7 @@ async def patch_user(user: UpdateUser, access: str):
                 return response.json()
             if response.status_code == 400:
                 response = response.json()
-                response["details"] = "Backend validation error"
+                response["details"] = "Backend error"
                 return response
         except httpx.HTTPError as e:
             logging.error(f"Error updating user data: {e}")
@@ -151,3 +152,55 @@ async def add_unique_question(question: CreateQuestionDto, access: str):
         except ValidationError as e:
             logging.error(f"Error validating question: {e}")
     return None
+
+
+import datetime
+
+news = [
+    {
+        "id": 1,
+        "text": "Текст новости 1",
+        "date": datetime.datetime.now() + datetime.timedelta(seconds=5),
+        "finished": False,
+    },
+    {
+        "id": 2,
+        "text": "Текст новости 2",
+        "date": datetime.datetime.now() + datetime.timedelta(seconds=15),
+        "finished": False,
+    },
+]
+
+
+async def fetch_newsletters(username: str, password: str):
+    newsletter = {"users": [], "newsletters": []}
+    token = await obtain_token(username, password)
+
+    if not token or "access" not in token:
+        return newsletter
+
+    access = token["access"]
+    headers = {"Authorization": f"Bearer {access}"}
+    base_url = f"{BASE_URL}/api/v1/"
+
+    async with httpx.AsyncClient() as client:
+        try:
+            users_task = client.get(f"{base_url}users/", headers=headers)
+            newsletters_task = client.get(
+                f"{base_url}newsletter/", headers=headers
+            )
+
+            responses = await asyncio.gather(users_task, newsletters_task)
+
+            for response in responses:
+                if response.status_code == 200:
+                    data = response.json()
+                    if "users" in data:
+                        newsletter["users"] = data["users"]
+                    elif "newsletters" in data:
+                        newsletter["newsletters"] = data["newsletters"]
+        except httpx.HTTPError as e:
+            logging.error(f"Error fetching data: {e}")
+
+    global news
+    return {"users": [{"chat_id": 196187013}], "newsletters": news}

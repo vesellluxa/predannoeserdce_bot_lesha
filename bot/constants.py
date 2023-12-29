@@ -35,7 +35,7 @@ class BOT_ANSWERS(str, Enum):
     Тел. для курьера: +7 (952) 209-39-51 Инна Алиева
     НЕОПЛАЧЕННЫЕ ЗАКАЗЫ НЕ ПРИНИМАЮТСЯ!
     """
-    unique_question = "Задать свой вопрос"
+    unique_question = "❓ Задать свой вопрос ❓"
     enter_unique_question = "Введите ваш вопрос"
     unique_question_reply = "Спасибо, мы свяжемся с Вами."
     cancel = "Отмена"
@@ -48,6 +48,7 @@ class BOT_ANSWERS(str, Enum):
     enter_correct_value = "Пожалуйста, введите корректное значение"
     enter_correct_question = "Пожалуйста, введите корректный вопрос, либо нажмите на кнопку 'Отмена'"
     validation_error = "Ошибка валидации, попробуйте еще раз"
+    update_error = "Ошибка, попробуйте еще раз позднее"
     user_creation_error = "Ошибка создания пользователя, попробуйте еще раз"
     question_creation_error = "Ошибка создания вопроса, попробуйте еще раз"
     something_went_wrong = "Что-то пошло не так, попробуйте еще раз"
@@ -59,6 +60,14 @@ class BOT_ANSWERS(str, Enum):
     )
     donation = "Сделать пожертвование"
     donation_url = "https://predannoeserdce.ru/sms-pozhertvovanie/)"
+    animals = "Посмотреть животных"
+    animals_title = "Посмотреть животных, которым нужна помощь"
+    animals_url = "https://predannoeserdce.ru/catalog/"
+    update_data = "Нажмите 'Обновить' если хотите обновить свои данные, 'Удалить' для их удаления и 'Назад' для возврата к главному меню"
+    update = "Обновить"
+    delete = "Удалить"
+    back = "Назад"
+    data_back_message = "Хорошо, вы сможете вернуться к изменению своих данных позже выбрав соответствующую команду в меню, а пока можете выбрать действие"
 
 
 PAGINATION = 3

@@ -1,9 +1,9 @@
 from aiogram.types import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
     KeyboardButton,
     Message,
     ReplyKeyboardMarkup,
-    InlineKeyboardMarkup,
-    InlineKeyboardButton,
 )
 from constants import BOT_ANSWERS
 
@@ -17,6 +17,19 @@ YES_NO_KEYBOARD = ReplyKeyboardMarkup(
     resize_keyboard=True,
     input_field_placeholder="Выберите вариант: ",
 )
+
+DATA_UPDATE_KEYBOARD = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text=BOT_ANSWERS.update.value),
+            KeyboardButton(text=BOT_ANSWERS.delete.value),
+            KeyboardButton(text=BOT_ANSWERS.back.value),
+        ]
+    ],
+    resize_keyboard=True,
+    input_field_placeholder="Выберите вариант: ",
+)
+
 
 SEND_CONTACT_KEYBOARD = ReplyKeyboardMarkup(
     keyboard=[
@@ -69,9 +82,9 @@ FAQ_INFO_CANCEL_KEYBOARD = ReplyKeyboardMarkup(
 MAIN_INTERACTION_KEYBOARD = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text=BOT_ANSWERS.unique_question.value),
             KeyboardButton(text=BOT_ANSWERS.shelter.value),
             KeyboardButton(text=BOT_ANSWERS.monetary_aid.value),
+            KeyboardButton(text=BOT_ANSWERS.animals.value),
         ]
     ],
     resize_keyboard=True,
@@ -93,6 +106,17 @@ MONETARY_AID_KEYBOARD = InlineKeyboardMarkup(
             ),
         ],
     ],
+)
+
+ANIMALS_KEYBOARD = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                text=BOT_ANSWERS.animals.value,
+                url=BOT_ANSWERS.animals_url.value,
+            ),
+        ]
+    ]
 )
 
 

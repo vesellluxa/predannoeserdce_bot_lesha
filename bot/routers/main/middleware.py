@@ -5,10 +5,10 @@ from typing import Any, Awaitable, Callable, Dict
 from aiogram import BaseMiddleware, Bot
 from aiogram.types import Message
 from dotenv import load_dotenv
-from schemas import Question
-from services import fetch_data, obtain_token, refresh_token
+from schemas.schemas import Question
+from utils.services import fetch_data, obtain_token, refresh_token
 
-load_dotenv(dotenv_path="./bot/.env")
+load_dotenv()
 
 
 class BotMiddelware(BaseMiddleware):

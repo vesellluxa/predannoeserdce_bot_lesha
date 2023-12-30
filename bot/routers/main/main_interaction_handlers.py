@@ -8,7 +8,7 @@ from keyboards import (
     create_donation_keyboard,
     create_animals_keyboard,
 )
-from schemas.forms import InformationAboutShelter
+from states.states import InformationAboutShelter
 from schemas.schemas import InformationSchema
 from utils.helpers import (
     check_message,

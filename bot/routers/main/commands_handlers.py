@@ -3,7 +3,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 from constants import BOT_ANSWERS
 from keyboards import YES_NO_KEYBOARD, send_main_interaction_buttons
-from schemas.forms import InformationAboutShelter, PersonalDataForm
+from states.states import InformationAboutShelter, PersonalDataForm
 from utils.helpers import delete_inline_keyboard
 from utils.services import add_user_to_db, check_user_status
 

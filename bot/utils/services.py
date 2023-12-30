@@ -165,24 +165,6 @@ async def add_unique_question(question: CreateQuestionDto, access: str):
     return None
 
 
-import datetime
-
-news = [
-    {
-        "id": 1,
-        "text": "Текст новости 1",
-        "date": datetime.datetime.now() + datetime.timedelta(seconds=5),
-        "is_finished": False,
-    },
-    {
-        "id": 2,
-        "text": "Текст новости 2",
-        "date": datetime.datetime.now() + datetime.timedelta(seconds=15),
-        "is_finished": False,
-    },
-]
-
-
 async def fetch_notifications_and_newsletters(
     username: str, password: str, type: str = "newsletter"
 ):

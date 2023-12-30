@@ -1,7 +1,7 @@
 from aiogram import F, Router
 from aiogram.filters import CommandStart
 from constants import BOT_ANSWERS
-from schemas.forms import InformationAboutShelter, PersonalDataForm
+from states.states import InformationAboutShelter, PersonalDataForm
 
 from .callbacks import process_faq_callback, process_page_callback
 from .commands_handlers import command_cancel, command_start
@@ -17,8 +17,6 @@ from .personal_data_handlers import (
     process_name,
     process_permission,
     process_phone_number,
-    process_second_name,
-    process_surname,
     process_update,
 )
 
@@ -40,9 +38,7 @@ router.message.register(
 router.message.register(process_data, F.text.casefold() == "/data")
 router.message.register(process_update, PersonalDataForm.update_data)
 router.message.register(process_permission, PersonalDataForm.permission)
-router.message.register(process_name, PersonalDataForm.first_name)
-router.message.register(process_second_name, PersonalDataForm.second_name)
-router.message.register(process_surname, PersonalDataForm.surname)
+router.message.register(process_name, PersonalDataForm.name)
 router.message.register(process_email, PersonalDataForm.email)
 router.message.register(process_phone_number, PersonalDataForm.phone_number)
 

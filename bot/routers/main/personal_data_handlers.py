@@ -10,7 +10,7 @@ from keyboards import (
     YES_NO_KEYBOARD,
     send_main_interaction_buttons,
 )
-from schemas.forms import InformationAboutShelter, PersonalDataForm
+from states.states import InformationAboutShelter, PersonalDataForm
 from utils.helpers import check_message
 from utils.services import patch_user
 
@@ -32,7 +32,7 @@ async def process_update(
             "keyboard": MAIN_INTERACTION_KEYBOARD,
         },
         BOT_ANSWERS.update.value.casefold(): {
-            "state": PersonalDataForm.first_name,
+            "state": PersonalDataForm.name,
             "message": BOT_ANSWERS.first_name.value,
             "keyboard": CANCEL_KEYBOARD,
         },
@@ -53,8 +53,8 @@ async def process_update(
             await message.answer(BOT_ANSWERS.something_went_wrong.value)
             return
         user = {
-            "name": "",
-            "second_name": "",
+            "first_name": "",
+            "middle_name": "",
             "surname": "",
             "phone_number": None,
             "email": None,
@@ -97,12 +97,12 @@ async def process_permission(message: Message, state: FSMContext) -> None:
             "keyboard": MAIN_INTERACTION_KEYBOARD,
         },
         BOT_ANSWERS.yes.value.casefold(): {
-            "state": PersonalDataForm.first_name,
+            "state": PersonalDataForm.name,
             "message": BOT_ANSWERS.first_name.value,
             "keyboard": CANCEL_KEYBOARD,
         },
         BOT_ANSWERS.try_again.value.casefold(): {
-            "state": PersonalDataForm.first_name,
+            "state": PersonalDataForm.name,
             "message": BOT_ANSWERS.first_name.value,
             "keyboard": CANCEL_KEYBOARD,
         },
@@ -129,33 +129,9 @@ async def process_name(message: Message, state: FSMContext) -> None:
         BOT_ANSWERS.enter_correct_value.value,
     ):
         return
-    await state.update_data(first_name=message.text)
-    await state.set_state(PersonalDataForm.second_name)
-    await message.answer(BOT_ANSWERS.second_name.value)
-
-
-async def process_second_name(message: Message, state: FSMContext) -> None:
-    if not await check_message(
-        message,
-        BOT_ANSWERS.enter_correct_value.value,
-    ):
-        return
-    await state.update_data(second_name=message.text)
-    await state.set_state(PersonalDataForm.surname)
-    await message.answer(BOT_ANSWERS.surname.value)
-
-
-async def process_surname(message: Message, state: FSMContext) -> None:
-    if not await check_message(
-        message,
-        BOT_ANSWERS.enter_correct_value.value,
-    ):
-        return
-    await state.update_data(surname=message.text)
+    await state.update_data(name=message.text)
     await state.set_state(PersonalDataForm.email)
-    await message.answer(
-        BOT_ANSWERS.email.value,
-    )
+    await message.answer(BOT_ANSWERS.email.value)
 
 
 async def process_email(message: Message, state: FSMContext) -> None:
@@ -189,10 +165,11 @@ async def process_phone_number(
         )
     else:
         data = await state.update_data(phone_number=message.text)
+    name = data.get("name").split(" ")
     user = {
-        "name": data["first_name"],
-        "second_name": data["second_name"],
-        "surname": data["surname"],
+        "first_name": name[0],
+        "middle_name": name[1] if len(name) >= 2 else "",
+        "surname": name[2] if len(name) > 1 else "",
         "email": data["email"],
         "phone_number": data["phone_number"],
         "chat_id": message.chat.id,

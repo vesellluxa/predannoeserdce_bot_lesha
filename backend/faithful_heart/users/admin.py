@@ -31,7 +31,7 @@ class TelegramUserAdmin(admin.ModelAdmin):
 
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ("pk",)
+    list_display = ("username",)
 
 
 admin.site.register(TelegramUser, TelegramUserAdmin)

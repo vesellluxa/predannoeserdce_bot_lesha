@@ -110,7 +110,6 @@ class UniqueQuestionView(CreateAPIView, GenericViewSet):
         serializer.save()
         question = serializer.validated_data.get("text")
         send_email_to_admin(question)
-        # send_tg_notification_to_admin(question)
 
 
 class APILogoutView(APIView):
@@ -142,6 +141,7 @@ class TelegramNewsletterViewSet(
     )
     serializer_class = NewsletterSerializer
     pagination_class = None
+    permission_classes = [IsAuthenticated]
 
 
 class NotificationViewSet(
@@ -153,3 +153,4 @@ class NotificationViewSet(
     )
     serializer_class = NotificationSerializer
     pagination_class = None
+    permission_classes = [IsAuthenticated]

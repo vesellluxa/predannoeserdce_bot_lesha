@@ -33,7 +33,7 @@ async def process_update(
         },
         BOT_ANSWERS.update.value.casefold(): {
             "state": PersonalDataForm.name,
-            "message": BOT_ANSWERS.first_name.value,
+            "message": BOT_ANSWERS.name.value,
             "keyboard": CANCEL_KEYBOARD,
         },
         BOT_ANSWERS.delete.value.casefold(): {},
@@ -53,7 +53,7 @@ async def process_update(
             await message.answer(BOT_ANSWERS.something_went_wrong.value)
             return
         user = {
-            "first_name": "",
+            "name": "",
             "middle_name": "",
             "surname": "",
             "phone_number": None,
@@ -98,12 +98,12 @@ async def process_permission(message: Message, state: FSMContext) -> None:
         },
         BOT_ANSWERS.yes.value.casefold(): {
             "state": PersonalDataForm.name,
-            "message": BOT_ANSWERS.first_name.value,
+            "message": BOT_ANSWERS.name.value,
             "keyboard": CANCEL_KEYBOARD,
         },
         BOT_ANSWERS.try_again.value.casefold(): {
             "state": PersonalDataForm.name,
-            "message": BOT_ANSWERS.first_name.value,
+            "message": BOT_ANSWERS.name.value,
             "keyboard": CANCEL_KEYBOARD,
         },
     }
@@ -167,9 +167,9 @@ async def process_phone_number(
         data = await state.update_data(phone_number=message.text)
     name = data.get("name").split(" ")
     user = {
-        "first_name": name[0],
-        "middle_name": name[1] if len(name) >= 2 else "",
-        "surname": name[2] if len(name) > 1 else "",
+        "name": name[0],
+        "middle_name": name[1] if len(name) > 2 else "",
+        "surname": name[-1] if len(name) > 1 else "",
         "email": data["email"],
         "phone_number": data["phone_number"],
         "chat_id": message.chat.id,

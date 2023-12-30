@@ -41,7 +41,7 @@ class User(AbstractUser):
         verbose_name_plural = "Пользователи админ-панели"
 
     def save(self, *args, **kwargs):
-        self.telegram_username = self.telegram_username.lower()
+        self.telegram_username = self.telegram_username
         super().save(*args, **kwargs)
 
 

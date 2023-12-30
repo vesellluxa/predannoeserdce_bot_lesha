@@ -131,7 +131,7 @@ class TelegramNewsletterViewSet(
 ):
     queryset = TelegramNewsletter.objects.filter(
         is_finished=False,
-        sending_date__gt=Now()
+        sending_date__lt=Now()
     )
     serializer_class = NewsletterSerializer
     pagination_class = None

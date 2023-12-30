@@ -155,7 +155,7 @@ async def add_unique_question(question: CreateQuestionDto, access: str):
             if response.status_code == 400:
                 response = response.json()
                 if response.get("text") == [
-                    "Вопрос содержит запрещённые слова."
+                    "Вопрос содержит запрещённые слова"
                 ]:
                     return {"details": "Question contains forbidden words"}
         except httpx.HTTPError as e:

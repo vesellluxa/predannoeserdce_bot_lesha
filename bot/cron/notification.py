@@ -20,8 +20,11 @@ async def process_notification(bot: Bot, username: str, password: str):
                 chat_id=notification.get("to").get("chat_id"),
                 text=notification.get("text"),
             )
+            await finish_notification_or_newsletter(
+                notification.get("id"),
+                username,
+                password,
+                type="notifications",
+            )
         except Exception as e:
             logging.error(f"Error sending newsletter: {e}")
-        await finish_notification_or_newsletter(
-            notification.get("id"), username, password, type="notifications"
-        )

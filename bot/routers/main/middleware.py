@@ -87,18 +87,21 @@ class FetchingMiddleware(BaseMiddleware):
         "info": {},
         "needs": {},
         "donations": {},
+        "list_animals": {},
     }
     _last_fetch_time = {
         "faq": None,
         "info": None,
         "needs": None,
         "donations": None,
+        "list_animals": None,
     }
     _endpoints = {
         "faq": "faq/?category=Shelter_Info",
         "info": "faq/?category=FAQ",
         "needs": "faq/?category=Needs",
         "donations": "faq/?category=Donations",
+        "list_animals": "faq/?category=List_Animals",
     }
     FETCH_INTERVAL = datetime.timedelta(minutes=10)
 

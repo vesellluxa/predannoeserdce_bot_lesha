@@ -33,6 +33,7 @@ class InformationSchema(BaseModel):
     info: dict[int, QuestionSchema]
     needs: dict[int, QuestionSchema]
     donations: dict[int, QuestionSchema]
+    list_animals: dict[int, QuestionSchema]
 
 
 class UserSchemaShort(BaseModel):

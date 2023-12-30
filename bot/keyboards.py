@@ -93,17 +93,6 @@ MAIN_INTERACTION_KEYBOARD = ReplyKeyboardMarkup(
     input_field_placeholder="Выберите категорию: ",
 )
 
-ANIMALS_KEYBOARD = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [
-            InlineKeyboardButton(
-                text=BOT_ANSWERS.animals.value,
-                url=BOT_ANSWERS.animals_url.value,
-            ),
-        ]
-    ]
-)
-
 
 async def send_main_interaction_buttons(message: Message, text: str) -> None:
     """
@@ -121,6 +110,24 @@ async def send_main_interaction_buttons(message: Message, text: str) -> None:
 
 def create_donation_keyboard(shelter_information: InformationSchema):
     donations = shelter_information.get("donations")
+    buttons = []
+    if donations:
+        for donation in donations.values():
+            buttons.append(
+                [
+                    InlineKeyboardButton(
+                        text=donation.text,
+                        url=donation.answer,
+                    ),
+                ],
+            )
+    if buttons:
+        return InlineKeyboardMarkup(inline_keyboard=buttons)
+    return None
+
+
+def create_animals_keyboard(shelter_information: InformationSchema):
+    donations = shelter_information.get("list_animals")
     buttons = []
     if donations:
         for donation in donations.values():

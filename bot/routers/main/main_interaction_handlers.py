@@ -3,10 +3,10 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 from constants import BOT_ANSWERS
 from keyboards import (
-    ANIMALS_KEYBOARD,
     FAQ_INFO_CANCEL_KEYBOARD,
     MAIN_INTERACTION_KEYBOARD,
     create_donation_keyboard,
+    create_animals_keyboard,
 )
 from schemas.forms import InformationAboutShelter
 from schemas.schemas import InformationSchema
@@ -32,7 +32,7 @@ async def process_main_interaction(
         BOT_ANSWERS.animals.value.casefold(): {
             "state": InformationAboutShelter.main_interaction,
             "message": BOT_ANSWERS.animals_title.value,
-            "keyboard": ANIMALS_KEYBOARD,
+            "keyboard": create_animals_keyboard(shelter_information),
         },
         BOT_ANSWERS.monetary_aid.value.casefold(): {
             "state": InformationAboutShelter.main_interaction,
@@ -110,7 +110,10 @@ async def process_unique_question(
         return
     if question_db.get("details") == "Question contains forbidden words":
         await state.set_state(InformationAboutShelter.main_interaction)
-        await message.answer(BOT_ANSWERS.question_validation_error.value)
+        await message.answer(
+            BOT_ANSWERS.question_validation_error.value,
+            reply_markup=MAIN_INTERACTION_KEYBOARD,
+        )
         return
     await state.set_state(InformationAboutShelter.main_interaction)
     await message.answer(

@@ -7,6 +7,7 @@ from aiogram import Bot, Dispatcher
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from commands import set_main_menu
 from cron.newsletter import process_newsletters
+from cron.notification import process_notification
 from dotenv import load_dotenv
 from routers.main.middleware import BotMiddelware
 from routers.main.router import router
@@ -27,6 +28,12 @@ async def main() -> None:
     scheduler = AsyncIOScheduler()
     scheduler.add_job(
         process_newsletters,
+        trigger="interval",
+        seconds=int(os.getenv("NEWSLETTER_INTERVAL", default=5)),
+        args=[bot, os.getenv("ADMIN_USERNAME"), os.getenv("ADMIN_PASSWORD")],
+    )
+    scheduler.add_job(
+        process_notification,
         trigger="interval",
         seconds=int(os.getenv("NEWSLETTER_INTERVAL", default=5)),
         args=[bot, os.getenv("ADMIN_USERNAME"), os.getenv("ADMIN_PASSWORD")],

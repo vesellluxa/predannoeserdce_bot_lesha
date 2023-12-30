@@ -2,25 +2,25 @@ import datetime
 import logging
 
 from aiogram import Bot
-from utils.services import fetch_newsletters, finish_newsletter
-from schemas.schemas import NewsletterSchema
+from utils.services import (
+    fetch_notifications_and_newsletters,
+    finish_notification_or_newsletter,
+)
 
 
 async def process_newsletters(bot: Bot, username: str, password: str):
-    newsletters = await fetch_newsletters(username, password)
+    newsletters = await fetch_notifications_and_newsletters(username, password)
     if not newsletters:
         return None
-    logging.info(f"Newsletters: {newsletters}")
     filtered_newsletters = [
         newsletter
         for newsletter in newsletters
-        if datetime.datetime.strptime(
-            newsletter.get("sending_date"), "%Y-%m-%dT%H:%M:%SZ"
+        if datetime.datetime.fromisoformat(newsletter.get("sending_date"))
+        <= datetime.datetime.now(
+            tz=datetime.timezone(datetime.timedelta(hours=3))
         )
-        <= datetime.datetime.now()
     ]
     for newsletter in filtered_newsletters:
-        logging.info(f"Sending newsletter: {newsletter}")
         for chat_id in newsletter.get("users"):
             try:
                 await bot.send_message(
@@ -29,4 +29,6 @@ async def process_newsletters(bot: Bot, username: str, password: str):
                 )
             except Exception as e:
                 logging.error(f"Error sending newsletter: {e}")
-        await finish_newsletter(newsletter.get("id"), username, password)
+        await finish_notification_or_newsletter(
+            newsletter.get("id"), username, password
+        )

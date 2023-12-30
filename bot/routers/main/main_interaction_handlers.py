@@ -108,6 +108,10 @@ async def process_unique_question(
         await state.set_state(InformationAboutShelter.main_interaction)
         await message.answer(BOT_ANSWERS.question_creation_error.value)
         return
+    if question_db.get("details") == "Question contains forbidden words":
+        await state.set_state(InformationAboutShelter.main_interaction)
+        await message.answer(BOT_ANSWERS.question_validation_error.value)
+        return
     await state.set_state(InformationAboutShelter.main_interaction)
     await message.answer(
         BOT_ANSWERS.unique_question_reply.value,

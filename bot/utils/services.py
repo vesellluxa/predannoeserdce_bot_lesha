@@ -152,6 +152,12 @@ async def add_unique_question(question: CreateQuestionDto, access: str):
             )
             if response.status_code == 201:
                 return response.json()
+            if response.status_code == 400:
+                response = response.json()
+                if response.get("text") == [
+                    "Вопрос содержит запрещённые слова."
+                ]:
+                    return {"details": "Question contains forbidden words"}
         except httpx.HTTPError as e:
             logging.error(f"Error adding unique question to DB: {e}")
         except ValidationError as e:
@@ -177,7 +183,9 @@ news = [
 ]
 
 
-async def fetch_newsletters(username: str, password: str):
+async def fetch_notifications_and_newsletters(
+    username: str, password: str, type: str = "newsletter"
+):
     token = await obtain_token(username, password)
     if not token or "access" not in token:
         return []
@@ -188,16 +196,21 @@ async def fetch_newsletters(username: str, password: str):
     async with httpx.AsyncClient() as client:
         try:
             response = await client.get(
-                f"{BASE_URL}/api/v1/newsletter/", headers=headers
+                f"{BASE_URL}/api/v1/{type}/", headers=headers
             )
             if response.status_code == 200:
                 return response.json()
         except httpx.HTTPError as e:
-            logging.error(f"Error fetching data: {e}")
+            logging.error(f"Error fetching {type}: {e}")
     return []
 
 
-async def finish_newsletter(newsletter_id: int, username: str, password: str):
+async def finish_notification_or_newsletter(
+    id: int,
+    username: str,
+    password: str,
+    type: str = "newsletter",
+):
     token = await obtain_token(username, password)
     if not token or "access" not in token:
         return None
@@ -205,12 +218,12 @@ async def finish_newsletter(newsletter_id: int, username: str, password: str):
     async with httpx.AsyncClient() as client:
         try:
             response = await client.patch(
-                f"{BASE_URL}/api/v1/newsletter/{newsletter_id}/",
+                f"{BASE_URL}/api/v1/{type}/{id}/",
                 json={"is_finished": True},
                 headers={"Authorization": f"Bearer {access}"},
             )
             if response.status_code == 200:
                 return response.json()
         except httpx.HTTPError as e:
-            logging.error(f"Error finishing newsletter: {e}")
+            logging.error(f"Error finishing {type}: {e}")
     return None

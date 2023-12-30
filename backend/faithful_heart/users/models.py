@@ -82,7 +82,7 @@ class TelegramUser(models.Model, TimeMixin):
     )
 
     surname = models.CharField(
-        verbose_name='Фамилия',
+        verbose_name="Фамилия",
         max_length=constants.SURNAME_MAX_LENGTH,
         validators=[
             MinLengthValidator(constants.NAME_MIN_LENGTH),
@@ -99,7 +99,7 @@ class TelegramUser(models.Model, TimeMixin):
     )
 
     middle_name = models.CharField(
-        verbose_name='Отчество',
+        verbose_name="Отчество",
         max_length=constants.SURNAME_MAX_LENGTH,
         validators=[
             MinLengthValidator(constants.NAME_MIN_LENGTH),

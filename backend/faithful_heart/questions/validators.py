@@ -16,4 +16,4 @@ pf.append_words(words)
 
 def validate_is_profane_russian(value):
     if pf.is_profane(value) is True:
-        raise ValidationError("Некорректный вопрос")
+        raise ValidationError("Вопрос содержит запрещённые слова")

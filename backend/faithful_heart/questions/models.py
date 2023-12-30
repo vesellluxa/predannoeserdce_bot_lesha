@@ -2,6 +2,7 @@ from django.db import models
 from users.models import TelegramUser, TimeMixin
 from notifications.models import Notification
 from faithful_heart import constants
+from questions.utils import create_notification_to_user, create_telegram_notification_to_admin, send_email_to_admin
 
 
 class AbstractQuestion(models.Model, TimeMixin):
@@ -26,7 +27,7 @@ class FrequentlyAskedQuestion(AbstractQuestion):
         SHELTER_INFO = "Shelter_Info", "Узнать больше о приюте"
         NEEDS = "Needs", "Нужды приюта"
         DONATIONS = "Donations", "Сделать пожертвование"
-        LIST_ANIMALS = "List_Animals", "Список животных" 
+        LIST_ANIMALS = "List_Animals", "Список животных"
 
     answer = models.TextField(
         max_length=constants.FAQ_MAX_LENGTH,
@@ -78,16 +79,7 @@ class UniqueQuestion(AbstractQuestion, TimeMixin):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if not self.is_answered:
-            url_to_question = constants.PROD_URL + f"/admin/questions/uniquequestion/{self.pk}/change/"
-            print(url_to_question)
-            Notification.objects.create(
-                to=TelegramUser.get_admin_telegram_user(),
-                text=f"Поступил новый вопрос. Ссылка: {url_to_question}"
-            )
+            create_telegram_notification_to_admin(self)
+            send_email_to_admin(self)
         if self.is_answered:
-            Notification.objects.create(
-                to=self.owner,
-                text=f"Поступил ответ на ваш вопрос:"
-                     f"{self.answer}"
-
-            )
+            create_notification_to_user(self)

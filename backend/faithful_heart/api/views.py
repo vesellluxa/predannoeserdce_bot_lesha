@@ -1,4 +1,5 @@
-from rest_framework import status
+from django.db.models.functions import Now
+
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -22,26 +23,20 @@ from .serializers import (
     UniqueQuestionSerializer,
     FrequentlyAskedQuestionSerializer,
     NewsletterSerializer,
-    NotificationSerializer
+    NotificationSerializer,
 )
 from users.models import TelegramUser
 from questions.models import UniqueQuestion, FrequentlyAskedQuestion
 from notifications.models import TelegramNewsletter, Notification
-from .api_service import (
-    export_users_excel,
-    send_email_to_admin,
-)
+from .api_service import export_users_excel
 from http import HTTPStatus
 
 
-class TelegramUsersViewSet(
-    CreateModelMixin,
-    UpdateModelMixin,
-    GenericViewSet
-):
+class TelegramUsersViewSet(CreateModelMixin, UpdateModelMixin, GenericViewSet):
     """
     Добавление и обновление пользователей.
     """
+
     serializer_class = TelegramUserSerializer
     queryset = TelegramUser.objects.all()
     permission_classes = [IsAuthenticated]
@@ -106,11 +101,6 @@ class UniqueQuestionView(CreateAPIView, GenericViewSet):
     serializer_class = UniqueQuestionSerializer
     permission_classes = [IsAuthenticated]
 
-    def perform_create(self, serializer):
-        serializer.save()
-        question = serializer.validated_data.get("text")
-        send_email_to_admin(question)
-
 
 class APILogoutView(APIView):
     """
@@ -132,26 +122,18 @@ class APILogoutView(APIView):
 
 
 class TelegramNewsletterViewSet(
-    ListModelMixin,
-    UpdateModelMixin,
-    GenericViewSet
+    ListModelMixin, UpdateModelMixin, GenericViewSet
 ):
     queryset = TelegramNewsletter.objects.filter(
-        is_finished=False
+        is_finished=False, sending_date__lt=Now()
     )
     serializer_class = NewsletterSerializer
     pagination_class = None
     permission_classes = [IsAuthenticated]
 
 
-class NotificationViewSet(
-    ListModelMixin,
-    UpdateModelMixin,
-    GenericViewSet
-):
-    queryset = Notification.objects.filter(
-        is_finished=False
-    )
+class NotificationViewSet(ListModelMixin, UpdateModelMixin, GenericViewSet):
+    queryset = Notification.objects.filter(is_finished=False)
     serializer_class = NotificationSerializer
     pagination_class = None
     permission_classes = [IsAuthenticated]

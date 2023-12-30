@@ -18,17 +18,15 @@ class User(AbstractUser):
     telegram_username = models.CharField(
         max_length=constants.USERNAME_MAX_LENGTH,
         validators=[
-            MinLengthValidator(
-                constants.USERNAME_MIN_LENGTH
-            ),
+            MinLengthValidator(constants.USERNAME_MIN_LENGTH),
             RegexValidator(
                 regex=constants.TELEGRAM_USERNAME_REGEX,
                 message=constants.USERNAME_REGEX_VALIDATOR_ERROR_TEXT,
                 code="invalid_username"
             )
         ],
-        verbose_name='Имя пользователя',
-        unique=True
+        verbose_name="Имя пользователя",
+        unique=True,
     )
 
     class Meta:
@@ -44,77 +42,65 @@ class TelegramUser(models.Model, TimeMixin):
     username = models.CharField(
         max_length=constants.USERNAME_MAX_LENGTH,
         validators=[
-            MinLengthValidator(
-                constants.USERNAME_MIN_LENGTH
-            ),
+            MinLengthValidator(constants.USERNAME_MIN_LENGTH),
             RegexValidator(
                 regex=constants.TELEGRAM_USERNAME_REGEX,
                 message=constants.USERNAME_REGEX_VALIDATOR_ERROR_TEXT,
                 code="invalid_username"
             )
         ],
-        verbose_name='Имя пользователя',
-        unique=True
+        verbose_name="Имя пользователя",
+        unique=True,
     )
 
     email = models.EmailField(
-        verbose_name='E-mail пользователя',
-        unique=True,
-        blank=True,
-        null=True
-
+        verbose_name="E-mail пользователя", unique=True, blank=True, null=True
     )
 
     name = models.CharField(
-        verbose_name='Имя',
+        verbose_name="Имя",
         max_length=constants.NAME_MAX_LENGTH,
         validators=[
-            MinLengthValidator(
-                constants.NAME_MIN_LENGTH
-            ),
+            MinLengthValidator(constants.NAME_MIN_LENGTH),
             RegexValidator(
                 regex=constants.NAME_REGEX,
                 message=constants.NAME_REGEX_VALIDATOR_ERROR_TEXT,
                 code="invalid_name"
             )
         ],
-        blank=True
+        blank=True,
     )
 
     second_name = models.CharField(
-        verbose_name='Фамилия',
+        verbose_name="Фамилия",
         max_length=constants.SURNAME_MAX_LENGTH,
         validators=[
-            MinLengthValidator(
-                constants.NAME_MIN_LENGTH
-            ),
+            MinLengthValidator(constants.NAME_MIN_LENGTH),
             RegexValidator(
                 regex=constants.NAME_REGEX,
                 message=constants.SURNAME_REGEX_VALIDATOR_ERROR_TEXT,
                 code="invalid_second_name"
             )
         ],
-        blank=True
+        blank=True,
     )
 
     surname = models.CharField(
-        verbose_name='Отчество',
+        verbose_name="Отчество",
         max_length=constants.SURNAME_MAX_LENGTH,
         validators=[
-            MinLengthValidator(
-                constants.NAME_MIN_LENGTH
-            ),
+            MinLengthValidator(constants.NAME_MIN_LENGTH),
             RegexValidator(
                 regex=constants.NAME_REGEX,
                 message=constants.PATRONYMIC_REGEX_VALIDATOR_ERROR_TEXT,
                 code="invalid_surname"
             )
         ],
-        blank=True
+        blank=True,
     )
 
     phone_number = models.CharField(
-        verbose_name='Номер телефона',
+        verbose_name="Номер телефона",
         max_length=constants.PHONE_NUMBER_LENGTH,
         validators=[
             RegexValidator(
@@ -125,16 +111,14 @@ class TelegramUser(models.Model, TimeMixin):
         ],
         unique=True,
         blank=True,
-        null=True
+        null=True,
     )
 
     chat_id = models.CharField(
         max_length=constants.CHAT_ID_MAX_LENGTH,
         unique=True,
         validators=[
-            MinLengthValidator(
-                constants.CHAT_ID_MIN_LENGTH
-            ),
+            MinLengthValidator(constants.CHAT_ID_MIN_LENGTH),
             RegexValidator(
                 regex=constants.CHAT_ID_REGEX,
                 message=constants.CHAT_ID_REGEX_VALIDATOR_ERROR_TEXT,
@@ -148,7 +132,7 @@ class TelegramUser(models.Model, TimeMixin):
         Сортировка по имени.
         """
 
-        ordering = ('name',)
+        ordering = ("name",)
 
         verbose_name = "Telegram пользователь"
         verbose_name_plural = "Telegram пользователи"
@@ -162,17 +146,18 @@ class TelegramUser(models.Model, TimeMixin):
         Проверяет заполнены ли дополнительные поля пользователя.
         """
         fields_list = [
-            self.name, self.second_name, self.surname,
-            self.phone_number, self.email
+            self.name,
+            self.second_name,
+            self.surname,
+            self.phone_number,
+            self.email,
         ]
-        if any(field is None or field == '' for field in fields_list) is True:
+        if any(field is None or field == "" for field in fields_list) is True:
             return False
         return True
 
     @staticmethod
     def get_admin_telegram_user():
         return TelegramUser.objects.filter(
-            username=User.objects.get(
-                username="admin"
-            ).telegram_username
+            username=User.objects.get(username="admin").telegram_username
         ).first()

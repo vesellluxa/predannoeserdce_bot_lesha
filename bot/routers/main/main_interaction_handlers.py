@@ -5,11 +5,11 @@ from constants import BOT_ANSWERS
 from keyboards import (
     FAQ_INFO_CANCEL_KEYBOARD,
     MAIN_INTERACTION_KEYBOARD,
-    create_donation_keyboard,
     create_animals_keyboard,
+    create_donation_keyboard,
 )
-from schemas.forms import InformationAboutShelter
 from schemas.schemas import InformationSchema
+from states.states import InformationAboutShelter
 from utils.helpers import (
     check_message,
     delete_inline_keyboard,

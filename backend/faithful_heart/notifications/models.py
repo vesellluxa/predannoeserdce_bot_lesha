@@ -21,7 +21,7 @@ class Notification(BaseNotification):
     to = models.ForeignKey(
         verbose_name="Пользователь, получающий уведомление",
         to=TelegramUser,
-        on_delete=models.PROTECT
+        on_delete=models.CASCADE
     )
 
     class Meta:

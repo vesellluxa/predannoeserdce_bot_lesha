@@ -3,8 +3,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from constants import BOT_ANSWERS
 from keyboards import CANCEL_KEYBOARD
-from schemas.forms import InformationAboutShelter
 from schemas.schemas import InformationSchema
+from states.states import InformationAboutShelter
 from utils.helpers import send_paginated_data
 
 

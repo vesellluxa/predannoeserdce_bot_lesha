@@ -1,4 +1,3 @@
-import asyncio
 import logging
 import os
 import urllib.parse
@@ -10,7 +9,6 @@ from schemas.schemas import (
     CreateQuestionDto,
     CreateUserShortDto,
     UpdateUser,
-    NewsletterSchema,
 )
 
 load_dotenv()
@@ -163,24 +161,6 @@ async def add_unique_question(question: CreateQuestionDto, access: str):
         except ValidationError as e:
             logging.error(f"Error validating question: {e}")
     return None
-
-
-import datetime
-
-news = [
-    {
-        "id": 1,
-        "text": "Текст новости 1",
-        "date": datetime.datetime.now() + datetime.timedelta(seconds=5),
-        "is_finished": False,
-    },
-    {
-        "id": 2,
-        "text": "Текст новости 2",
-        "date": datetime.datetime.now() + datetime.timedelta(seconds=15),
-        "is_finished": False,
-    },
-]
 
 
 async def fetch_notifications_and_newsletters(

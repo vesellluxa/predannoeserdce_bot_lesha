@@ -28,7 +28,6 @@ from .serializers import (
 from users.models import TelegramUser
 from questions.models import UniqueQuestion, FrequentlyAskedQuestion
 from notifications.models import TelegramNewsletter, Notification
-from .api_service import export_users_excel
 from http import HTTPStatus
 
 
@@ -58,22 +57,6 @@ class TelegramUsersViewSet(CreateModelMixin, UpdateModelMixin, GenericViewSet):
             status=HTTPStatus.OK,
             data={"is_fully_filled": tg_user.is_fully_filled},
         )
-
-
-class DownloadUserInformationView(GenericViewSet):
-    """
-    Эндпоинт для выгрузки информации пользователей в Excel.
-    """
-
-    queryset = TelegramUser.objects.all()
-    serializer_class = TelegramUserSerializer
-    permission_classes = [IsAuthenticated]
-
-    def list(self, request):
-        queryset = self.get_queryset()
-        serializer = TelegramUserSerializer(queryset, many=True)
-        export_users_excel(queryset)
-        return Response(serializer.data)
 
 
 class FrequentlyAskedQuestionView(ListModelMixin, GenericViewSet):

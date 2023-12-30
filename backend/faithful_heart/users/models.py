@@ -25,13 +25,20 @@ class User(AbstractUser):
                 code="invalid_username"
             )
         ],
-        verbose_name="Имя пользователя",
+        verbose_name="Имя пользователя в telegram",
         unique=True,
     )
+
+    def __str__(self):
+        return self.username
 
     class Meta:
         verbose_name = "Пользователь админ-панели"
         verbose_name_plural = "Пользователи админ-панели"
+
+    def save(self, *args, **kwargs):
+        self.telegram_username = self.telegram_username.lower()
+        super().save(*args, **kwargs)
 
 
 class TelegramUser(models.Model, TimeMixin):
@@ -71,7 +78,7 @@ class TelegramUser(models.Model, TimeMixin):
         blank=True,
     )
 
-    second_name = models.CharField(
+    surname = models.CharField(
         verbose_name="Фамилия",
         max_length=constants.SURNAME_MAX_LENGTH,
         validators=[
@@ -85,7 +92,7 @@ class TelegramUser(models.Model, TimeMixin):
         blank=True,
     )
 
-    surname = models.CharField(
+    middle_name = models.CharField(
         verbose_name="Отчество",
         max_length=constants.SURNAME_MAX_LENGTH,
         validators=[
@@ -147,8 +154,6 @@ class TelegramUser(models.Model, TimeMixin):
         """
         fields_list = [
             self.name,
-            self.second_name,
-            self.surname,
             self.phone_number,
             self.email,
         ]

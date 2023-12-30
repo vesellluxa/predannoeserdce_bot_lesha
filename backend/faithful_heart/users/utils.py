@@ -1,15 +1,17 @@
 from datetime import datetime
 
-from openpyxl import Workbook
+from openpyxl.workbook.workbook import Workbook
 
 from faithful_heart import constants
 from faithful_heart.settings import MEDIA_ROOT
+from users.models import TelegramUser
 
 
-def export_users_excel(users):
+def export_users_excel():
     """
     Создание файла excel с данными пользователей.
     """
+    users = TelegramUser.objects.filter(phone_number__isnull=False)
     date_now = datetime.now()
     date_now_formatted = date_now.strftime(constants.DATETIME_FORMAT)
     workbook = Workbook()
@@ -21,11 +23,11 @@ def export_users_excel(users):
     sheet.column_dimensions["E"].width = 18
     sheet.column_dimensions["F"].width = 18
     headers = [
-        "Name",
-        "Surname",
-        "Phone Number",
-        "Username",
-        "Chat_id",
+        "Имя",
+        "Фамилия",
+        "Отчество",
+        "Номер телефона",
+        "Username в telegram",
         "Email",
     ]
     sheet.append(headers)
@@ -40,5 +42,6 @@ def export_users_excel(users):
                 user.email,
             ]
         )
-    workbook.save(f"{MEDIA_ROOT}/Пользователи_{date_now_formatted}.xlsx")
-
+    path_to_file = f"{MEDIA_ROOT}/Пользователи_{date_now_formatted}.xlsx"
+    workbook.save(path_to_file)
+    return path_to_file

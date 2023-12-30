@@ -41,7 +41,7 @@ class User(AbstractUser):
         verbose_name_plural = "Пользователи админ-панели"
 
     def save(self, *args, **kwargs):
-        self.telegram_username = self.telegram_username
+        self.telegram_username = self.telegram_username.lower()
         super().save(*args, **kwargs)
 
 
@@ -186,5 +186,5 @@ class TelegramUser(models.Model, TimeMixin):
     @staticmethod
     def get_admin_telegram_user():
         return TelegramUser.objects.filter(
-            username=User.objects.get(username="admin").telegram_username.lower()
+            username=User.objects.get(username="admin").telegram_username
         ).first()

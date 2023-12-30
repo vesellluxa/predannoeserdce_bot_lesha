@@ -33,13 +33,16 @@ class User(AbstractUser):
         unique=True,
     )
 
-
     def __str__(self):
         return self.username
 
     class Meta:
         verbose_name = "Пользователь админ-панели"
         verbose_name_plural = "Пользователи админ-панели"
+
+    def save(self, *args, **kwargs):
+        self.telegram_username = self.telegram_username.lower()
+        super().save(*args, **kwargs)
 
 
 class TelegramUser(models.Model, TimeMixin):

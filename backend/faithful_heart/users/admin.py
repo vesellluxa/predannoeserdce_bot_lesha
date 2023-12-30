@@ -22,7 +22,6 @@ class TelegramUserAdmin(admin.ModelAdmin):
 class UserAdmin(admin.ModelAdmin):
     list_display = (
         'pk',
-        'chat_id'
     )
 
 

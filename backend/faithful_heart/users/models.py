@@ -29,7 +29,7 @@ class User(AbstractUser):
                 code="invalid_username",
             ),
         ],
-        verbose_name="Имя пользователя",
+        verbose_name="Имя пользователя в telegram",
         unique=True,
     )
 

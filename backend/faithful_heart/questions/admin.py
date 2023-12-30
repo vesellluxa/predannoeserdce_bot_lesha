@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from questions.models import (FrequentlyAskedQuestion, UniqueQuestion)
+from questions.models import FrequentlyAskedQuestion, UniqueQuestion
 
 
 class FrequentlyAskedQuestionAdmin(admin.ModelAdmin):

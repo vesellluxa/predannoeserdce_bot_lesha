@@ -1,9 +1,9 @@
 from rest_framework import serializers
 
 from notifications.models import Notification, TelegramNewsletter
-from users.models import TelegramUser
-from questions.models import UniqueQuestion, FrequentlyAskedQuestion
+from questions.models import FrequentlyAskedQuestion, UniqueQuestion
 from questions.validators import validate_is_profane_russian
+from users.models import TelegramUser
 
 
 class TelegramUserSerializer(serializers.ModelSerializer):

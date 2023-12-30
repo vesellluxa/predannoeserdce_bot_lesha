@@ -1,6 +1,6 @@
 from django.db import models
+
 from users.models import TelegramUser, TimeMixin
-from faithful_heart import constants
 
 
 class BaseNotification(models.Model, TimeMixin):
@@ -36,3 +36,6 @@ class TelegramNewsletter(BaseNotification):
     class Meta:
         verbose_name = "Рассылка для пользователей Telegram"
         verbose_name_plural = "Рассылки для пользователей Telegram"
+
+    def __str__(self):
+        return self.text

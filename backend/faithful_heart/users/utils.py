@@ -2,9 +2,9 @@ from datetime import datetime
 
 from openpyxl.workbook.workbook import Workbook
 
+from users.models import TelegramUser
 from faithful_heart import constants
 from faithful_heart.settings import MEDIA_ROOT
-from users.models import TelegramUser
 
 
 def export_users_excel():

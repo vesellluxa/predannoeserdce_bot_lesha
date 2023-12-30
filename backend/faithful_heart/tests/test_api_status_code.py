@@ -1,5 +1,6 @@
-import pytest
 from http import HTTPStatus
+
+import pytest
 from users.models import TelegramUser
 
 
@@ -29,7 +30,6 @@ class TestStatusCodeAPI:
         )
         print(TelegramUser.objects.all())
 
-
     @pytest.mark.django_db
     def test_users_update(self, api_client, headers):
         data = {
@@ -38,10 +38,14 @@ class TestStatusCodeAPI:
             'phone': '89853469506',
             'email': 'sveta-1978@mail.ru'
         }
-        user = TelegramUser.objects.create(username='sveta_088', chat_id='4274875640')
+        user = TelegramUser.objects.create(
+            username='sveta_088',
+            chat_id='4274875640'
+        )
         chat_id = user.chat_id
         url = f'/api/v1/users/{chat_id}/'
-        response = api_client.patch(url, data=data, headers=headers, follow=True)
+        response = api_client.patch(url, data=data,
+                                    headers=headers, follow=True)
         assert response.status_code == HTTPStatus.OK, (
             'Проверьте, что при PATCH-запросе пользователя к '
             '`/api/v1/users/` возвращается ответ со '
@@ -51,7 +55,7 @@ class TestStatusCodeAPI:
     @pytest.mark.django_db
     def test_download_users_information(self, api_client, admin_user):
         token = self.obtain_token(api_client, admin_user)
-        headers = { "Authorization": f"Bearer {token}" }
+        headers = {"Authorization": f"Bearer {token}"}
         url = '/api/v1/download_user_information/'
         response = api_client.get(url, headers=headers)
         assert response.status_code == HTTPStatus.OK, (
@@ -72,7 +76,10 @@ class TestStatusCodeAPI:
     @pytest.mark.django_db
     def test_unique_question(self, api_client, headers):
         url = '/api/v1/unique_question/'
-        owner = TelegramUser.objects.create(username='23vasja', chat_id='4987569475')
+        owner = TelegramUser.objects.create(
+            username='23vasja',
+            chat_id='4987569475'
+        )
         data = {
             'owner': owner.chat_id,
             'text': 'У вас есть серые коты?'

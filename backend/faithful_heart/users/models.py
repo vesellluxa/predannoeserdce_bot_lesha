@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinLengthValidator, RegexValidator
 from django.db import models
+
 from faithful_heart import constants
 
 

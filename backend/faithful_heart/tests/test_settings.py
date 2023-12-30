@@ -1,4 +1,4 @@
-from faithful_heart.settings import *
+from faithful_heart.settings import BASE_DIR
 
 DATABASES = {
     'default': {

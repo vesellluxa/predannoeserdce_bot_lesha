@@ -1,8 +1,10 @@
 from django.db import models
+
+from questions.utils import (create_notification_to_user,
+                             create_telegram_notification_to_admin,
+                             send_email_to_admin)
 from users.models import TelegramUser, TimeMixin
-from notifications.models import Notification
 from faithful_heart import constants
-from questions.utils import create_notification_to_user, create_telegram_notification_to_admin, send_email_to_admin
 
 
 class AbstractQuestion(models.Model, TimeMixin):

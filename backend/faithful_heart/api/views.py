@@ -1,34 +1,27 @@
+from http import HTTPStatus
+
 from django.db.models.functions import Now
+from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework.decorators import action
-from rest_framework.response import Response
+from rest_framework.generics import CreateAPIView, get_object_or_404
+from rest_framework.mixins import (CreateModelMixin, ListModelMixin,
+                                   UpdateModelMixin)
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.generics import CreateAPIView, get_object_or_404
-from rest_framework.mixins import (
-    CreateModelMixin,
-    UpdateModelMixin,
-    ListModelMixin,
-)
-from rest_framework_simplejwt.token_blacklist.models import (
-    BlacklistedToken,
-    OutstandingToken,
-)
+from rest_framework_simplejwt.token_blacklist.models import (BlacklistedToken,
+                                                             OutstandingToken)
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import (
-    TelegramUserSerializer,
-    UniqueQuestionSerializer,
-    FrequentlyAskedQuestionSerializer,
-    NewsletterSerializer,
-    NotificationSerializer,
-)
+from notifications.models import Notification, TelegramNewsletter
+from questions.models import FrequentlyAskedQuestion, UniqueQuestion
 from users.models import TelegramUser
-from questions.models import UniqueQuestion, FrequentlyAskedQuestion
-from notifications.models import TelegramNewsletter, Notification
-from http import HTTPStatus
+
+from api.serializers import (FrequentlyAskedQuestionSerializer,
+                             NewsletterSerializer, NotificationSerializer,
+                             TelegramUserSerializer, UniqueQuestionSerializer)
 
 
 class TelegramUsersViewSet(CreateModelMixin, UpdateModelMixin, GenericViewSet):

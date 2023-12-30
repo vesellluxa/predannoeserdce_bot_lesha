@@ -9,12 +9,14 @@ from users.utils import export_users_excel
 def download_excel_file(request):
     filepath = export_users_excel()
     with open(filepath, 'rb') as f:
-        response = HttpResponse(f.read(), content_type='application/vnd.ms-excel')
+        response = HttpResponse(
+            f.read(),
+            content_type='application/vnd.ms-excel'
+        )
         response['Content-Disposition'] = 'inline; filename=' + filepath
         return response
 
-@login_required
 
+@login_required
 def show_download_page(request):
-    # Рендеринг страницы с ссылкой на скачивание
     return render(request, 'users/download_excel.html')

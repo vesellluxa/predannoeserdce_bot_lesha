@@ -1,24 +1,11 @@
 from datetime import datetime
-from dotenv import load_dotenv
-import os
 
-from asgiref.sync import async_to_sync
 from django.core.mail import send_mail
 from openpyxl import Workbook
-from aiogram import Bot
 
 from faithful_heart import constants
 from faithful_heart.settings import MEDIA_ROOT
-from users.models import TelegramUser, User
-
-
-# load_dotenv()
-#
-# TOKEN = os.getenv('TOKEN')
-# ADMIN_EMAIL = os.getenv('ADMIN_EMAIL')
-# ADMIN_TG_CHAT_ID = os.getenv('ADMIN_TG_CHAT_ID')
-# ADMIN_EMAIL = os.getenv('ADMIN_EMAIL')
-# ADMIN_TG_CHAT_ID = os.getenv('ADMIN_TG_CHAT_ID')
+from users.models import User
 
 
 def export_users_excel(users):
@@ -73,17 +60,3 @@ def send_email_to_admin(question):
         fail_silently=False,
     )
 
-
-# @async_to_sync
-# async def send_tg_notification_to_admin(question):
-#     """
-#     Отправка сообщения Администратору в Telegram
-#     при создании уникального вопроса.
-#     """
-#     bot = Bot(token=TOKEN)
-#     admin = User.objects.get(username='admin')
-#     tg_admin_user = TelegramUser.objects.get(
-#         username=admin.telegram_username
-#     )
-#     await bot.send_message(chat_id=tg_admin_user.chat_id,
-#                            text=f'Поступил новый вопрос: {question}')

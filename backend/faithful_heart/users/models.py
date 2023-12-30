@@ -26,6 +26,7 @@ class User(AbstractUser):
             )
         ]
     )
+
     telegram_username = models.CharField(
         max_length=constants.USERNAME_MAX_LENGTH,
         validators=[
@@ -43,6 +44,10 @@ class User(AbstractUser):
         verbose_name='Имя пользователя',
         unique=True
     )
+
+    class Meta:
+        verbose_name = "Пользователь админ-панели"
+        verbose_name_plural = "Пользователи админ-панели"
 
 
 class TelegramUser(models.Model, TimeMixin):
@@ -67,6 +72,7 @@ class TelegramUser(models.Model, TimeMixin):
         verbose_name='Имя пользователя',
         unique=True
     )
+
     email = models.EmailField(
         verbose_name='E-mail пользователя',
         unique=True,
@@ -74,6 +80,7 @@ class TelegramUser(models.Model, TimeMixin):
         null=True
 
     )
+
     name = models.CharField(
         verbose_name='Имя',
         max_length=constants.NAME_MAX_LENGTH,
@@ -90,6 +97,7 @@ class TelegramUser(models.Model, TimeMixin):
         ],
         blank=True
     )
+
     second_name = models.CharField(
         verbose_name='Фамилия',
         max_length=constants.SURNAME_MAX_LENGTH,
@@ -106,6 +114,7 @@ class TelegramUser(models.Model, TimeMixin):
         ],
         blank=True
     )
+
     surname = models.CharField(
         verbose_name='Отчество',
         max_length=constants.SURNAME_MAX_LENGTH,
@@ -122,6 +131,7 @@ class TelegramUser(models.Model, TimeMixin):
         ],
         blank=True
     )
+
     phone_number = models.CharField(
         verbose_name='Номер телефона',
         max_length=constants.PHONE_NUMBER_LENGTH,
@@ -160,6 +170,9 @@ class TelegramUser(models.Model, TimeMixin):
         """
 
         ordering = ('name',)
+
+        verbose_name = "Telegram пользователь"
+        verbose_name_plural = "Telegram пользователи"
 
     def __str__(self):
         return self.username

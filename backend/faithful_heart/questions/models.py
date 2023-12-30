@@ -12,7 +12,6 @@ class AbstractQuestion(models.Model, TimeMixin):
                             verbose_name='Текст вопроса',)
 
     class Meta:
-
         abstract = True
 
 
@@ -27,18 +26,26 @@ class FrequentlyAskedQuestion(AbstractQuestion):
         FAQ = "FAQ", "Часто Задаваемые Вопросы"
         SHELTER_INFO = "Shelter_Info", "Узнать больше о приюте"
         NEEDS = "Needs", "Нужды приюта"
+        DONATIONS = "Donations", "Сделать пожертвование"
 
     answer = models.TextField(
         max_length=constants.FAQ_MAX_LENGTH,
         verbose_name='Текст ответа'
     )
-    is_relevant = models.BooleanField()
+
+    is_relevant = models.BooleanField(default=True)
+
     category = models.CharField(
         max_length=24,
         choices=QuestionCategories.choices,
         null=False,
         blank=False
     )
+
+    class Meta:
+        verbose_name = "Вопрос"
+        verbose_name_plural = "Вопросы"
+
 
 
 class UniqueQuestion(AbstractQuestion, TimeMixin):
@@ -51,11 +58,17 @@ class UniqueQuestion(AbstractQuestion, TimeMixin):
         on_delete=models.CASCADE,
         verbose_name='Автор вопроса'
     )
+
     answer = models.TextField(
         max_length=constants.FAQ_MAX_LENGTH,
         verbose_name='Текст ответа',
         blank=True
     )
+
+    class Meta:
+        verbose_name = "Вопрос от пользователя"
+        verbose_name_plural = "Вопросы от пользователей"
+
 
     @property
     def is_answered(self):

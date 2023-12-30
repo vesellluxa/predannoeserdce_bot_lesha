@@ -5,7 +5,8 @@ from rest_framework_simplejwt.views import (TokenObtainPairView,
 
 from .views import (APILogoutView, TelegramUsersViewSet,
                     FrequentlyAskedQuestionView,
-                    UniqueQuestionView, DownloadUserInformationView)
+                    UniqueQuestionView, DownloadUserInformationView,
+                    TelegramNewsletterViewSet, NotificationViewSet)
 
 app_name = 'api'
 router_v1 = DefaultRouter()
@@ -14,6 +15,9 @@ router_v1.register(r'users', TelegramUsersViewSet)
 router_v1.register(r'faq', FrequentlyAskedQuestionView)
 router_v1.register(r'unique_question', UniqueQuestionView)
 router_v1.register(r'download_user_information', DownloadUserInformationView)
+router_v1.register(r'newsletter', TelegramNewsletterViewSet)
+router_v1.register(r'notifications', NotificationViewSet)
+
 
 urlpatterns = [
     path('v1/', include(router_v1.urls), name='api-root'),

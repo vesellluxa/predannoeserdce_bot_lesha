@@ -1,9 +1,12 @@
 from datetime import timedelta
-from dotenv import load_dotenv
 import os
 from pathlib import Path
-from .constants import (ACCESS_TOKEN_LIFETIME, REFRESH_TOKEN_LIFETIME,
-                        SLIDING_TOKEN_LIFETIME, SLIDING_TOKEN_REFRESH_LIFETIME)
+from dotenv import load_dotenv
+
+from faithful_heart.constants import (
+    ACCESS_TOKEN_LIFETIME, REFRESH_TOKEN_LIFETIME,
+    SLIDING_TOKEN_LIFETIME, SLIDING_TOKEN_REFRESH_LIFETIME
+)
 
 load_dotenv()
 
@@ -166,7 +169,6 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1",
     "http://51.250.11.96",
 ]
-
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = "smtp.gmail.com"

@@ -23,11 +23,11 @@ def export_users_excel():
     sheet.column_dimensions["E"].width = 18
     sheet.column_dimensions["F"].width = 18
     headers = [
-        "Name",
-        "Surname",
-        "Phone Number",
-        "Username",
-        "Chat_id",
+        "Имя",
+        "Фамилия",
+        "Отчество",
+        "Номер телефона",
+        "Username в telegram",
         "Email",
     ]
     sheet.append(headers)

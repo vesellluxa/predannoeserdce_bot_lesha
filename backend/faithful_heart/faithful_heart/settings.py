@@ -4,6 +4,11 @@ from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 
+from faithful_heart.constants import (
+    ACCESS_TOKEN_LIFETIME, REFRESH_TOKEN_LIFETIME,
+    SLIDING_TOKEN_LIFETIME, SLIDING_TOKEN_REFRESH_LIFETIME
+)
+
 load_dotenv()
 
 AUTH_USER_MODEL = "users.User"

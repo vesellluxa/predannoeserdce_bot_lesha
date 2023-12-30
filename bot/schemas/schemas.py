@@ -1,5 +1,6 @@
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
 import datetime
+
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class CreateUserShortDto(BaseModel):

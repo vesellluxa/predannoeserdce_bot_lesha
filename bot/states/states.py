@@ -4,9 +4,7 @@ from aiogram.fsm.state import State, StatesGroup
 class PersonalDataForm(StatesGroup):
     permission = State()
     update_data = State()
-    first_name = State()
-    second_name = State()
-    surname = State()
+    name = State()
     email = State()
     phone_number = State()
 

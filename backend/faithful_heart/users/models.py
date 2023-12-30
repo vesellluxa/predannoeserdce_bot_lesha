@@ -185,5 +185,5 @@ class TelegramUser(models.Model, TimeMixin):
     @staticmethod
     def get_admin_telegram_user():
         return TelegramUser.objects.filter(
-            username=User.objects.get(username="admin").telegram_username
+            username=User.objects.get(username="admin").telegram_username.lower()
         ).first()

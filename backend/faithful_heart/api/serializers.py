@@ -71,6 +71,7 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = (
+            "id",
             "text",
             "to",
             "is_finished"

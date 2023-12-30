@@ -36,9 +36,9 @@ def export_users_excel():
             [
                 user.name,
                 user.surname,
+                user.middle_name,
                 user.phone_number,
                 user.username,
-                user.chat_id,
                 user.email,
             ]
         )

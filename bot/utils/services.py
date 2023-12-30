@@ -1,4 +1,3 @@
-import asyncio
 import logging
 import os
 import urllib.parse
@@ -10,7 +9,6 @@ from schemas.schemas import (
     CreateQuestionDto,
     CreateUserShortDto,
     UpdateUser,
-    NewsletterSchema,
 )
 
 load_dotenv()

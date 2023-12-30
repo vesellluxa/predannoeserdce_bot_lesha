@@ -1,3 +1,5 @@
+import logging
+
 from aiogram import Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
@@ -6,8 +8,6 @@ from keyboards import YES_NO_KEYBOARD, send_main_interaction_buttons
 from states.states import InformationAboutShelter, PersonalDataForm
 from utils.helpers import delete_inline_keyboard
 from utils.services import add_user_to_db, check_user_status
-
-import logging
 
 
 async def command_cancel(
@@ -30,7 +30,7 @@ async def command_start(
     await state.set_state(PersonalDataForm.permission)
     user = {
         "chat_id": message.chat.id,
-        "username": message.chat.username,
+        "username": message.chat.username.lower(),
     }
     user_db = await add_user_to_db(user, access)
     logging.info(f"User added to DB: {user_db}")

@@ -8,7 +8,6 @@ from aiogram.types import (
 from constants import BOT_ANSWERS
 from schemas.schemas import InformationSchema
 
-
 YES_NO_KEYBOARD = ReplyKeyboardMarkup(
     keyboard=[
         [

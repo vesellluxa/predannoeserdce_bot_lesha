@@ -89,7 +89,7 @@ class TelegramUser(models.Model, TimeMixin):
             RegexValidator(
                 regex=constants.NAME_REGEX,
                 message=(
-                    "Фамидия должна состоять"
+                    "Фамилия должна состоять"
                     " только из букв русского алфавита"
                 ),
                 code="invalid_second_name",

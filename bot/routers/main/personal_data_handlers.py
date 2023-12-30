@@ -59,7 +59,7 @@ async def process_update(
             "phone_number": None,
             "email": None,
             "chat_id": message.chat.id,
-            "username": message.chat.username,
+            "username": message.chat.username.lower(),
         }
         user_db = await patch_user(user, access)
         if user_db is None:
@@ -167,13 +167,13 @@ async def process_phone_number(
         data = await state.update_data(phone_number=message.text)
     name = data.get("name").split(" ")
     user = {
-        "name": name[0],
-        "middle_name": name[1] if len(name) > 2 else "",
-        "surname": name[-1] if len(name) > 1 else "",
+        "surname": name[0],
+        "name": name[1] if len(name) > 1 else "",
+        "middle_name": name[2] if len(name) > 2 else "",
         "email": data["email"],
         "phone_number": data["phone_number"],
         "chat_id": message.chat.id,
-        "username": message.chat.username,
+        "username": message.chat.username.lower(),
     }
     user_db = await patch_user(user, access)
     if user_db is None:

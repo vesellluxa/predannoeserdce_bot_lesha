@@ -12,7 +12,7 @@ NAME_MAX_LENGTH = 64
 SURNAME_MAX_LENGTH = 64
 SURNAME_MIN_LENGHT = 1
 PHONE_NUMBER_REGEX = r"^[0-9]"
-PHONE_NUMBER_LENGTH = 11
+PHONE_NUMBER_LENGTH = 12
 FAQ_MAX_LENGTH = 1024
 CHAT_ID_MIN_LENGTH = 6
 CHAT_ID_MAX_LENGTH = 15
@@ -21,7 +21,24 @@ DATETIME_FORMAT = "%Y%m%d"
 CHAT_ID_REGEX = r"\d"
 TELEGRAM_USERNAME_REGEX = r"([a-z]|\d|[_])"
 
+
 ACCESS_TOKEN_LIFETIME = 5
 REFRESH_TOKEN_LIFETIME = 1
 SLIDING_TOKEN_LIFETIME = 5
 SLIDING_TOKEN_REFRESH_LIFETIME = 1
+
+
+USERNAME_REGEX_VALIDATOR_ERROR_TEXT = ("Юзернейм должен состоять"
+                        " только из букв английского алфавита"
+                        " и/или цифр, а также может иметь символ '_'."
+                        "Всего не менее 5 и не более 32 знаков.")
+NAME_REGEX_VALIDATOR_ERROR_TEXT = ("Имя должно состоять только"
+                        " из букв русского алфавита и быть не более 64 знаков.")
+SURNAME_REGEX_VALIDATOR_ERROR_TEXT = ("Фамилия должна состоять только"
+                        " из букв русского алфавита и быть не более 64 знаков.")
+PATRONYMIC_REGEX_VALIDATOR_ERROR_TEXT = ("Отчество должно состоять только"
+                        " из букв русского алфавита и быть не более 64 знаков.")
+PHONE_NUMBER_REGEX_VALIDATOR_ERROR_TEXT = ("Номер телефона должен состоять"
+                        " только из цифр и не превышать 12 знаков.")
+CHAT_ID_REGEX_VALIDATOR_ERROR_TEXT = ("Chat ID должен состоять только из цифр"
+                        " и быть не менее 6 и не более 15 знаков.")

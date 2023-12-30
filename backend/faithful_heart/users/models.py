@@ -23,9 +23,7 @@ class User(AbstractUser):
             ),
             RegexValidator(
                 regex=constants.TELEGRAM_USERNAME_REGEX,
-                message=("Имя пользователя должно состоять"
-                         " только из букв английского алфавита"
-                         " и / или цифр, а также может иметь символ '_'."),
+                message=constants.USERNAME_REGEX_VALIDATOR_ERROR_TEXT,
                 code="invalid_username"
             )
         ],
@@ -51,9 +49,7 @@ class TelegramUser(models.Model, TimeMixin):
             ),
             RegexValidator(
                 regex=constants.TELEGRAM_USERNAME_REGEX,
-                message=("Имя пользователя должно состоять"
-                         " только из букв английского алфавита"
-                         " и / или цифр, а также может иметь символ '_'."),
+                message=constants.USERNAME_REGEX_VALIDATOR_ERROR_TEXT,
                 code="invalid_username"
             )
         ],
@@ -78,8 +74,7 @@ class TelegramUser(models.Model, TimeMixin):
             ),
             RegexValidator(
                 regex=constants.NAME_REGEX,
-                message=("Имя должно состоять"
-                         " только из букв русского алфавита"),
+                message=constants.NAME_REGEX_VALIDATOR_ERROR_TEXT,
                 code="invalid_name"
             )
         ],
@@ -95,8 +90,7 @@ class TelegramUser(models.Model, TimeMixin):
             ),
             RegexValidator(
                 regex=constants.NAME_REGEX,
-                message=("Фамидия должна состоять"
-                         " только из букв русского алфавита"),
+                message=constants.SURNAME_REGEX_VALIDATOR_ERROR_TEXT,
                 code="invalid_second_name"
             )
         ],
@@ -112,8 +106,7 @@ class TelegramUser(models.Model, TimeMixin):
             ),
             RegexValidator(
                 regex=constants.NAME_REGEX,
-                message=("Отчество должно состоять"
-                         " только из букв русского алфавита"),
+                message=constants.PATRONYMIC_REGEX_VALIDATOR_ERROR_TEXT,
                 code="invalid_surname"
             )
         ],
@@ -126,8 +119,7 @@ class TelegramUser(models.Model, TimeMixin):
         validators=[
             RegexValidator(
                 regex=constants.PHONE_NUMBER_REGEX,
-                message=('Номер телефона должен состоять'
-                         ' только из цифр и иметь правильную длину'),
+                message=constants.PHONE_NUMBER_REGEX_VALIDATOR_ERROR_TEXT,
                 code='invalid_phone_number'
             )
         ],
@@ -145,8 +137,7 @@ class TelegramUser(models.Model, TimeMixin):
             ),
             RegexValidator(
                 regex=constants.CHAT_ID_REGEX,
-                message=('Chat ID должен состоять только'
-                         ' из цифр и иметь длину 10'),
+                message=constants.CHAT_ID_REGEX_VALIDATOR_ERROR_TEXT,
                 code='invalid_chat_id'
             )
         ]

@@ -16,8 +16,8 @@ class TelegramUserAdmin(admin.ModelAdmin):
         "username",
         "email",
         "name",
-        "second_name",
         "surname",
+        "middle_name",
         "phone_number",
         "chat_id",
     )

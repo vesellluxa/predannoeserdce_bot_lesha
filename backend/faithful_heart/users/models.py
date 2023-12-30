@@ -22,13 +22,9 @@ class User(AbstractUser):
             MinLengthValidator(constants.USERNAME_MIN_LENGTH),
             RegexValidator(
                 regex=constants.TELEGRAM_USERNAME_REGEX,
-                message=(
-                    "Имя пользователя должно состоять"
-                    " только из букв английского алфавита"
-                    " и / или цифр, а также может иметь символ '_'."
-                ),
-                code="invalid_username",
-            ),
+                message=constants.USERNAME_REGEX_VALIDATOR_ERROR_TEXT,
+                code="invalid_username"
+            )
         ],
         verbose_name="Имя пользователя в telegram",
         unique=True,
@@ -57,13 +53,9 @@ class TelegramUser(models.Model, TimeMixin):
             MinLengthValidator(constants.USERNAME_MIN_LENGTH),
             RegexValidator(
                 regex=constants.TELEGRAM_USERNAME_REGEX,
-                message=(
-                    "Имя пользователя должно состоять"
-                    " только из букв английского алфавита"
-                    " и / или цифр, а также может иметь символ '_'."
-                ),
-                code="invalid_username",
-            ),
+                message=constants.USERNAME_REGEX_VALIDATOR_ERROR_TEXT,
+                code="invalid_username"
+            )
         ],
         verbose_name="Имя пользователя",
         unique=True,
@@ -80,11 +72,9 @@ class TelegramUser(models.Model, TimeMixin):
             MinLengthValidator(constants.NAME_MIN_LENGTH),
             RegexValidator(
                 regex=constants.NAME_REGEX,
-                message=(
-                    "Имя должно состоять" " только из букв русского алфавита"
-                ),
-                code="invalid_name",
-            ),
+                message=constants.NAME_REGEX_VALIDATOR_ERROR_TEXT,
+                code="invalid_name"
+            )
         ],
         blank=True,
     )
@@ -96,12 +86,9 @@ class TelegramUser(models.Model, TimeMixin):
             MinLengthValidator(constants.NAME_MIN_LENGTH),
             RegexValidator(
                 regex=constants.NAME_REGEX,
-                message=(
-                    "Фамилия должна состоять"
-                    " только из букв русского алфавита"
-                ),
-                code="invalid_second_name",
-            ),
+                message=constants.SURNAME_REGEX_VALIDATOR_ERROR_TEXT,
+                code="invalid_second_name"
+            )
         ],
         blank=True,
     )
@@ -113,12 +100,9 @@ class TelegramUser(models.Model, TimeMixin):
             MinLengthValidator(constants.NAME_MIN_LENGTH),
             RegexValidator(
                 regex=constants.NAME_REGEX,
-                message=(
-                    "Отчество должно состоять"
-                    " только из букв русского алфавита"
-                ),
-                code="invalid_surname",
-            ),
+                message=constants.PATRONYMIC_REGEX_VALIDATOR_ERROR_TEXT,
+                code="invalid_surname"
+            )
         ],
         blank=True,
     )
@@ -129,11 +113,8 @@ class TelegramUser(models.Model, TimeMixin):
         validators=[
             RegexValidator(
                 regex=constants.PHONE_NUMBER_REGEX,
-                message=(
-                    "Номер телефона должен состоять"
-                    " только из цифр и иметь правильную длину"
-                ),
-                code="invalid_phone_number",
+                message=constants.PHONE_NUMBER_REGEX_VALIDATOR_ERROR_TEXT,
+                code='invalid_phone_number'
             )
         ],
         unique=True,
@@ -148,13 +129,10 @@ class TelegramUser(models.Model, TimeMixin):
             MinLengthValidator(constants.CHAT_ID_MIN_LENGTH),
             RegexValidator(
                 regex=constants.CHAT_ID_REGEX,
-                message=(
-                    "Chat ID должен состоять только"
-                    " из цифр и иметь длину 10"
-                ),
-                code="invalid_chat_id",
-            ),
-        ],
+                message=constants.CHAT_ID_REGEX_VALIDATOR_ERROR_TEXT,
+                code='invalid_chat_id'
+            )
+        ]
     )
 
     class Meta:

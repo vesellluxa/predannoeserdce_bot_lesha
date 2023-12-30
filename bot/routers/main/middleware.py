@@ -5,10 +5,10 @@ from typing import Any, Awaitable, Callable, Dict
 from aiogram import BaseMiddleware, Bot
 from aiogram.types import Message
 from dotenv import load_dotenv
-from schemas import Question
-from services import fetch_data, obtain_token, refresh_token
+from schemas.schemas import Question
+from utils.services import fetch_data, obtain_token, refresh_token
 
-load_dotenv(dotenv_path="./bot/.env")
+load_dotenv()
 
 
 class BotMiddelware(BaseMiddleware):
@@ -86,16 +86,22 @@ class FetchingMiddleware(BaseMiddleware):
         "faq": {},
         "info": {},
         "needs": {},
+        "donations": {},
+        "list_animals": {},
     }
     _last_fetch_time = {
         "faq": None,
         "info": None,
         "needs": None,
+        "donations": None,
+        "list_animals": None,
     }
     _endpoints = {
         "faq": "faq/?category=Shelter_Info",
         "info": "faq/?category=FAQ",
         "needs": "faq/?category=Needs",
+        "donations": "faq/?category=Donations",
+        "list_animals": "faq/?category=List_Animals",
     }
     FETCH_INTERVAL = datetime.timedelta(minutes=10)
 
@@ -114,7 +120,7 @@ class FetchingMiddleware(BaseMiddleware):
             if not self._shelter_information[key] or self._fetch_required(key):
                 response = await fetch_data(endpoint, data.get("access"))
                 if not response:
-                    return await handler(event, data)
+                    continue
                 self._shelter_information[key] = {
                     raw_question.pop("id"): Question(**raw_question)
                     for raw_question in response

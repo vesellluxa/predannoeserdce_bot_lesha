@@ -1,11 +1,17 @@
+import asyncio
 import logging
 import os
 import urllib.parse
 
-from dotenv import load_dotenv
 import httpx
+from dotenv import load_dotenv
 from pydantic import ValidationError
-from schemas import CreateQuestionDto, CreateUserShortDto, UpdateUser
+from schemas.schemas import (
+    CreateQuestionDto,
+    CreateUserShortDto,
+    UpdateUser,
+    NewsletterSchema,
+)
 
 load_dotenv()
 
@@ -89,7 +95,7 @@ async def add_user_to_db(user: CreateUserShortDto, access: str):
                 response = response.json()
                 logging.error(f"Error adding user to DB: {response}")
                 if response.get("username") == [
-                    "telegram user с таким Имя пользователя уже существует."
+                    "Telegram пользователь с таким Имя пользователя уже существует."
                 ]:
                     return {"details": "User already exists"}
         except httpx.HTTPError as e:
@@ -128,7 +134,7 @@ async def patch_user(user: UpdateUser, access: str):
                 return response.json()
             if response.status_code == 400:
                 response = response.json()
-                response["details"] = "Backend validation error"
+                response["details"] = "Backend error"
                 return response
         except httpx.HTTPError as e:
             logging.error(f"Error updating user data: {e}")
@@ -146,8 +152,78 @@ async def add_unique_question(question: CreateQuestionDto, access: str):
             )
             if response.status_code == 201:
                 return response.json()
+            if response.status_code == 400:
+                response = response.json()
+                if response.get("text") == [
+                    "Вопрос содержит запрещённые слова"
+                ]:
+                    return {"details": "Question contains forbidden words"}
         except httpx.HTTPError as e:
             logging.error(f"Error adding unique question to DB: {e}")
         except ValidationError as e:
             logging.error(f"Error validating question: {e}")
+    return None
+
+
+import datetime
+
+news = [
+    {
+        "id": 1,
+        "text": "Текст новости 1",
+        "date": datetime.datetime.now() + datetime.timedelta(seconds=5),
+        "is_finished": False,
+    },
+    {
+        "id": 2,
+        "text": "Текст новости 2",
+        "date": datetime.datetime.now() + datetime.timedelta(seconds=15),
+        "is_finished": False,
+    },
+]
+
+
+async def fetch_notifications_and_newsletters(
+    username: str, password: str, type: str = "newsletter"
+):
+    token = await obtain_token(username, password)
+    if not token or "access" not in token:
+        return []
+
+    access = token["access"]
+    headers = {"Authorization": f"Bearer {access}"}
+
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(
+                f"{BASE_URL}/api/v1/{type}/", headers=headers
+            )
+            if response.status_code == 200:
+                return response.json()
+        except httpx.HTTPError as e:
+            logging.error(f"Error fetching {type}: {e}")
+    return []
+
+
+async def finish_notification_or_newsletter(
+    id: int,
+    username: str,
+    password: str,
+    type: str = "newsletter",
+):
+    token = await obtain_token(username, password)
+    if not token or "access" not in token:
+        return None
+    access = token["access"]
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.patch(
+                f"{BASE_URL}/api/v1/{type}/{id}/",
+                json={"is_finished": True},
+                headers={"Authorization": f"Bearer {access}"},
+            )
+            if response.status_code == 200:
+                return response.json()
+        except httpx.HTTPError as e:
+            logging.error(f"Error finishing {type}: {e}")
     return None

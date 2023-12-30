@@ -146,6 +146,7 @@ class TelegramNewsletterViewSet(
 
 class NotificationViewSet(
     ListModelMixin,
+    UpdateModelMixin,
     GenericViewSet
 ):
     queryset = Notification.objects.filter(

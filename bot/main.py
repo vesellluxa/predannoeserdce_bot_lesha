@@ -4,6 +4,7 @@ import os
 import sys
 
 from aiogram import Bot, Dispatcher
+from aiogram.enums import ParseMode
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from commands import set_main_menu
 from cron.newsletter import process_newsletters
@@ -19,7 +20,7 @@ TOKEN = os.getenv("BOT_TOKEN") + "/test" if DEBUG else os.getenv("BOT_TOKEN")
 
 
 async def main() -> None:
-    bot = Bot(TOKEN, parse_mode="HTML")
+    bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
     dp = Dispatcher()
     dp.include_router(router)
     dp.callback_query.middleware(BotMiddelware(bot))

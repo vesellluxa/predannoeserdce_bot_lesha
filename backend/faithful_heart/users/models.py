@@ -86,14 +86,14 @@ class TelegramUser(models.Model, TimeMixin):
     )
 
     surname = models.CharField(
-        verbose_name='Фамилия',
+        verbose_name="Фамилия",
         max_length=constants.SURNAME_MAX_LENGTH,
         validators=[
             MinLengthValidator(constants.NAME_MIN_LENGTH),
             RegexValidator(
                 regex=constants.NAME_REGEX,
                 message=(
-                    "Фамидия должна состоять"
+                    "Фамилия должна состоять"
                     " только из букв русского алфавита"
                 ),
                 code="invalid_second_name",
@@ -103,7 +103,7 @@ class TelegramUser(models.Model, TimeMixin):
     )
 
     middle_name = models.CharField(
-        verbose_name='Отчество',
+        verbose_name="Отчество",
         max_length=constants.SURNAME_MAX_LENGTH,
         validators=[
             MinLengthValidator(constants.NAME_MIN_LENGTH),
@@ -173,8 +173,8 @@ class TelegramUser(models.Model, TimeMixin):
         """
         fields_list = [
             self.name,
-            self.surname,
             self.middle_name,
+            self.surname,
             self.phone_number,
             self.email,
         ]

@@ -1,4 +1,5 @@
-from rest_framework import status
+from django.db.models.functions import Now
+
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -27,10 +28,7 @@ from .serializers import (
 from users.models import TelegramUser
 from questions.models import UniqueQuestion, FrequentlyAskedQuestion
 from notifications.models import TelegramNewsletter, Notification
-from .api_service import (
-    export_users_excel,
-    send_email_to_admin,
-)
+from .api_service import export_users_excel
 from http import HTTPStatus
 
 
@@ -106,11 +104,6 @@ class UniqueQuestionView(CreateAPIView, GenericViewSet):
     serializer_class = UniqueQuestionSerializer
     permission_classes = [IsAuthenticated]
 
-    def perform_create(self, serializer):
-        serializer.save()
-        question = serializer.validated_data.get("text")
-        send_email_to_admin(question)
-
 
 class APILogoutView(APIView):
     """
@@ -137,7 +130,8 @@ class TelegramNewsletterViewSet(
     GenericViewSet
 ):
     queryset = TelegramNewsletter.objects.filter(
-        is_finished=False
+        is_finished=False,
+        sending_date__gt=Now()
     )
     serializer_class = NewsletterSerializer
     pagination_class = None

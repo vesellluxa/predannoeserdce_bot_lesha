@@ -33,6 +33,10 @@ class User(AbstractUser):
         unique=True,
     )
 
+
+    def __str__(self):
+        return self.username
+
     class Meta:
         verbose_name = "Пользователь админ-панели"
         verbose_name_plural = "Пользователи админ-панели"
@@ -169,8 +173,8 @@ class TelegramUser(models.Model, TimeMixin):
         """
         fields_list = [
             self.name,
-            self.second_name,
             self.surname,
+            self.middle_name,
             self.phone_number,
             self.email,
         ]

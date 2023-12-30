@@ -26,6 +26,7 @@ class FrequentlyAskedQuestion(AbstractQuestion):
         SHELTER_INFO = "Shelter_Info", "Узнать больше о приюте"
         NEEDS = "Needs", "Нужды приюта"
         DONATIONS = "Donations", "Сделать пожертвование"
+        LIST_ANIMALS = "List_Animals", "Список животных" 
 
     answer = models.TextField(
         max_length=constants.FAQ_MAX_LENGTH,

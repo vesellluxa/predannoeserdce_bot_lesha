@@ -168,5 +168,15 @@
         "is_relevant": true,
         "category": "Donations"
       }
+    },
+      {
+      "model": "questions.frequentlyaskedquestion",
+      "pk": 18,
+      "fields": {
+        "text": "Посмотреть жителей приюта",
+        "answer": "https://predannoeserdce.ru/catalog/",
+        "is_relevant": true,
+        "category": "List_Animals"
+      }
     }
 ]

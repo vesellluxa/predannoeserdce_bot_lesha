@@ -173,8 +173,6 @@ class TelegramUser(models.Model, TimeMixin):
         """
         fields_list = [
             self.name,
-            self.middle_name,
-            self.surname,
             self.phone_number,
             self.email,
         ]

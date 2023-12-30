@@ -23,7 +23,7 @@ from .serializers import (
     UniqueQuestionSerializer,
     FrequentlyAskedQuestionSerializer,
     NewsletterSerializer,
-    NotificationSerializer
+    NotificationSerializer,
 )
 from users.models import TelegramUser
 from questions.models import UniqueQuestion, FrequentlyAskedQuestion
@@ -32,14 +32,11 @@ from .api_service import export_users_excel
 from http import HTTPStatus
 
 
-class TelegramUsersViewSet(
-    CreateModelMixin,
-    UpdateModelMixin,
-    GenericViewSet
-):
+class TelegramUsersViewSet(CreateModelMixin, UpdateModelMixin, GenericViewSet):
     """
     Добавление и обновление пользователей.
     """
+
     serializer_class = TelegramUserSerializer
     queryset = TelegramUser.objects.all()
     permission_classes = [IsAuthenticated]
@@ -125,27 +122,18 @@ class APILogoutView(APIView):
 
 
 class TelegramNewsletterViewSet(
-    ListModelMixin,
-    UpdateModelMixin,
-    GenericViewSet
+    ListModelMixin, UpdateModelMixin, GenericViewSet
 ):
     queryset = TelegramNewsletter.objects.filter(
-        is_finished=False,
-        sending_date__gt=Now()
+        is_finished=False, sending_date__lt=Now()
     )
     serializer_class = NewsletterSerializer
     pagination_class = None
     permission_classes = [IsAuthenticated]
 
 
-class NotificationViewSet(
-    ListModelMixin,
-    UpdateModelMixin,
-    GenericViewSet
-):
-    queryset = Notification.objects.filter(
-        is_finished=False
-    )
+class NotificationViewSet(ListModelMixin, UpdateModelMixin, GenericViewSet):
+    queryset = Notification.objects.filter(is_finished=False)
     serializer_class = NotificationSerializer
     pagination_class = None
     permission_classes = [IsAuthenticated]

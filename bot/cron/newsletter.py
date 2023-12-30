@@ -12,15 +12,7 @@ async def process_newsletters(bot: Bot, username: str, password: str):
     newsletters = await fetch_notifications_and_newsletters(username, password)
     if not newsletters:
         return None
-    filtered_newsletters = [
-        newsletter
-        for newsletter in newsletters
-        if datetime.datetime.fromisoformat(newsletter.get("sending_date"))
-        <= datetime.datetime.now(
-            tz=datetime.timezone(datetime.timedelta(hours=3))
-        )
-    ]
-    for newsletter in filtered_newsletters:
+    for newsletter in newsletters:
         for chat_id in newsletter.get("users"):
             try:
                 await bot.send_message(

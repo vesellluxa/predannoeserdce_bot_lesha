@@ -2,6 +2,13 @@ from django.contrib import admin
 
 from users.models import TelegramUser, User
 
+from rest_framework_simplejwt.tokens import OutstandingToken, BlacklistedToken
+from django.contrib.auth.models import Group
+
+admin.site.unregister(OutstandingToken)
+admin.site.unregister(BlacklistedToken)
+admin.site.unregister(Group)
+
 
 class TelegramUserAdmin(admin.ModelAdmin):
     list_display = (
@@ -16,7 +23,7 @@ class TelegramUserAdmin(admin.ModelAdmin):
     )
     list_display_links = ('username', 'email', 'name',)
     list_filter = ('chat_id',)
-    search_fields = ('username', 'surname', 'email',  'phone_number')
+    search_fields = ('username', 'surname', 'email', 'phone_number')
 
 
 class UserAdmin(admin.ModelAdmin):

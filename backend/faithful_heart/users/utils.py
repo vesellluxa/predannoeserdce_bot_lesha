@@ -11,7 +11,7 @@ def export_users_excel():
     """
     Создание файла excel с данными пользователей.
     """
-    users = TelegramUser.objects.filter(phone_number__isnull=False)
+    users = TelegramUser.objects.filter(consent_to_save_personal_data=True)
     date_now = datetime.now()
     date_now_formatted = date_now.strftime(constants.DATETIME_FORMAT)
     workbook = Workbook()

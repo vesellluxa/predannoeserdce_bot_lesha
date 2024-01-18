@@ -6,7 +6,6 @@ from users.models import TelegramUser
 from faithful_heart import constants
 from faithful_heart.settings import MEDIA_ROOT
 
-
 HEADERS = [
     "Имя",
     "Фамилия",

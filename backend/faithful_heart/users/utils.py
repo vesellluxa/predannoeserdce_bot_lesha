@@ -7,13 +7,20 @@ from faithful_heart import constants
 from faithful_heart.settings import MEDIA_ROOT
 
 
+HEADERS = [
+    "Имя",
+    "Фамилия",
+    "Отчество",
+    "Номер телефона",
+    "Username в telegram",
+    "Email",
+]
+
+
 def export_users_excel():
     """
     Создание файла excel с данными пользователей.
     """
-    users = TelegramUser.objects.filter(consent_to_save_personal_data=True)
-    date_now = datetime.now()
-    date_now_formatted = date_now.strftime(constants.DATETIME_FORMAT)
     workbook = Workbook()
     sheet = workbook.active
     sheet.column_dimensions["A"].width = 10
@@ -22,15 +29,9 @@ def export_users_excel():
     sheet.column_dimensions["D"].width = 18
     sheet.column_dimensions["E"].width = 18
     sheet.column_dimensions["F"].width = 18
-    headers = [
-        "Имя",
-        "Фамилия",
-        "Отчество",
-        "Номер телефона",
-        "Username в telegram",
-        "Email",
-    ]
-    sheet.append(headers)
+    sheet.append(HEADERS)
+
+    users = TelegramUser.objects.filter(consent_to_save_personal_data=True)
     for user in users:
         sheet.append(
             [
@@ -42,6 +43,9 @@ def export_users_excel():
                 user.email,
             ]
         )
+
+    date_now = datetime.now()
+    date_now_formatted = date_now.strftime(constants.DATETIME_FORMAT)
     path_to_file = f"{MEDIA_ROOT}/Пользователи_{date_now_formatted}.xlsx"
     workbook.save(path_to_file)
     return path_to_file

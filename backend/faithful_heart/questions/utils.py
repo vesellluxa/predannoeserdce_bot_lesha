@@ -1,7 +1,7 @@
 from django.core.mail import send_mail
 
 from notifications.models import Notification
-from users.models import TelegramUser, User
+from users.models import User
 from faithful_heart import constants
 from faithful_heart.settings import EMAIL_HOST_USER
 
@@ -9,10 +9,12 @@ from faithful_heart.settings import EMAIL_HOST_USER
 def create_telegram_notification_to_admin(question):
     question_url = f"/admin/questions/uniquequestion/{question.pk}/change/"
     full_url = constants.PROD_URL + question_url
-    Notification.objects.create(
-        to=TelegramUser.get_admin_telegram_user(),
-        text=f"Поступил новый вопрос. Ссылка: {full_url}"
-    )
+    all_users = User.objects.all()
+    for user in all_users:
+        Notification.objects.create(
+            to=user,
+            text=f"Поступил новый вопрос. Ссылка: {full_url}"
+        )
 
 
 def create_notification_to_user(question):

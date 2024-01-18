@@ -18,7 +18,7 @@ class BaseNotification(models.Model, TimeMixin):
 
 
 class Notification(BaseNotification):
-    to = models.ForeignKey(
+    to = models.ManyToManyField(
         verbose_name="Пользователь, получающий уведомление",
         to=TelegramUser,
         on_delete=models.CASCADE

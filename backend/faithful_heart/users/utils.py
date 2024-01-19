@@ -22,13 +22,16 @@ def export_users_excel():
     """
     workbook = Workbook()
     sheet = workbook.active
-    sheet.column_dimensions["A"].width = 10
-    sheet.column_dimensions["B"].width = 15
-    sheet.column_dimensions["C"].width = 18
-    sheet.column_dimensions["D"].width = 18
-    sheet.column_dimensions["E"].width = 18
-    sheet.column_dimensions["F"].width = 18
-    sheet.append(HEADERS)
+    sheet_column_dimensions = {
+        "A": 10,
+        "B": 15,
+        "C": 18,
+        "D": 18,
+        "E": 18,
+        "F": 18,
+    }
+    for column, width in sheet_column_dimensions.items():
+        sheet.column_dimensions[column].width = width
 
     users = TelegramUser.objects.filter(consent_to_save_personal_data=True)
     for user in users:

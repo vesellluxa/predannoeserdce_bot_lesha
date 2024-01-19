@@ -46,8 +46,7 @@ def export_users_excel():
             ]
         )
 
-    date_now = datetime.now()
-    date_now_formatted = date_now.strftime(constants.DATETIME_FORMAT)
+    date_now_formatted = datetime.now().strftime(constants.DATETIME_FORMAT)
     path_to_file = f"{MEDIA_ROOT}/Пользователи_{date_now_formatted}.xlsx"
     workbook.save(path_to_file)
     return path_to_file

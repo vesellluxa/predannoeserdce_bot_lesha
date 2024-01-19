@@ -42,3 +42,10 @@ PHONE_NUMBER_REGEX_VALIDATOR_ERROR_TEXT = ("Номер телефона долж
                         " только из цифр и не превышать 12 знаков.")
 CHAT_ID_REGEX_VALIDATOR_ERROR_TEXT = ("Chat ID должен состоять только из цифр"
                         " и быть не менее 6 и не более 15 знаков.")
+
+
+FAQ = ("FAQ", "Часто Задаваемые Вопросы")
+SHELTER_INFO = ("Shelter_Info", "Узнать больше о приюте")
+NEEDS = ("Needs", "Нужды приюта")
+DONATIONS = ("Donations", "Сделать пожертвование")
+LIST_ANIMALS = ("List_Animals", "Список животных")

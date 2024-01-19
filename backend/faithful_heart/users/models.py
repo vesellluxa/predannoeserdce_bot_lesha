@@ -6,6 +6,10 @@ from faithful_heart import constants
 
 
 class TimeMixin:
+    """
+    Абстрактная модель даты и времени.
+    """
+
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
@@ -14,7 +18,9 @@ class TimeMixin:
 
 
 class User(AbstractUser):
-    """Модель для менеджера приюта."""
+    """
+    Модель для менеджера приюта.
+    """
 
     telegram_username = models.CharField(
         max_length=constants.USERNAME_MAX_LENGTH,

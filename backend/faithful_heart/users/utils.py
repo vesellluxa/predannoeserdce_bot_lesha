@@ -32,6 +32,7 @@ def export_users_excel():
     }
     for column, width in sheet_column_dimensions.items():
         sheet.column_dimensions[column].width = width
+    sheet.append(HEADERS)
 
     users = TelegramUser.objects.filter(consent_to_save_personal_data=True)
     for user in users:

@@ -4,7 +4,11 @@ from aiogram import Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 from constants import BOT_ANSWERS
-from keyboards import YES_NO_KEYBOARD, send_main_interaction_buttons
+from keyboards import (
+    DATA_UPDATE_KEYBOARD,
+    YES_NO_KEYBOARD,
+    send_main_interaction_buttons,
+)
 from states.states import InformationAboutShelter, PersonalDataForm
 from utils.helpers import delete_inline_keyboard
 from utils.services import add_user_to_db, check_user_status
@@ -48,7 +52,6 @@ async def command_start(
                 message, BOT_ANSWERS.greeting_full_data.value
             )
         else:
-            await state.set_state(PersonalDataForm.permission)
             await message.answer(
                 BOT_ANSWERS.greeting_partial_data.value,
                 reply_markup=YES_NO_KEYBOARD,
@@ -57,3 +60,10 @@ async def command_start(
         await message.answer(
             BOT_ANSWERS.greeting.value, reply_markup=YES_NO_KEYBOARD
         )
+
+
+async def command_data(message: Message, state: FSMContext) -> None:
+    await state.set_state(PersonalDataForm.update_data)
+    await message.answer(
+        BOT_ANSWERS.update_data.value, reply_markup=DATA_UPDATE_KEYBOARD
+    )

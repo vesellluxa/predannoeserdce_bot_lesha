@@ -29,6 +29,7 @@ router.message.middleware(TokenMiddleware())
 router.message.middleware(FetchingMiddleware())
 
 router.callback_query.middleware(FetchingMiddleware())
+router.callback_query.middleware(TokenMiddleware())
 
 router.message.register(command_start, CommandStart())
 router.message.register(

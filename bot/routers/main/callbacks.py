@@ -6,6 +6,7 @@ from keyboards import CANCEL_KEYBOARD, MAIN_INTERACTION_KEYBOARD
 from schemas.schemas import InformationSchema
 from states.states import InformationAboutShelter, PersonalDataForm
 from utils.helpers import send_paginated_data
+from utils.services import patch_user
 
 
 async def process_faq_callback(
@@ -47,8 +48,9 @@ async def process_page_callback(
 
 
 async def process_personal_data_consent(
-    callback_query: CallbackQuery, state: FSMContext
+    callback_query: CallbackQuery, state: FSMContext, access: str = None
 ) -> None:
+    print(access)
     _, _, _, consent = callback_query.data.split("_")
     if consent == "agree":
         await state.set_state(PersonalDataForm.name)
@@ -57,6 +59,17 @@ async def process_personal_data_consent(
         )
     else:
         await state.set_state(InformationAboutShelter.main_interaction)
+        user = {
+            "name": "",
+            "middle_name": "",
+            "surname": "",
+            "phone_number": None,
+            "email": None,
+            "chat_id": callback_query.message.chat.id,
+            "username": callback_query.message.chat.username.lower(),
+            "consent_to_save_personal_data": False,
+        }
+        await patch_user(user, access)
         await callback_query.message.answer(
             BOT_ANSWERS.permission.value,
             reply_markup=MAIN_INTERACTION_KEYBOARD,

@@ -34,7 +34,10 @@ class FrequentlyAskedQuestion(AbstractQuestion):
         verbose_name='Текст ответа'
     )
 
-    is_relevant = models.BooleanField(default=True)
+    is_relevant = models.BooleanField(
+        verbose_name="Актуален ли вопрос?",
+        default=True
+    )
 
     category = models.CharField(
         max_length=24,

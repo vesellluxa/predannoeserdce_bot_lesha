@@ -29,9 +29,13 @@ class User(AbstractUser):
                 code="invalid_username",
             ),
         ],
-        verbose_name="Имя пользователя",
+        verbose_name="Имя пользователя в telegram",
         unique=True,
     )
+
+
+    def __str__(self):
+        return self.username
 
     class Meta:
         verbose_name = "Пользователь админ-панели"

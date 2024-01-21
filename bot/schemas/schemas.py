@@ -15,6 +15,7 @@ class UpdateUser(CreateUserShortDto):
     surname: str = Field(..., min_length=1, max_length=64)
     phone_number: str = Field(pattern=r"^[0-9]+$", max_length=12)
     chat_id: int
+    consent_to_save_personal_data: bool = False
 
     model_config = ConfigDict(regex_engine="python-re")
 

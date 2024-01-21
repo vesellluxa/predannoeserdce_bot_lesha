@@ -54,6 +54,7 @@ async def process_update(
             "email": None,
             "chat_id": message.chat.id,
             "username": message.chat.username.lower(),
+            "consent_to_save_personal_data": False,
         }
         user_db = await patch_user(user, access)
         if user_db is None:
@@ -197,6 +198,7 @@ async def process_phone_number(
         "phone_number": data["phone_number"],
         "chat_id": message.chat.id,
         "username": message.chat.username.lower(),
+        "consent_to_save_personal_data": True,
     }
     user_db = await patch_user(user, access)
     if user_db is None:

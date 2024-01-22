@@ -13,8 +13,8 @@ def create_telegram_notification_to_admin(question):
         Notification(
             to=user,
             text=f"Поступил новый вопрос. Ссылка: {full_url}"
-        ) for user in TelegramUser.objects.exclude(
-            username__isnull=True
+        ) for user in TelegramUser.objects.filter(
+            username__exact=None
         )
     ])
 
@@ -24,8 +24,8 @@ def create_notification_to_all_user(message: str):
         Notification(
             to=user,
             text=message
-        ) for user in User.objects.exclude(
-            email__isnull=True
+        ) for user in User.objects.filter(
+            email__exact=None
         )
     ])
 

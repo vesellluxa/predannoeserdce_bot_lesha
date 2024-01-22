@@ -52,6 +52,7 @@ NEEDS = ("Needs", "Нужды приюта")
 DONATIONS = ("Donations", "Сделать пожертвование")
 LIST_ANIMALS = ("List_Animals", "Список животных")
 
+
 URL_TO_QUESTION = PROD_URL + "/admin/questions/uniquequestion/{}/change/"
 ADMIN_NOTIFICATION = "Поступил новый вопрос. Ссылка: {}"
 USER_NOTIFICATION = "Поступил ответ на ваш вопрос {}: {}"

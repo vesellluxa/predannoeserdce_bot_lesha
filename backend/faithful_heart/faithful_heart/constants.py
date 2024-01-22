@@ -20,6 +20,8 @@ PROD_URL = os.getenv("PROD_URL")
 DATETIME_FORMAT = "%Y%m%d"
 CHAT_ID_REGEX = r"\d"
 TELEGRAM_USERNAME_REGEX = r"([a-z]|\d|[_])"
+CATEGORY_MAX_LENGTH = 24
+NOTIFICATION_MAX_LENGTH = 1024
 
 
 ACCESS_TOKEN_LIFETIME = 5
@@ -49,3 +51,7 @@ SHELTER_INFO = ("Shelter_Info", "Узнать больше о приюте")
 NEEDS = ("Needs", "Нужды приюта")
 DONATIONS = ("Donations", "Сделать пожертвование")
 LIST_ANIMALS = ("List_Animals", "Список животных")
+
+URL_TO_QUESTION = PROD_URL + "/admin/questions/uniquequestion/{}/change/"
+ADMIN_NOTIFICATION = "Поступил новый вопрос. Ссылка: {}"
+USER_NOTIFICATION = "Поступил ответ на ваш вопрос {}: {}"

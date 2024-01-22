@@ -1,6 +1,7 @@
 from django.db import models
 
 from users.models import TelegramUser, TimeMixin
+from faithful_heart import constants
 
 
 class BaseNotification(models.Model, TimeMixin):
@@ -10,7 +11,7 @@ class BaseNotification(models.Model, TimeMixin):
 
     text = models.CharField(
         verbose_name="Текст уведомления",
-        max_length=1024
+        max_length=constants.NOTIFICATION_MAX_LENGTH
     )
     is_finished = models.BooleanField(
         verbose_name="Завершена ли рассылка?",

@@ -11,11 +11,10 @@ def create_telegram_notification_to_admin(question) -> None:
     Создание уведомления администратору
     о поступлении нового вопроса от пользователя.
     """
-    question_url = f"/admin/questions/uniquequestion/{question.pk}/change/"
-    full_url = constants.PROD_URL + question_url
+    full_url = constants.URL_TO_QUESTION.format(question.pk)
     Notification.objects.create(
         to=TelegramUser.get_admin_telegram_user(),
-        text=f"Поступил новый вопрос. Ссылка: {full_url}"
+        text=constants.ADMIN_NOTIFICATION.format(full_url)
     )
 
 
@@ -26,8 +25,7 @@ def create_notification_to_user(question) -> None:
     """
     Notification.objects.create(
         to=question.owner,
-        text=f"Поступил ответ на ваш вопрос {question.text}:"
-             f"{question.answer}"
+        text=constants.USER_NOTIFICATION.format(question.text, question.answer)
     )
 
 
@@ -35,9 +33,8 @@ def send_email_to_admin(question) -> None:
     """
     Отправка email Администратору при создании уникального вопроса.
     """
-    question_url = f"/admin/questions/uniquequestion/{question.pk}/change/"
-    full_url = constants.PROD_URL + question_url
-    text = f"Поступил новый вопрос. Ссылка: {full_url}"
+    full_url = constants.URL_TO_QUESTION.format(question.pk)
+    text = constants.ADMIN_NOTIFICATION.format(full_url)
     send_mail(
         subject="Поступил новый вопрос",
         message=text,

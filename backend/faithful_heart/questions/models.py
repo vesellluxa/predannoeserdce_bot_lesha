@@ -46,7 +46,7 @@ class FrequentlyAskedQuestion(AbstractQuestion):
 
     category = models.CharField(
         verbose_name="Категория вопроса",
-        max_length=24,
+        max_length=constants.CATEGORY_MAX_LENGTH,
         choices=QuestionCategories.choices,
         null=False,
         blank=False

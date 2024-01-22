@@ -7,7 +7,7 @@ dotenv.load_dotenv()
 USERNAME_REGEX = r"^[\w.@+-]+$"
 USERNAME_MIN_LENGTH = 5
 USERNAME_MAX_LENGTH = 32
-NAME_REGEX = r"^[а-яА-ЯёЁ]+$"
+NAME_REGEX = r"^[а-яА-ЯёЁ-]+$"
 NAME_MIN_LENGTH = 1
 NAME_MAX_LENGTH = 64
 SURNAME_MAX_LENGTH = 64

@@ -125,7 +125,6 @@ async def process_name(message: Message, state: FSMContext) -> None:
     ):
         return
     validated_name = validate_name(message.text)
-    print(validated_name)
     if not validated_name:
         await message.answer(
             BOT_ANSWERS.enter_correct_value.value
@@ -170,16 +169,12 @@ async def process_phone_number(
         await message.answer(BOT_ANSWERS.something_went_wrong.value)
         return
     if not message.contact and not await check_message(
-        message,
-        BOT_ANSWERS.enter_correct_value.value,
+        message, BOT_ANSWERS.contact_button.value, SEND_CONTACT_KEYBOARD
     ):
         return
-    if not message.contact and not message.text.isdigit():
+    if not message.contact:
         await message.answer(
-            BOT_ANSWERS.enter_correct_value.value
-            + "\n"
-            + message.text
-            + " не является корректным номером телефона. (Номер должен состоять только из цифр без пробелов и дефисов и начинаться с кода страны без плюса)",
+            BOT_ANSWERS.contact_button.value,
             reply_markup=SEND_CONTACT_KEYBOARD,
         )
         return

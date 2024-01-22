@@ -22,6 +22,7 @@ class TelegramUserSerializer(serializers.ModelSerializer):
             "surname",
             "email",
             "phone_number",
+            "consent_to_save_personal_data",
         )
 
 

@@ -135,6 +135,8 @@ class TelegramUser(models.Model, TimeMixin):
         ]
     )
 
+    consent_to_save_personal_data = models.BooleanField(default=False)
+
     class Meta:
         """
         Сортировка по имени.
@@ -147,23 +149,3 @@ class TelegramUser(models.Model, TimeMixin):
 
     def __str__(self):
         return self.username
-
-    @property
-    def is_fully_filled(self):
-        """
-        Проверяет заполнены ли дополнительные поля пользователя.
-        """
-        fields_list = [
-            self.name,
-            self.phone_number,
-            self.email,
-        ]
-        if any(field is None or field == "" for field in fields_list) is True:
-            return False
-        return True
-
-    @staticmethod
-    def get_admin_telegram_user():
-        return TelegramUser.objects.filter(
-            username=User.objects.get(username="admin").telegram_username
-        ).first()

@@ -21,17 +21,6 @@ def create_telegram_notification_to_admin(question):
     ])
 
 
-def create_notification_to_all_user(message: str):
-    Notification.objects.bulk_create([
-        Notification(
-            to=user,
-            text=message
-        ) for user in User.objects.filter(
-            email__isnull=False
-        )
-    ])
-
-
 def create_notification_to_user(question):
     Notification.objects.create(
         to=question.owner,
@@ -52,7 +41,7 @@ def send_email_to_admin(question):
         message=text,
         from_email=EMAIL_HOST_USER,
         recipient_list=[
-            User.objects.get(username="admin").email,
+            user.email for user in User.objects.filter(email__isnull=False)
         ],
         fail_silently=False,
     )

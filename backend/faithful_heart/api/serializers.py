@@ -67,7 +67,7 @@ class UniqueQuestionSerializer(serializers.ModelSerializer):
 
 
 class NotificationSerializer(serializers.ModelSerializer):
-    to = TelegramUserShortSerializer(many=True)
+    to = TelegramUserShortSerializer()
 
     class Meta:
         model = Notification

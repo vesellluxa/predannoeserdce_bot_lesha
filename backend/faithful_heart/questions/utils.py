@@ -14,7 +14,9 @@ def create_telegram_notification_to_admin(question):
             to=user,
             text=f"Поступил новый вопрос. Ссылка: {full_url}"
         ) for user in TelegramUser.objects.filter(
-            username__isnull=False
+            username__in=User.objects.filter(
+                telegram_username__isnull=False
+            ).values_list("telegram_username", flat=True)
         )
     ])
 

@@ -6,14 +6,13 @@ from faithful_heart import constants
 from faithful_heart.settings import EMAIL_HOST_USER
 
 
-
 def create_telegram_notification_to_admin(question):
     Notification.objects.bulk_create([
         Notification(
             to=user,
             text=constants.ADMIN_NOTIFICATION.format(
                 constants.URL_TO_QUESTION.format(question.pk)
-        )
+            )
         ) for user in TelegramUser.objects.filter(
             username__in=User.objects.filter(
                 telegram_username__isnull=False
@@ -40,12 +39,11 @@ def send_email_to_admin(question) -> None:
     """
     Отправка email Администратору при создании уникального вопроса.
     """
-    text = constants.ADMIN_NOTIFICATION.format(
-        constants.URL_TO_QUESTION.format(question.pk)
-    )
     send_mail(
         subject="Поступил новый вопрос",
-        message=text,
+        message=constants.ADMIN_NOTIFICATION.format(
+            constants.URL_TO_QUESTION.format(question.pk)
+        ),
         from_email=EMAIL_HOST_USER,
         recipient_list=[
             user.email for user in User.objects.filter(email__isnull=False)

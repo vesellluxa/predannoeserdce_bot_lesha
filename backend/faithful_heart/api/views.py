@@ -2,7 +2,6 @@ from http import HTTPStatus
 
 from django.db.models.functions import Now
 from django_filters.rest_framework import DjangoFilterBackend
-
 from rest_framework.decorators import action
 from rest_framework.generics import CreateAPIView, get_object_or_404
 from rest_framework.mixins import (CreateModelMixin, ListModelMixin,
@@ -15,13 +14,12 @@ from rest_framework_simplejwt.token_blacklist.models import (BlacklistedToken,
                                                              OutstandingToken)
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from notifications.models import Notification, TelegramNewsletter
-from questions.models import FrequentlyAskedQuestion, UniqueQuestion
-from users.models import TelegramUser
-
 from api.serializers import (FrequentlyAskedQuestionSerializer,
                              NewsletterSerializer, NotificationSerializer,
                              TelegramUserSerializer, UniqueQuestionSerializer)
+from notifications.models import Notification, TelegramNewsletter
+from questions.models import FrequentlyAskedQuestion, UniqueQuestion
+from users.models import TelegramUser
 
 
 class TelegramUsersViewSet(CreateModelMixin, UpdateModelMixin, GenericViewSet):

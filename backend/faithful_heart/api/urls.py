@@ -17,12 +17,24 @@ router_v1.register(r'newsletter', TelegramNewsletterViewSet)
 router_v1.register(r'notifications', NotificationViewSet)
 
 urlpatterns = [
-    path('v1/', include(router_v1.urls), name='api-root'),
+    path(
+        'v1/',
+        include(router_v1.urls),
+        name='api-root'
+    ),
     path(
         'v1/obtain_token/',
         TokenObtainPairView.as_view(),
         name='token_obtain_pair'
     ),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('v1/logout_token/', APILogoutView.as_view(), name='logout_token'),
+    path(
+        'token/refresh/',
+        TokenRefreshView.as_view(),
+        name='token_refresh'
+    ),
+    path(
+        'v1/logout_token/',
+        APILogoutView.as_view(),
+        name='logout_token'
+    ),
 ]

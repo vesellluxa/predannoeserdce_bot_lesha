@@ -153,5 +153,19 @@ class TelegramUser(models.Model, TimeMixin):
         verbose_name = "Telegram пользователь"
         verbose_name_plural = "Telegram пользователи"
 
+    @property
+    def is_fully_filled(self):
+        """
+        Проверяет заполнены ли дополнительные поля пользователя.
+        """
+        fields_list = [
+            self.name,
+            self.phone_number,
+            self.email,
+        ]
+        if any(field is None or field == "" for field in fields_list) is True:
+            return False
+        return True
+
     def __str__(self):
         return self.username

@@ -6,30 +6,37 @@ from faithful_heart import constants
 from faithful_heart.settings import EMAIL_HOST_USER
 
 
-def create_telegram_notification_to_admin(question):
-    question_url = f"/admin/questions/uniquequestion/{question.pk}/change/"
-    full_url = constants.PROD_URL + question_url
+def create_telegram_notification_to_admin(question) -> None:
+    """
+    Создание уведомления администратору
+    о поступлении нового вопроса от пользователя.
+    """
     Notification.objects.create(
         to=TelegramUser.get_admin_telegram_user(),
-        text=f"Поступил новый вопрос. Ссылка: {full_url}"
+        text=constants.ADMIN_NOTIFICATION.format(
+            constants.URL_TO_QUESTION.format(question.pk)
+        )
     )
 
 
-def create_notification_to_user(question):
+def create_notification_to_user(question) -> None:
+    """
+    Создание уведомления пользователю
+    об ответе на его вопрос.
+    """
     Notification.objects.create(
         to=question.owner,
-        text=f"Поступил ответ на ваш вопрос:"
-             f"{question.answer}"
+        text=constants.USER_NOTIFICATION.format(question.text, question.answer)
     )
 
 
-def send_email_to_admin(question):
+def send_email_to_admin(question) -> None:
     """
     Отправка email Администратору при создании уникального вопроса.
     """
-    question_url = f"/admin/questions/uniquequestion/{question.pk}/change/"
-    full_url = constants.PROD_URL + question_url
-    text = f"Поступил новый вопрос. Ссылка: {full_url}"
+    text = constants.ADMIN_NOTIFICATION.format(
+        constants.URL_TO_QUESTION.format(question.pk)
+    )
     send_mail(
         subject="Поступил новый вопрос",
         message=text,

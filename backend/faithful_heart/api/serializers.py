@@ -22,10 +22,15 @@ class TelegramUserSerializer(serializers.ModelSerializer):
             "surname",
             "email",
             "phone_number",
+            "consent_to_save_personal_data",
         )
 
 
 class TelegramUserShortSerializer(TelegramUserSerializer):
+    """
+    Короткий сериализатор пользователя для уведомлений.
+    """
+
     class Meta:
         model = TelegramUser
         fields = (
@@ -34,7 +39,9 @@ class TelegramUserShortSerializer(TelegramUserSerializer):
 
 
 class FrequentlyAskedQuestionSerializer(serializers.ModelSerializer):
-    """Сериализатор для ответа на выбранный вопрос."""
+    """
+    Сериализатор для FAQ (Часто задаваемые вопросы).
+    """
 
     class Meta:
         model = FrequentlyAskedQuestion
@@ -55,6 +62,10 @@ class UniqueQuestionSerializer(serializers.ModelSerializer):
     )
 
     def validate_text(self, text):
+        """
+        Выполняет проверку на наличие нецензурной лексики.
+        """
+
         validate_is_profane_russian(text)
         return text
 
@@ -67,6 +78,10 @@ class UniqueQuestionSerializer(serializers.ModelSerializer):
 
 
 class NotificationSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для уведомлений.
+    """
+
     to = TelegramUserShortSerializer()
 
     class Meta:
@@ -80,6 +95,10 @@ class NotificationSerializer(serializers.ModelSerializer):
 
 
 class NewsletterSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для рассылки.
+    """
+
     users = serializers.SerializerMethodField()
 
     class Meta:

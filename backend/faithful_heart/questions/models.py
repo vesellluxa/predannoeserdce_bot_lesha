@@ -9,11 +9,14 @@ from faithful_heart import constants
 
 class AbstractQuestion(models.Model, TimeMixin):
     """
-    Абстрактная модель Вопроса.
+    Абстрактная модель вопроса.
     """
 
     text = models.TextField(max_length=constants.FAQ_MAX_LENGTH,
                             verbose_name='Текст вопроса', )
+
+    def __str__(self):
+        return self.text
 
     class Meta:
         abstract = True
@@ -25,11 +28,11 @@ class FrequentlyAskedQuestion(AbstractQuestion):
     """
 
     class QuestionCategories(models.TextChoices):
-        FAQ = "FAQ", "Часто Задаваемые Вопросы"
-        SHELTER_INFO = "Shelter_Info", "Узнать больше о приюте"
-        NEEDS = "Needs", "Нужды приюта"
-        DONATIONS = "Donations", "Сделать пожертвование"
-        LIST_ANIMALS = "List_Animals", "Список животных"
+        FAQ = constants.FAQ
+        SHELTER_INFO = constants.SHELTER_INFO
+        NEEDS = constants.NEEDS
+        DONATIONS = constants.DONATIONS
+        LIST_ANIMALS = constants.LIST_ANIMALS
 
     answer = models.TextField(
         max_length=constants.FAQ_MAX_LENGTH,
@@ -42,20 +45,24 @@ class FrequentlyAskedQuestion(AbstractQuestion):
     )
 
     category = models.CharField(
-        max_length=24,
+        verbose_name="Категория вопроса",
+        max_length=constants.CATEGORY_MAX_LENGTH,
         choices=QuestionCategories.choices,
         null=False,
         blank=False
     )
 
+    def __str__(self):
+        return self.answer
+
     class Meta:
-        verbose_name = "Вопрос"
-        verbose_name_plural = "Вопросы"
+        verbose_name = "FAQ (Часто задаваемые вопросы)"
+        verbose_name_plural = "FAQ (Часто задаваемые вопросы)"
 
 
 class UniqueQuestion(AbstractQuestion, TimeMixin):
     """
-    Модель уникального вопроса.
+    Модель уникального вопроса от пользователя.
     """
 
     owner = models.ForeignKey(
@@ -70,6 +77,9 @@ class UniqueQuestion(AbstractQuestion, TimeMixin):
         blank=True
     )
 
+    def __str__(self):
+        return self.text
+
     class Meta:
         verbose_name = "Вопрос от пользователя"
         verbose_name_plural = "Вопросы от пользователей"
@@ -79,6 +89,7 @@ class UniqueQuestion(AbstractQuestion, TimeMixin):
         """
         Функция, определяющая был ли получени ответ на вопрос.
         """
+
         return self.answer != ''
 
     def save(self, *args, **kwargs):

@@ -7,6 +7,7 @@ from .callbacks import (
     process_faq_callback,
     process_page_callback,
     process_personal_data_consent,
+    process_back_to_questions_callback
 )
 from .commands_handlers import command_cancel, command_data, command_start
 from .main_interaction_handlers import (
@@ -63,6 +64,7 @@ router.callback_query.register(
     )
     & ~F.data.contains("page_"),
 )
+router.callback_query.register(process_back_to_questions_callback, F.data.contains("back_toquestions"))
 router.callback_query.register(process_page_callback, F.data.contains("page_"))
 router.callback_query.register(
     process_personal_data_consent, F.data.contains("personal_data_consent_")

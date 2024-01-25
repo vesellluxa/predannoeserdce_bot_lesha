@@ -55,6 +55,14 @@ CANCEL_KEYBOARD = ReplyKeyboardMarkup(
     input_field_placeholder="Сообщение: ",
 )
 
+TURN_BACK_KEYBOARD = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(text=BOT_ANSWERS.back.value, callback_data="back_toquestions"),
+        ]
+    ],
+)
+
 TRY_AGAIN_KEYBOARD = ReplyKeyboardMarkup(
     keyboard=[
         [

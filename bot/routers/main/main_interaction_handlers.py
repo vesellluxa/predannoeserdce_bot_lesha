@@ -66,29 +66,31 @@ async def process_questions(
     message: Message,
     bot: Bot,
     shelter_information: InformationSchema = {},
+    category: str = None
 ) -> None:
     category_mapping = {
         BOT_ANSWERS.faq.value.casefold(): "faq",
         BOT_ANSWERS.info.value.casefold(): "info",
         BOT_ANSWERS.needs.value.casefold(): "needs",
     }
-    if (
-        not hasattr(message.text, "casefold")
-        or not message.text.casefold() in category_mapping
-    ):
+
+    # Используйте переданную категорию или попытайтесь извлечь ее из текста сообщения
+    if not category:
+        message_text = message.text.casefold() if hasattr(message.text, "casefold") else None
+        category = category_mapping.get(message_text)
+
+    # Проверьте, что категория валидна
+    if not category:
         await message.reply(
             BOT_ANSWERS.choose_correct_category.value,
             reply_markup=FAQ_INFO_CANCEL_KEYBOARD,
         )
         return
 
-    category = message.text.casefold()
-
     await delete_inline_keyboard(message, bot)
     await send_paginated_data(
-        message, shelter_information, category_mapping[category], 0
+        message, shelter_information, category, 0
     )
-
 
 async def process_unique_question(
     message: Message, state: FSMContext, access: str = None

@@ -35,7 +35,8 @@ async def process_faq_callback(
 
     try:
         await bot.edit_message_text(
-            text=question.answer,
+            text=f"Вопрос: {question.text}\n"
+                 f"Ответ: {question.answer}",
             chat_id=callback_query.message.chat.id,
             message_id=message,
             reply_markup=TURN_BACK_KEYBOARD

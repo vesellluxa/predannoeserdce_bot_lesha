@@ -92,11 +92,11 @@ FAQ_INFO_CANCEL_KEYBOARD = ReplyKeyboardMarkup(
 
 MAIN_INTERACTION_KEYBOARD = ReplyKeyboardMarkup(
     keyboard=[
+        [KeyboardButton(text=BOT_ANSWERS.shelter.value)],
         [
-            KeyboardButton(text=BOT_ANSWERS.shelter.value),
             KeyboardButton(text=BOT_ANSWERS.monetary_aid.value),
             KeyboardButton(text=BOT_ANSWERS.animals.value),
-        ]
+        ],
     ],
     resize_keyboard=True,
     input_field_placeholder="Выберите категорию: ",

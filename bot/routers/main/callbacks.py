@@ -35,6 +35,7 @@ async def process_faq_callback(
     else:
         info.update({"last_category": data, "time": datetime.datetime.now()})
 
+    print(helper)
     if question_id == "unique":
         await state.set_state(InformationAboutShelter.unique_question)
         await callback_query.message.answer(
@@ -74,7 +75,7 @@ async def process_page_callback(
             "time": datetime.datetime.now(),
         }
     else:
-        info.update({"last_page": page, "time": datetime.datetime.now()})
+        info.update({"last_page": int(page), "time": datetime.datetime.now()})
 
     await send_paginated_data(
         callback_query.message, shelter_information, key, int(page)

@@ -11,7 +11,35 @@ from utils.services import fetch_data, obtain_token, refresh_token
 load_dotenv()
 
 
-class BotMiddelware(BaseMiddleware):
+class HelpersMiddleware(BaseMiddleware):
+    _instance = None
+    helper = {}
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(HelpersMiddleware, cls).__new__(cls)
+        return cls._instance
+
+    async def __call__(
+        self,
+        handler: Callable[[Message, Dict[str, Any]], Awaitable[Any]],
+        event: Message,
+        data: Dict[str, Any],
+    ) -> Any:
+        time = datetime.datetime.now()
+        if self.helper:
+            keys_to_delete = []
+            for key, value in self.helper.items():
+                if time - value.get("time") > datetime.timedelta(minutes=10):
+                    keys_to_delete.append(key)
+            for key in keys_to_delete:
+                del self.helper[key]
+
+        data["helper"] = self.helper
+        return await handler(event, data)
+
+
+class BotMiddleware(BaseMiddleware):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 

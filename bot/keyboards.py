@@ -58,7 +58,9 @@ CANCEL_KEYBOARD = ReplyKeyboardMarkup(
 TURN_BACK_KEYBOARD = InlineKeyboardMarkup(
     inline_keyboard=[
         [
-            InlineKeyboardButton(text=BOT_ANSWERS.back.value, callback_data="back_toquestions"),
+            InlineKeyboardButton(
+                text=BOT_ANSWERS.back.value, callback_data="back_toquestions"
+            ),
         ]
     ],
 )

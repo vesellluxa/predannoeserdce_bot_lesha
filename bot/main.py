@@ -10,7 +10,7 @@ from commands import set_main_menu
 from cron.newsletter import process_newsletters
 from cron.notification import process_notification
 from dotenv import load_dotenv
-from routers.main.middleware import BotMiddelware
+from routers.main.middleware import BotMiddleware
 from routers.main.router import router
 
 load_dotenv()
@@ -23,8 +23,8 @@ async def main() -> None:
     bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
     dp = Dispatcher()
     dp.include_router(router)
-    dp.callback_query.middleware(BotMiddelware(bot))
-    dp.message.middleware(BotMiddelware(bot))
+    dp.callback_query.middleware(BotMiddleware(bot))
+    dp.message.middleware(BotMiddleware(bot))
     dp.startup.register(set_main_menu)
     scheduler = AsyncIOScheduler()
     scheduler.add_job(

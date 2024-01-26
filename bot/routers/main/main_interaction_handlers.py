@@ -57,6 +57,11 @@ async def process_main_interaction(
 
     response = responses[message.text.casefold()]
     await state.set_state(response["state"])
+    if (
+        message.text.casefold() == BOT_ANSWERS.monetary_aid.value.casefold()
+        or message.text.casefold() == BOT_ANSWERS.animals.value.casefold()
+    ):
+        await delete_inline_keyboard(message, message.bot)
     await message.answer(
         response["message"], reply_markup=response.get("keyboard")
     )

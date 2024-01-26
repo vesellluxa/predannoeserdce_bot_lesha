@@ -57,6 +57,11 @@ async def process_main_interaction(
 
     response = responses[message.text.casefold()]
     await state.set_state(response["state"])
+    if (
+        message.text.casefold() == BOT_ANSWERS.monetary_aid.value.casefold()
+        or message.text.casefold() == BOT_ANSWERS.animals.value.casefold()
+    ):
+        await delete_inline_keyboard(message, message.bot)
     await message.answer(
         response["message"], reply_markup=response.get("keyboard")
     )
@@ -66,27 +71,33 @@ async def process_questions(
     message: Message,
     bot: Bot,
     shelter_information: InformationSchema = {},
+    category: str = None,
+    page: int = None,
 ) -> None:
     category_mapping = {
         BOT_ANSWERS.faq.value.casefold(): "faq",
         BOT_ANSWERS.info.value.casefold(): "info",
         BOT_ANSWERS.needs.value.casefold(): "needs",
     }
-    if (
-        not hasattr(message.text, "casefold")
-        or not message.text.casefold() in category_mapping
-    ):
+
+    if not category:
+        message_text = (
+            message.text.casefold()
+            if hasattr(message.text, "casefold")
+            else None
+        )
+        category = category_mapping.get(message_text)
+
+    if not category:
         await message.reply(
             BOT_ANSWERS.choose_correct_category.value,
             reply_markup=FAQ_INFO_CANCEL_KEYBOARD,
         )
         return
 
-    category = message.text.casefold()
-
     await delete_inline_keyboard(message, bot)
     await send_paginated_data(
-        message, shelter_information, category_mapping[category], 0
+        message, shelter_information, category, page if page else 0
     )
 
 

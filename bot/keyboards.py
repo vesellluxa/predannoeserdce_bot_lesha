@@ -55,6 +55,16 @@ CANCEL_KEYBOARD = ReplyKeyboardMarkup(
     input_field_placeholder="Сообщение: ",
 )
 
+TURN_BACK_KEYBOARD = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                text=BOT_ANSWERS.back.value, callback_data="back_toquestions"
+            ),
+        ]
+    ],
+)
+
 TRY_AGAIN_KEYBOARD = ReplyKeyboardMarkup(
     keyboard=[
         [
@@ -82,11 +92,11 @@ FAQ_INFO_CANCEL_KEYBOARD = ReplyKeyboardMarkup(
 
 MAIN_INTERACTION_KEYBOARD = ReplyKeyboardMarkup(
     keyboard=[
+        [KeyboardButton(text=BOT_ANSWERS.shelter.value)],
         [
-            KeyboardButton(text=BOT_ANSWERS.shelter.value),
             KeyboardButton(text=BOT_ANSWERS.monetary_aid.value),
             KeyboardButton(text=BOT_ANSWERS.animals.value),
-        ]
+        ],
     ],
     resize_keyboard=True,
     input_field_placeholder="Выберите категорию: ",

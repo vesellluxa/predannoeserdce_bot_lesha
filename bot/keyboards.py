@@ -55,6 +55,16 @@ CANCEL_KEYBOARD = ReplyKeyboardMarkup(
     input_field_placeholder="Сообщение: ",
 )
 
+TURN_BACK_KEYBOARD = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                text=BOT_ANSWERS.back.value, callback_data="back_toquestions"
+            ),
+        ]
+    ],
+)
+
 TRY_AGAIN_KEYBOARD = ReplyKeyboardMarkup(
     keyboard=[
         [
@@ -82,11 +92,11 @@ FAQ_INFO_CANCEL_KEYBOARD = ReplyKeyboardMarkup(
 
 MAIN_INTERACTION_KEYBOARD = ReplyKeyboardMarkup(
     keyboard=[
+        [KeyboardButton(text=BOT_ANSWERS.shelter.value)],
         [
-            KeyboardButton(text=BOT_ANSWERS.shelter.value),
             KeyboardButton(text=BOT_ANSWERS.monetary_aid.value),
             KeyboardButton(text=BOT_ANSWERS.animals.value),
-        ]
+        ],
     ],
     resize_keyboard=True,
     input_field_placeholder="Выберите категорию: ",
@@ -108,15 +118,15 @@ async def send_main_interaction_buttons(message: Message, text: str) -> None:
 
 
 def create_donation_keyboard(shelter_information: InformationSchema):
-    donations = shelter_information.get("donations")
+    data = shelter_information.get("donations")
     buttons = []
-    if donations:
-        for donation in donations.values():
+    if data:
+        for i in data.values():
             buttons.append(
                 [
                     InlineKeyboardButton(
-                        text=donation.text,
-                        url=donation.answer,
+                        text=i.text,
+                        url=i.answer,
                     ),
                 ],
             )
@@ -126,18 +136,34 @@ def create_donation_keyboard(shelter_information: InformationSchema):
 
 
 def create_animals_keyboard(shelter_information: InformationSchema):
-    donations = shelter_information.get("list_animals")
+    data = shelter_information.get("list_animals")
     buttons = []
-    if donations:
-        for donation in donations.values():
+    if data:
+        for i in data.values():
             buttons.append(
                 [
                     InlineKeyboardButton(
-                        text=donation.text,
-                        url=donation.answer,
+                        text=i.text,
+                        url=i.answer,
                     ),
                 ],
             )
     if buttons:
         return InlineKeyboardMarkup(inline_keyboard=buttons)
     return None
+
+
+PERSONAL_DATA_CONSENT_KEYBOARD = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                text="Согласен ✅",
+                callback_data="personal_data_consent_agree",
+            ),
+            InlineKeyboardButton(
+                text="Не согласен ❌",
+                callback_data="personal_data_consent_disagree",
+            ),
+        ],
+    ]
+)

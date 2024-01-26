@@ -1,3 +1,4 @@
+import re
 from typing import Optional, Union
 
 from aiogram import Bot
@@ -17,7 +18,7 @@ async def check_message(
     text: str,
     reply_markup: Optional[
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup]
-    ] = None,
+    ] = bool,
 ) -> None:
     """
     Check the message for a specific text and reply with the given text and optional reply markup.
@@ -38,6 +39,26 @@ async def check_message(
         )
         return False
     return True
+
+
+def validate_name(
+    message: str,
+) -> Union[str, bool]:
+    pattern = re.compile(
+        r"^[А-Яа-яЁё-]{1,64} [А-Яа-яЁё]{1,64}(?: [А-Яа-яЁё-]{1,64})?$"
+    )
+
+    if pattern.match(message):
+        return " ".join(word.capitalize() for word in message.split())
+    else:
+        return False
+
+
+def validate_email(
+    email: str,
+) -> bool:
+    pattern = re.compile(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
+    return pattern.match(email)
 
 
 async def delete_inline_keyboard(

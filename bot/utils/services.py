@@ -5,11 +5,7 @@ import urllib.parse
 import httpx
 from dotenv import load_dotenv
 from pydantic import ValidationError
-from schemas.schemas import (
-    CreateQuestionDto,
-    CreateUserShortDto,
-    UpdateUser,
-)
+from schemas.schemas import CreateQuestionDto, CreateUserShortDto, UpdateUser
 
 load_dotenv()
 
@@ -94,6 +90,8 @@ async def add_user_to_db(user: CreateUserShortDto, access: str):
                 logging.error(f"Error adding user to DB: {response}")
                 if response.get("username") == [
                     "Telegram пользователь с таким Имя пользователя уже существует."
+                ] or response.get("chat_id") == [
+                    "Telegram пользователь с таким chat id уже существует."
                 ]:
                     return {"details": "User already exists"}
         except httpx.HTTPError as e:
